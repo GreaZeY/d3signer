@@ -422,7 +422,7 @@ function newDesign() {
                     <em>None</em>
                   </MenuItem>
                   <MenuItem value={10}>Mix & Match</MenuItem>
-                  <MenuItem value={20}>Jeans Blue Stones</MenuItem>
+                  <MenuItem value={20}>Jean Blue Stones</MenuItem>
                   <MenuItem value={30}>White Stones</MenuItem>
                 </Select>
 

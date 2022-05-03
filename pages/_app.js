@@ -4,7 +4,7 @@ import ReactDOM from "react-dom";
 import App from "next/app";
 import Router from "next/router";
 import { Provider } from "react-redux";
-import { wrapper, store } from "../lib/store";
+import {  store } from "../lib/store";
 import PageChange from "components/PageChange/PageChange.js";
 import { transitions, positions, Provider as AlertProvider } from 'react-alert'
 import AlertTemplate from 'react-alert-template-basic'
