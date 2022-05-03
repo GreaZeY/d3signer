@@ -104,9 +104,9 @@ const TextMesh = (props) => {
                 props={{bails ,base, boundingBoxPoints }}
             />
 
-            <Suspense fallback={'Loading Model'} >
+            {/* <Suspense fallback={'Loading Model'} >
                 <Diamond  props={{boundingBoxPoints }}/>
-            </Suspense>
+            </Suspense> */}
 
 
 
