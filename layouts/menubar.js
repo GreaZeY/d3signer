@@ -21,37 +21,7 @@ import { useSelector } from 'react-redux';
 import LoginModal from './LoginModal';
 import SignupModal from './SignupModal';
 import { useDispatch } from 'react-redux';
-const useStyles = makeStyles({
-  newDesign:{
-    borderColor:'white',
-    color:'white'
-  },
-  flexRow:{
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
 
-  modal: {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    height: '100vh',
-    width: '100vw',
-    backgroundColor: "rgba(77,77,77,0.6)",
-    zIndex: "100",
-    display: 'flex',
-    alignItems: 'center',
-
-  },
-  form: {
-    marginTop: '1rem !important'
-  },
-  formMargin0: {
-    marginTop: '0rem !important'
-  },
-
-});
 
 const pages = []; // ['Products', 'Pricing', 'Blog'];
 const settings = [
@@ -60,6 +30,39 @@ const settings = [
 ];
 
 const MenuAppBar = () => {
+
+  const useStyles = makeStyles({
+    newDesign:{
+      borderColor:'white',
+      color:'white'
+    },
+    flexRow:{
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+  
+    modal: {
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      height: '100vh',
+      width: '100vw',
+      backgroundColor: "rgba(77,77,77,0.6)",
+      zIndex: "100",
+      display: 'flex',
+      alignItems: 'center',
+  
+    },
+    form: {
+      marginTop: '1rem !important'
+    },
+    formMargin0: {
+      marginTop: '0rem !important'
+    },
+  
+  });
+  
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [showLoginModal, setShowLoginModal] = React.useState(false);
