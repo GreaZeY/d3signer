@@ -36,100 +36,105 @@ import DotLoader from "components/loaders/dotLoader";
 import { saveAs } from 'file-saver';
 import Spinner from "components/loaders/spinner";
 import AddIcon from '@material-ui/icons/Add';
-const useStyles = makeStyles({
-  modal: {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    height: '100vh',
-    width: '100vw',
-    backgroundColor: "rgba(77,77,77,0.6)",
-    zIndex: "100",
-    display: 'flex',
-    // alignItems: 'center',
 
-  },
-  flexRow: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-  },
-  main: {
-    display: 'flex',
-    width: '100%',
-    justifyContent: 'center',
-    "@media screen and (max-width: 640px)": {
-      flexDirection: 'column',
-    }
-  },
-  settings: {
-    padding: '1rem',
-  },
-  preview: {
-    padding: '1rem',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginLeft: '.5rem',
-    "@media screen and (max-width: 640px)": {
-      marginLeft: 0,
-
-    }
-  },
-  base: {
-    width: '1rem',
-    height: '1rem',
-    borderRadius: '50%',
-    cursor: 'pointer',
-    border: '1px Solid white',
-    transition: '.5s',
-    marginRight: '.2rem',
-    "&:hover": {
-      border: '1px Solid gray',
-    }
-  },
-  symbol: {
-    border: '1px solid #ECEBEB',
-    width: '1rem',
-    height: '1rem',
-    display: 'flex',
-    alignItems: 'center',
-    cursor: 'pointer',
-    transition: '.5s',
-    justifyContent: 'center',
-    marginRight: '.2rem',
-    color: 'gray',
-    fontSize: '12px',
-    "&:hover": {
-      border: '1px Solid gray',
-
-    }
-  },
-  formMargin0: {
-    marginTop: '0rem !important',
-    marginBottom: '1rem !important'
-  },
-  loaderContainer: {
-    height: "calc(100-10)% !important",
-    background: 'black',
-    position: 'absolute',
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%,-50%)",
-    zIndex: 100
-  },
-  delete: { 
-    marginTop: '.7rem',
-    cursor:'pointer',
-    transition:'.3s', 
-    "&:hover": { 
-      color: 'red' 
-    } }
-});
 
 const options = ['STL', 'OBJ', 'PNG'];
 
 function newDesign() {
+
+  const useStyles = makeStyles({
+    modal: {
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      height: '100vh',
+      width: '100vw',
+      backgroundColor: "rgba(77,77,77,0.6)",
+      zIndex: "100",
+      display: 'flex',
+      // alignItems: 'center',
+  
+    },
+    flexRow: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+    },
+    main: {
+      display: 'flex',
+      width: '100%',
+      justifyContent: 'center',
+      "@media screen and (max-width: 640px)": {
+        flexDirection: 'column',
+      }
+    },
+    settings: {
+      padding: '1rem',
+    },
+    preview: {
+      padding: '1rem',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginLeft: '.5rem',
+      "@media screen and (max-width: 640px)": {
+        marginLeft: 0,
+  
+      }
+    },
+    base: {
+      width: '1rem',
+      height: '1rem',
+      borderRadius: '50%',
+      cursor: 'pointer',
+      border: '1px Solid white',
+      transition: '.5s',
+      marginRight: '.2rem',
+      "&:hover": {
+        border: '1px Solid gray',
+      }
+    },
+    symbol: {
+      border: '1px solid #ECEBEB',
+      width: '1rem',
+      height: '1rem',
+      display: 'flex',
+      alignItems: 'center',
+      cursor: 'pointer',
+      transition: '.5s',
+      justifyContent: 'center',
+      marginRight: '.2rem',
+      color: 'gray',
+      fontSize: '12px',
+      "&:hover": {
+        border: '1px Solid gray',
+  
+      }
+    },
+    formMargin0: {
+      marginTop: '0rem !important',
+      marginBottom: '1rem !important'
+    },
+    loaderContainer: {
+      height: "calc(100-10)% !important",
+      background: 'black',
+      position: 'absolute',
+      top: "50%",
+      left: "50%",
+      transform: "translate(-50%,-50%)",
+      zIndex: 100
+    },
+    delete: { 
+      marginTop: '.7rem',
+      cursor:'pointer',
+      transition:'.3s', 
+      "&:hover": { 
+        color: 'red' 
+      } }
+  });
+
+
+
   const [text, setText] = useState('jimmy');                  //Vıcky
   const [Crimping1, setCrimping1] = useState('None');
   const [Crimping2, setCrimping2] = useState('None');
@@ -139,12 +144,13 @@ function newDesign() {
   const [thickness, setThickness] = useState(4);
   const [currSizeProp, setCurrSizeProp] = useState('Length');
   const [bails, bailsCount] = useState([]);
-  const [fontFamilies, setFontFamilies] = useState([]);
   const [showBailModal, setShowBailModal] = useState(false);
   const [open, setOpen] = useState(false);
   const anchorRef = useRef(null);
   const [selectedIndex, setSelectedIndex] = useState(1);
   const [exportLoading, setExportLoading] = useState(false)
+  const [symbol, setSymbol] = useState('');
+  
 
   const dispatch = useDispatch()
   const { loading } = useSelector(state => state.designProps)
@@ -183,24 +189,6 @@ function newDesign() {
   };
 
 
-
-
-
-  useEffect(async () => {
-    // const { data } = await axios.get(`https://webfonts.googleapis.com/v1/webfonts?key=${process.env.NEXT_PUBLIC_GOOGLE_FONT_API_KEY}`)
-    setFontFamilies(fonts)
-
-    // data.items.slice(0, 100).forEach(async font => {
-    //   const WebFont = (await import('webfontloader')).default
-
-    //   WebFont.load({
-    //     google: {
-    //       families: [font.family, font.category]
-    //     }
-    //   })
-    // })
-
-  }, [])
 
   const [font, setFont] = useState(fonts[0].familyName);
 
@@ -247,8 +235,9 @@ function newDesign() {
       thickness,
       font,
       bails,
+      symbol
     }))
-  }, [text, base, font, length, width, thickness, bails])
+  }, [text, base, font, length, width, thickness, bails, symbol])
 
 
 
@@ -311,7 +300,7 @@ function newDesign() {
 
 
 
-              {fontFamilies.length && <FormControl style={{ width: '100%', marginTop: '1rem' }}>
+              {fonts.length && <FormControl style={{ width: '100%', marginTop: '1rem' }}>
                 <InputLabel >Font</InputLabel>
                 <Select
                   value={font}
@@ -319,7 +308,7 @@ function newDesign() {
                   onChange={(e) => setFont(e.target.value)}
                 >
 
-                  {fontFamilies.map(ff => <MenuItem value={ff.familyName}  >{ff.familyName}</MenuItem>)
+                  {fonts.map(ff => <MenuItem key={ff.familyName} value={ff.familyName}  >{ff.familyName}</MenuItem>)
 
                   }
                 </Select>
@@ -347,8 +336,8 @@ function newDesign() {
                     aria-label="Sizes"
                     onChange={setSizes}
                     style={{ marginRight: '1rem' }}
-                    min={20}
-                    max={30}
+                    min={currSizeProp === 'Length' ?20:1}
+                    max={currSizeProp === 'Length' ?30:10}
                     value={currSizeProp === 'Length' ?
                       length
                       :
@@ -370,21 +359,21 @@ function newDesign() {
               </div>
 
               <div style={{ marginTop: '1rem' }}  >
-                <div >
+               
                   <InputLabel className="settings-head">Your Base</InputLabel>
                   <div onClick={(e) => setBase(e.target.style.background)} className={classes.flexRow}>
                     <div className={classes.base} style={{ background: '#FFC900' }} ></div>
                     <div className={classes.base} style={{ background: '#B76E79' }} ></div>
                     <div className={classes.base} style={{ background: '#C0C0C0' }} ></div>
                   </div>
-                </div>
+               
 
               </div>
               <div style={{ marginTop: '1rem' }}  >
                 <div>
                   <InputLabel className="settings-head">Add Symbol</InputLabel>
-                  <div className={classes.flexRow}>
-                    <div className={classes.symbol}  >♡</div>
+                  <div onClick={(e)=>setSymbol(e.target.innerHTML)} className={classes.flexRow}>
+                    <div name='heart' className={classes.symbol}  >♡</div>
                     <div className={classes.symbol}  >#</div>
                     <div className={classes.symbol}  >☆</div>
                     <div className={classes.symbol}  >∞</div>

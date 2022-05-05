@@ -9,22 +9,19 @@ const Diamond = ({props}) => {
   const {boundingBoxPoints} = props
   const { min, max } = boundingBoxPoints
 
-    const dia = useFBX(`/assets/crimps/diamond.fbx`)
+    const dia = useFBX(`/assets/crimps/DIAMOND.fbx`)
     // const dia = useLoader(OBJLoader, `/assets/crimps/dia.obj`)
     // console.log(dia)
     const crimp = useRef()
 
     useEffect(() => {
         let dmd= crimp.current
-console.log(dmd)
         dmd.scale.set(2,2,2)
         dmd.rotation.x=-pi/2
         dmd.position.set(-50,0,max.z)
 
-        var helper = new THREE.BoundingBoxHelper(dmd, 0xff0000);
-        helper.update();
-        // If you want a vis
-        dmd.add(helper)
+       
+
 
     }, [])
 
