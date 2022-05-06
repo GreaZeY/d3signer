@@ -9,7 +9,7 @@ let rotation = [3.14, 0, 0]
 let scale, y = 7, tf
 
 const Symbols = ({ props }) => {
-  const { symbol, boundingBoxPoints, base, length, thickness, } = props
+  const { symbol, boundingBoxPoints, base, length, thickness,setBoundingBox2Points } = props
 
   const { min, max } = boundingBoxPoints
   const [position, setPosition] = useState([max.x, 0, max.z])
@@ -100,6 +100,9 @@ const Symbols = ({ props }) => {
   useEffect(() => {
     if (!symbol) return
     switch (symbol) {
+      case '♡':
+      setPosition([max.x, max.y, max.z])
+      break;
       case '∞':
         setPosition([max.x - 5, max.y, max.z])
         tf=6.5
@@ -113,14 +116,23 @@ const Symbols = ({ props }) => {
            tf=4
             break;
 
-      default: setPosition([max.x, y, max.z - .1])
+      default: 
+      // setPosition([max.x, y, max.z - .1])
 
     }
+
+    // setTimeout(()=>{
+    //   var boundingBox = new THREE.Box3().setFromObject(symbolRef.current);
+    //   setBoundingBox2Points(boundingBox)
+    //   },100)
+
+
   }, [symbol, length, thickness, boundingBoxPoints])
 
 
 
-  const extrudeSettings = { depth: thickness * 8*tf, bevelEnabled: true, curveSegments: 100, bevelSegments: 2, steps: 2, bevelSize: 1, bevelThickness: 1 };
+
+  const extrudeSettings = { depth: thickness * 8*tf, bevelEnabled: true, curveSegments: 100, bevelSegments: 20, steps: 0, bevelSize: 10, bevelThickness: 10 };
 
   return (
     <group ref={symbolRef} >
@@ -130,7 +142,7 @@ const Symbols = ({ props }) => {
       rotation={rotation}
     >
       <extrudeBufferGeometry attach="geometry" args={[shape, extrudeSettings]} />
-      <meshStandardMaterial attach='material' color={base} metalness={.6} roughness={0.2} />
+      <meshPhysicalMaterial attach='material' color={base} metalness={.9} roughness={0.3} />
     </mesh>
     </group>
   )
