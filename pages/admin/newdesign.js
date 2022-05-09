@@ -458,7 +458,7 @@ function newDesign() {
         </GridItem>
 
         <GridItem xs={12} sm={12} md={9}>
-          <Card >
+          <Card  >
             <CardBody >
 
 

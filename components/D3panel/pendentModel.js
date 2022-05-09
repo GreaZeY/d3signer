@@ -26,6 +26,7 @@ const PendentModel = (props) => {
         camera,
         gl: { domElement }
       } = useThree()
+      
     const {
         text,
         base,
@@ -99,11 +100,11 @@ const PendentModel = (props) => {
     return (
 
         <group  >
-             <directionalLight ref={light}  intensity={.5} position={[-50, 0, -2500]} />
+             <directionalLight ref={light}  intensity={.5} position={[0, 0, -2500]} />
             <group ref={textWsymGrp} >
                 <group ref={textGroup} >
                     <mesh position={[-50, 0, 0]}>
-                        <textGeometry ref={text3d} args={[text, { font, size: length, height: thickness, curveSegments: 5, bevelEnabled: true, bevelThickness: 1, bevelSize: 1, bevelOffset: 0,bevelSegments:3 }]} />
+                        <textGeometry ref={text3d} args={[text, { font, size: 20, height: thickness, curveSegments: 5, bevelEnabled: true, bevelThickness: 1, bevelSize: 1, bevelOffset: 0,bevelSegments:3 }]} />
                         <meshPhysicalMaterial attach='material' color={base} metalness={1} roughness={.35} />
                     </mesh>
                 </group>

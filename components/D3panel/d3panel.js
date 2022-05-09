@@ -12,17 +12,14 @@ const D3panel = ({ model }) => {
 
   return (
     
-      <Canvas camera={{ position: [0, 0, 100] }} style={{ width: `100%`, height: `72.5vh`, cursor: 'pointer', zIndex: 10 }} >
-        {/* <ambientLight  intensity={1}  /> */}
-
-        {/* <spotLight intensity={.5} position={[-50, 0, 100]} /> */}
+      <Canvas camera={{ position: [0,0, 100] }}  style={{  height: `70vh`,}} >
+        <ambientLight color={'white'} intensity={.5}  />
         <OrbitControls ref={controls} />
-        <pointLight intensity={.5} position={[-50, 0, 0]} />
-        <pointLight intensity={.5} position={[-1050, 0, -2500]} />
-        <pointLight intensity={.5} position={[1050, 0, -2500]} />
+        <pointLight intensity={.2} position={[-50, 0, 0]} />
+        <pointLight intensity={.5} position={[-1050, 0, 1000]} />
        
         <Suspense fallback={"Loading"}>
-        <group ref={model}  >
+        <group scale={designProps?designProps.length/20:1} ref={model}  >
         <PendentModel  {...designProps} controls={controls}  />
        
         </group>
