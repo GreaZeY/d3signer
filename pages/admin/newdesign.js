@@ -252,7 +252,7 @@ function newDesign() {
       .then(module => {
         const exporter = new module.STLExporter();
         // let newScene= {...scene}
-        let str = exporter.parse(model.current); // Export the scene
+        let str = exporter.parse(model.current,{binary:true}); // Export the scene
         let blob = new Blob([str], { type: 'text/plain' }); // Generate Blob from the string
         saveAs(blob, text ? text + '.stl' : 'export.stl');
         setExportLoading(false)
@@ -265,7 +265,7 @@ function newDesign() {
       .then(module => {
         const exporter = new module.OBJExporter();
         // let newScene= {...scene}
-        let str = exporter.parse(model.current); // Export the scene
+        let str = exporter.parse(model.current,{binary:true}); // Export the scene
         let blob = new Blob([str], { type: 'text/plain' }); // Generate Blob from the string
         saveAs(blob, text ? text + '.obj' : 'export.obj');
         setExportLoading(false)
