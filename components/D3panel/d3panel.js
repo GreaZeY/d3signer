@@ -17,8 +17,9 @@ const D3panel = ({ model }) => {
 
         {/* <spotLight intensity={.5} position={[-50, 0, 100]} /> */}
         <OrbitControls ref={controls} />
-        {/* <pointLight intensity={.5} position={[-50, 0, 100]} /> */}
-        {/* <pointLight intensity={.5} position={[-50, 0, -100]} /> */}
+        <pointLight intensity={.5} position={[-50, 0, 0]} />
+        <pointLight intensity={.5} position={[-1050, 0, -2500]} />
+        <pointLight intensity={.5} position={[1050, 0, -2500]} />
        
         <Suspense fallback={"Loading"}>
         <group ref={model}  >

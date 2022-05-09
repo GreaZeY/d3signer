@@ -2,12 +2,11 @@
   "name": "nextjs-material-dashboard",
   "version": "1.1.0",
   "private": true,
-
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "next",
     "build": "next build",
-    "export":" next export",
+    "export": " next export",
     "start": "next start",
     "deploy": "npm run build && firebase deploy",
     "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && rm -rf .next/ && npm install && npm run dev"
@@ -39,6 +38,7 @@
     "react-alert": "^7.0.3",
     "react-alert-template-basic": "^1.0.2",
     "react-chartist": "0.14.3",
+    "react-collapsed": "^3.3.1",
     "react-dom": "17.0.1",
     "react-redux": "^7.2.8",
     "react-swipeable-views": "0.13.9",

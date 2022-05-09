@@ -37,6 +37,12 @@ import { saveAs } from 'file-saver';
 import Spinner from "components/loaders/spinner";
 import AddIcon from '@material-ui/icons/Add';
 
+import useCollapse from 'react-collapsed'
+import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+
+
+
 
 const options = ['STL', 'OBJ', 'PNG'];
 
@@ -53,7 +59,7 @@ function newDesign() {
       zIndex: "100",
       display: 'flex',
       // alignItems: 'center',
-  
+
     },
     flexRow: {
       display: 'flex',
@@ -79,7 +85,7 @@ function newDesign() {
       marginLeft: '.5rem',
       "@media screen and (max-width: 640px)": {
         marginLeft: 0,
-  
+
       }
     },
     base: {
@@ -108,7 +114,7 @@ function newDesign() {
       fontSize: '12px',
       "&:hover": {
         border: '1px Solid gray',
-  
+
       }
     },
     formMargin0: {
@@ -124,13 +130,14 @@ function newDesign() {
       transform: "translate(-50%,-50%)",
       zIndex: 100
     },
-    delete: { 
+    delete: {
       marginTop: '.7rem',
-      cursor:'pointer',
-      transition:'.3s', 
-      "&:hover": { 
-        color: 'red' 
-      } }
+      cursor: 'pointer',
+      transition: '.3s',
+      "&:hover": {
+        color: 'red'
+      }
+    }
   });
 
 
@@ -150,7 +157,7 @@ function newDesign() {
   const [selectedIndex, setSelectedIndex] = useState(1);
   const [exportLoading, setExportLoading] = useState(false)
   const [symbol, setSymbol] = useState('');
-  
+
 
   const dispatch = useDispatch()
   const { loading } = useSelector(state => state.designProps)
@@ -165,7 +172,7 @@ function newDesign() {
   const setBailNumber = () => {
     let bailArr = [...bails]
     bailArr.length++
-    bailArr[bailArr.length - 1] = {  position: '', sizes: {} }
+    bailArr[bailArr.length - 1] = { position: '', sizes: {} }
     bailsCount(bailArr)
   };
 
@@ -218,7 +225,7 @@ function newDesign() {
     let txt = e.target.value
 
     txt = txt.replace(' ', '')
-   
+
     // .replace('j', 'ȷ')
 
     setText(txt)
@@ -241,6 +248,9 @@ function newDesign() {
 
 
 
+  // bail expand and collapse 
+  const { getCollapseProps, getToggleProps, isExpanded } = useCollapse()
+
 
   // Exporters
 
@@ -252,7 +262,7 @@ function newDesign() {
       .then(module => {
         const exporter = new module.STLExporter();
         // let newScene= {...scene}
-        let str = exporter.parse(model.current,{binary:true}); // Export the scene
+        let str = exporter.parse(model.current, { binary: true }); // Export the scene
         let blob = new Blob([str], { type: 'text/plain' }); // Generate Blob from the string
         saveAs(blob, text ? text + '.stl' : 'export.stl');
         setExportLoading(false)
@@ -265,7 +275,7 @@ function newDesign() {
       .then(module => {
         const exporter = new module.OBJExporter();
         // let newScene= {...scene}
-        let str = exporter.parse(model.current,{binary:true}); // Export the scene
+        let str = exporter.parse(model.current, { binary: true }); // Export the scene
         let blob = new Blob([str], { type: 'text/plain' }); // Generate Blob from the string
         saveAs(blob, text ? text + '.obj' : 'export.obj');
         setExportLoading(false)
@@ -336,8 +346,8 @@ function newDesign() {
                     aria-label="Sizes"
                     onChange={setSizes}
                     style={{ marginRight: '1rem' }}
-                    min={currSizeProp === 'Length' ?20:1}
-                    max={currSizeProp === 'Length' ?30:10}
+                    min={currSizeProp === 'Length' ? 20 : 1}
+                    max={currSizeProp === 'Length' ? 30 : 10}
                     value={currSizeProp === 'Length' ?
                       length
                       :
@@ -359,20 +369,20 @@ function newDesign() {
               </div>
 
               <div style={{ marginTop: '1rem' }}  >
-               
-                  <InputLabel className="settings-head">Your Base</InputLabel>
-                  <div onClick={(e) => setBase(e.target.style.background)} className={classes.flexRow}>
-                    <div className={classes.base} style={{ background: '#FFC900' }} ></div>
-                    <div className={classes.base} style={{ background: '#B76E79' }} ></div>
-                    <div className={classes.base} style={{ background: '#C0C0C0' }} ></div>
-                  </div>
-               
+
+                <InputLabel className="settings-head">Your Base</InputLabel>
+                <div onClick={(e) => setBase(e.target.style.background)} className={classes.flexRow}>
+                  <div className={classes.base} style={{ background: '#FFC900' }} ></div>
+                  <div className={classes.base} style={{ background: '#B76E79' }} ></div>
+                  <div className={classes.base} style={{ background: '#C0C0C0' }} ></div>
+                </div>
+
 
               </div>
               <div style={{ marginTop: '1rem' }}  >
                 <div>
                   <InputLabel className="settings-head">Add Symbol</InputLabel>
-                  <div onClick={(e)=>setSymbol(e.target.innerHTML)} className={classes.flexRow}>
+                  <div onClick={(e) => setSymbol(e.target.innerHTML)} className={classes.flexRow}>
                     <div name='heart' className={classes.symbol}  >♡</div>
                     <div className={classes.symbol}  >#</div>
                     <div className={classes.symbol}  >☆</div>
@@ -417,49 +427,30 @@ function newDesign() {
 
               </FormControl>
 
-              <Button onClick={() => setShowBailModal(true)} style={{ width: '100%', marginTop: '1rem' }} size="small" variant="outlined" >
+              {/* <Button onClick={() => setShowBailModal(true)} style={{ width: '100%', marginTop: '1rem' }} size="small" variant="outlined" >
                 Configure Bail
-              </Button>
-
-              {
-                showBailModal &&
-                <div className={classes.modal}  >
-                  <Container component="main" maxWidth="sm">
-                    <Box
-                      sx={{
-                        borderRadius: '8px',
-                        flexDirection: 'column',
-                        backgroundColor: 'white',
-                        position: 'relative',
-                        padding: '2rem',
-                      }}
-                    >
-                      <Typography variant="h6" style={{ marginBottom: '2rem', color: 'grey' }} align='center' >Configure Bail</Typography>
+              </Button> */}
 
 
-                      {/* <CustomInput
-                          labelText="Number of Bails"
-                          id="bailCount"
-                          inputProps={{ type: 'number', min: 1, max: 10 }}
-                          formControlProps={{
-                            fullWidth: true,
-                            className: classes.formMargin0
-                          }}
-                        /> */}
-
-                      <Button variant="outlined" onClick={setBailNumber} > <AddIcon /> Add Bail</Button>
-
-
-                      {bails.map((bail,i) => <Bail key={i} index={i} bails={bails} setBailsData={bailsCount} classes={classes} />)
+              <div>
+      {/* <button {...getToggleProps()}> */}
+      <div  style={{ width: '100%', marginTop: '1rem',justifyContent:'space-between' }} className={classes.flexRow}>
+      <Button disabled={true} {...getToggleProps()}  size="small" >
+                
+           
+        {isExpanded ? <><KeyboardArrowUpIcon/> Bails</> : <><KeyboardArrowDownIcon/> Bails</>}
+        {/* Bails */}
+        </Button>
+        <Button size="small"   onClick={setBailNumber} > <AddIcon /></Button>
+        </div>
+      <section {...getCollapseProps()}>
+     
+      {bails.map((bail, i) => <Bail key={i} index={i} bails={bails} setBailsData={bailsCount} classes={classes} />)
                       }
-                      <CloseIcon style={{ position: 'absolute', top: 0, right: 0, color: 'gray', cursor: 'pointer' }} onClick={() => setShowBailModal(false)} />
+      </section>
+    </div>
 
-                    </Box>
-
-
-                  </Container>
-                </div>
-              }
+              
 
             </CardBody>
           </Card>

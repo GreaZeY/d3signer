@@ -61,28 +61,7 @@ const Bail = (props) => {
 
     return (
         <div style={{ display: 'flex', alignItems: 'center' }}>
-            <div style={{ width: '100%', marginTop: '1rem', justifyContent: 'space-between' }} className={classes.flexRow}>
-                <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-                    <InputLabel >Position</InputLabel>
-                    <Select
-                        value={currBailPosition}
-                        label="Size"
-                        onChange={(e => setCurrBailPosition(e.target.value))}
-                    >
-                        <MenuItem value={'Left'}>Left</MenuItem>
-                        <MenuItem value={'Center'}>Center</MenuItem>
-                        <MenuItem value={'Right'}>Right</MenuItem>
-                        <MenuItem value={'Diagonal'}>Diagonal</MenuItem>
-                    </Select>
-                    {/* <RadioGroup
-                        >
-                          <FormControlLabel value="Left" control={<Radio />} label="Left" />
-                          <FormControlLabel value="Center" control={<Radio />} label="Center" />
-                          <FormControlLabel value="Right" control={<Radio />} label="Right" />
-                          <FormControlLabel value="Diagonal" control={<Radio />} label="Diagonal" />
-                        </RadioGroup> */}
-                </FormControl>
-            </div>
+           
             <div style={{ width: '100%', marginTop: '1rem', justifyContent: 'space-between' }} className={classes.flexRow}>
                 <FormControl sx={{ m: 1, minWidth: 120 }} size="small" >
                     <InputLabel >Sizes</InputLabel>

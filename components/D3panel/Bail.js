@@ -1,20 +1,16 @@
 // import { DragControls } from 'three/examples/jsm/controls/DragControls.js'
-import { useRef, useEffect, useState } from 'react'
+import { useRef} from 'react'
 
 // import { useFrame, } from 'react-three-fiber'
 
 const Bail = (props) => {
    
     
-    const { position, args, base ,bailRef,camera,domElement,controls} = props
+    const { position, args, base ,camera,domElement,controls} = props
+
+    const bailRef = useRef()
 
     controls.current.enabled = true
-
-console.log('bail cam drag',camera, domElement)
-
-
-
-
 
     return (
         <>
