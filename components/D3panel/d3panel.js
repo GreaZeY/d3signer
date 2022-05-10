@@ -11,15 +11,14 @@ const D3panel = ({ model }) => {
   const controls = useRef()
 
   return (
-    
-      <Canvas camera={{ position: [0,0, 100] }}  style={{  height: `70vh`,}} >
+      <Canvas camera={{ position: [0,0, 100] }}  style={{  height: `78vh`,}} >
         <ambientLight color={'white'} intensity={.5}  />
         <OrbitControls ref={controls} />
         <pointLight intensity={.2} position={[-50, 0, 0]} />
         <pointLight intensity={.5} position={[-1050, 0, 1000]} />
        
         <Suspense fallback={"Loading"}>
-        <group scale={designProps?designProps.length/20:1} ref={model}  >
+        <group ref={model}  >
         <PendentModel  {...designProps} controls={controls}  />
        
         </group>

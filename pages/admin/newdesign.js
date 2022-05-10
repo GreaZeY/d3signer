@@ -16,9 +16,6 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Slider from '@material-ui/core/Slider';
 import CloudDownload from "@material-ui/icons/CloudDownload";
 import Link from 'next/link'
-import Box from '@material-ui/core/Box';
-import Container from '@material-ui/core/Container';
-import CloseIcon from '@material-ui/icons/Close';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
@@ -29,7 +26,7 @@ import MenuList from '@material-ui/core/MenuList';
 import Bail from "components/Bails/Bail";
 import { useDispatch, useSelector } from 'react-redux';
 import { designProps } from "../../lib/actions/designAction"
-import D3panel from "components/D3panel/d3panel"
+import D3panel from "../../components/D3panel/d3panel"
 import { fonts } from "components/D3panel/assets/allFonts"
 import { DESIGN_PROPS_REQUEST } from "../../lib/constants/designPropsConstants"
 import DotLoader from "components/loaders/dotLoader";
@@ -142,7 +139,7 @@ function newDesign() {
 
 
 
-  const [text, setText] = useState('jimmy');                  //Vıcky
+  const [text, setText] = useState('greazey');                  //Vıcky
   const [Crimping1, setCrimping1] = useState('None');
   const [Crimping2, setCrimping2] = useState('None');
   const [length, setLength] = useState(20);
@@ -151,7 +148,7 @@ function newDesign() {
   const [thickness, setThickness] = useState(4);
   const [currSizeProp, setCurrSizeProp] = useState('Length');
   const [bails, bailsCount] = useState([]);
-  const [showBailModal, setShowBailModal] = useState(false);
+
   const [open, setOpen] = useState(false);
   const anchorRef = useRef(null);
   const [selectedIndex, setSelectedIndex] = useState(1);
@@ -161,19 +158,22 @@ function newDesign() {
 
   const dispatch = useDispatch()
   const { loading } = useSelector(state => state.designProps)
+
   const handleClick = () => {
     if (selectedIndex === 0) {
       stlExporter()
-    } else if (selectedIndex === 1) {
-      objExporter()
+      return
     }
+    objExporter()
+
   };
 
   const setBailNumber = () => {
     let bailArr = [...bails]
     bailArr.length++
-    bailArr[bailArr.length - 1] = { position: '', sizes: {} }
+    bailArr[bailArr.length - 1] = { position: [0, 0, 0], sizes: {} }
     bailsCount(bailArr)
+    setExpanded(true)
   };
 
   console.log(bails)
@@ -223,11 +223,7 @@ function newDesign() {
 
   const getText = e => {
     let txt = e.target.value
-
     txt = txt.replace(' ', '')
-
-    // .replace('j', 'ȷ')
-
     setText(txt)
   }
 
@@ -249,11 +245,10 @@ function newDesign() {
 
 
   // bail expand and collapse 
-  const { getCollapseProps, getToggleProps, isExpanded } = useCollapse()
+  const { getCollapseProps, getToggleProps, isExpanded, setExpanded } = useCollapse()
 
 
   // Exporters
-
   const model = useRef()
 
   const stlExporter = () => {
@@ -433,24 +428,24 @@ function newDesign() {
 
 
               <div>
-      {/* <button {...getToggleProps()}> */}
-      <div  style={{ width: '100%', marginTop: '1rem',justifyContent:'space-between' }} className={classes.flexRow}>
-      <Button disabled={true} {...getToggleProps()}  size="small" >
-                
-           
-        {isExpanded ? <><KeyboardArrowUpIcon/> Bails</> : <><KeyboardArrowDownIcon/> Bails</>}
-        {/* Bails */}
-        </Button>
-        <Button size="small"   onClick={setBailNumber} > <AddIcon /></Button>
-        </div>
-      <section {...getCollapseProps()}>
-     
-      {bails.map((bail, i) => <Bail key={i} index={i} bails={bails} setBailsData={bailsCount} classes={classes} />)
-                      }
-      </section>
-    </div>
+                {/* <button {...getToggleProps()}> */}
+                <div style={{ width: '100%', marginTop: '1rem', justifyContent: 'space-between' }} className={classes.flexRow}>
+                  <Button disabled={true} {...getToggleProps()} size="small" >
 
-              
+
+                    {(isExpanded ? <><KeyboardArrowUpIcon /></> : <><KeyboardArrowDownIcon /></>) } Bails {`(${bails.length})`}
+                    {/* Bails */}
+                  </Button>
+                  <Button size="small" onClick={setBailNumber} > <AddIcon /></Button>
+                </div>
+                <section {...getCollapseProps()}>
+
+                  {bails.map((bail, i) => <Bail key={i} index={i} bails={bails} setBailsData={bailsCount} classes={classes} />)
+                  }
+                </section>
+              </div>
+
+
 
             </CardBody>
           </Card>

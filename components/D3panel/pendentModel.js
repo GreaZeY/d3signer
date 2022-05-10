@@ -13,13 +13,13 @@ import Symbol from './Symbols.js'
 
 import { useFrame,useThree } from '@react-three/fiber'
 
-import { DragControls } from 'three/examples/jsm/controls/DragControls.js'
+import { DragControls } from 'three/examples/jsm/controls/DragControls'
 // import {useTexture} from '@react-three/drei'
 // import { Union } from '@react-three/drei';
 
 
-extend({ TextGeometry })
-extend({ DragControls })
+extend({ TextGeometry,DragControls })
+
 
 const PendentModel = (props) => {
     const {
@@ -45,11 +45,11 @@ const PendentModel = (props) => {
     const [boundingBoxPoints, setBoundingBoxPoints] = useState({ max: {}, min: {} })
     const [boundingBoxPoints2, setBoundingBox2Points] = useState({ max: {}, min: {} })
 
-    const text3d = useRef()
+    const txtSurface = useRef()
     const textGroup = useRef()
     const textWsymGrp = useRef()
     const light = useRef()
-    const bailRef = useRef()
+   
     // const crimptxtr = useTexture('/assets/crimps/dmdtxt.png');
 
 
@@ -103,8 +103,8 @@ const PendentModel = (props) => {
              <directionalLight ref={light}  intensity={.5} position={[0, 0, -2500]} />
             <group ref={textWsymGrp} >
                 <group ref={textGroup} >
-                    <mesh position={[-50, 0, 0]}>
-                        <textGeometry ref={text3d} args={[text, { font, size: 20, height: thickness, curveSegments: 5, bevelEnabled: true, bevelThickness: 1, bevelSize: 1, bevelOffset: 0,bevelSegments:3 }]} />
+                    <mesh position={[-50, 0, 0]} ref={txtSurface}>
+                        <textGeometry  args={[text, { font, size: length, height: thickness, curveSegments: 5, bevelEnabled: true, bevelThickness: 1, bevelSize: 1, bevelOffset: 0,bevelSegments:3 }]} />
                         <meshPhysicalMaterial attach='material' color={base} metalness={1} roughness={.35} />
                     </mesh>
                 </group>
@@ -115,12 +115,12 @@ const PendentModel = (props) => {
             </group>
             {bails.length>0&&
                 <Bails
-                props={{bails ,base, boundingBoxPoints,symBB: boundingBoxPoints,symbol,bailRef,camera,domElement,controls}}
+                props={{bails ,base, camera,domElement,controls}}
             />}
           
 
           
-                {/* <Diamond  props={{boundingBoxPoints }}/> */}
+               {/* {txtSurface.current&& <Diamond props={{txtSurface,}} />} */}
           
 
 
