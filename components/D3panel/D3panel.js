@@ -1,7 +1,7 @@
 
 import { Suspense,useRef } from 'react'
 import { Canvas} from '@react-three/fiber'
-import PendentModel from './pendentModel'
+import PendentModel from './PendentModel'
 import { OrbitControls } from "@react-three/drei";
 import { useSelector } from 'react-redux';
 const D3panel = ({ model }) => {

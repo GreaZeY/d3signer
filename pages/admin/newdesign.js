@@ -26,7 +26,7 @@ import MenuList from '@material-ui/core/MenuList';
 import Bail from "components/Bails/Bail";
 import { useDispatch, useSelector } from 'react-redux';
 import { designProps } from "../../lib/actions/designAction"
-import D3panel from "../../components/D3panel/d3panel"
+import D3panel from "../../components/D3panel/D3panel"
 import { fonts } from "components/D3panel/assets/allFonts"
 import { DESIGN_PROPS_REQUEST } from "../../lib/constants/designPropsConstants"
 import DotLoader from "components/loaders/dotLoader";
