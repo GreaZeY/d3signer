@@ -139,7 +139,7 @@ function newDesign() {
 
 
 
-  const [text, setText] = useState('greazey');                  //Vıcky
+  const [text, setText] = useState('nnaya');                  //Vıcky
   const [Crimping1, setCrimping1] = useState('None');
   const [Crimping2, setCrimping2] = useState('None');
   const [length, setLength] = useState(20);

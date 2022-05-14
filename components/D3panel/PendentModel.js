@@ -77,7 +77,7 @@ const PendentModel = (props) => {
     useEffect(() => {
         var helper = new THREE.Box3().setFromObject(textGroup.current);
         setBoundingBoxPoints(helper)
-
+        txtSurface.current.geometry.size=length
        
     //     setTimeout(()=>{
     //         var boundingBox = new THREE.Box3().setFromObject(textWsymGrp.current);
@@ -98,6 +98,8 @@ const PendentModel = (props) => {
         useFrame((state,) => {
             const {x,y,z} =state.camera.position
          light.current.position.set(x,y,z+10);
+        
+
         })
 
 
@@ -118,8 +120,8 @@ const PendentModel = (props) => {
              
             <group ref={textWsymGrp} >
                 <group ref={textGroup} >
-                    <mesh  position={[-50, 0, 0]} ref={txtSurface}>
-                        <textGeometry  args={[text, { font, size: length, height: thickness, curveSegments: 5, bevelEnabled: true, bevelThickness: 1, bevelSize: 1, bevelOffset: 0,bevelSegments:3 }]} />
+                    <mesh  position={[-50, 0, 0]} ref={txtSurface}  >
+                        <textGeometry   args={[text, { font, size: 20, height: thickness, curveSegments: 5, bevelEnabled: true, bevelThickness: 1, bevelSize: 1, bevelOffset: 0,bevelSegments:3 }]} />
                         <meshStandardMaterial  
                         attach='material' 
                          
@@ -146,8 +148,8 @@ const PendentModel = (props) => {
             />}
           
 
-          
-               {/* {txtSurface.current&& <Diamond props={{txtSurface,}} />} */}
+          {/* diamond and stone component */}
+               {/* {txtSurface.current&& <Diamond props={{txtSurface,text}} />} */}
           
 
 
