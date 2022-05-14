@@ -16,10 +16,13 @@ import { useFrame,useThree } from '@react-three/fiber'
 
 import {
     sRGBEncoding,
+    CubeCamera,
     WebGLCubeRenderTarget,
     RGBFormat,
     LinearMipmapLinearFilter
   } from "three";
+
+
 
 
 
@@ -41,6 +44,18 @@ const PendentModel = (props) => {
         gl,
         gl: { domElement }
       } = useThree()
+
+
+      const cubeRenderTarget = new WebGLCubeRenderTarget(256, {
+        format: RGBFormat,
+        generateMipmaps: true,
+        minFilter: LinearMipmapLinearFilter
+      });
+      const cubeCamera = new CubeCamera(1, 1000, cubeRenderTarget);
+      cubeCamera.position.set(0, 0, 0);
+      scene.add(cubeCamera);
+
+
       
     const {
         text,
@@ -103,7 +118,7 @@ const PendentModel = (props) => {
         })
 
 
-
+        useFrame(() => cubeCamera.update(gl, scene));
 
     // const texture = useTexture(`/assets/textures/ruby/NORM.jpg`)
 
@@ -122,7 +137,7 @@ const PendentModel = (props) => {
                 <group ref={textGroup} >
                     <mesh  position={[-50, 0, 0]} ref={txtSurface}  >
                         <textGeometry   args={[text, { font, size: 20, height: thickness, curveSegments: 5, bevelEnabled: true, bevelThickness: 1, bevelSize: 1, bevelOffset: 0,bevelSegments:3 }]} />
-                        <meshStandardMaterial  
+                        <meshPhysicalMaterial  
                         attach='material' 
                          
                         color={base} 
@@ -133,7 +148,7 @@ const PendentModel = (props) => {
                         // aoMap={aoMap} 
                         // normalMap={texture}  
                         metalness={1} 
-                       
+                        envMap={cubeCamera.renderTarget.texture}
                         roughness={.3} />
                     </mesh>
                 </group>
