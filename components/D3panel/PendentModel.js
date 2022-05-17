@@ -16,13 +16,10 @@ import { useFrame,useThree } from '@react-three/fiber'
 
 import {
     sRGBEncoding,
-    CubeCamera,
     WebGLCubeRenderTarget,
     RGBFormat,
     LinearMipmapLinearFilter
   } from "three";
-
-
 
 
 
@@ -44,18 +41,6 @@ const PendentModel = (props) => {
         gl,
         gl: { domElement }
       } = useThree()
-
-
-      const cubeRenderTarget = new WebGLCubeRenderTarget(256, {
-        format: RGBFormat,
-        generateMipmaps: true,
-        minFilter: LinearMipmapLinearFilter
-      });
-      const cubeCamera = new CubeCamera(1, 1000, cubeRenderTarget);
-      cubeCamera.position.set(0, 0, 0);
-      scene.add(cubeCamera);
-
-
       
     const {
         text,
@@ -65,6 +50,7 @@ const PendentModel = (props) => {
         thickness,
         font: currFont,
         bails,
+        crimps,
         symbol,
         controls
     } = props
@@ -92,7 +78,7 @@ const PendentModel = (props) => {
     useEffect(() => {
         var helper = new THREE.Box3().setFromObject(textGroup.current);
         setBoundingBoxPoints(helper)
-        txtSurface.current.geometry.size=length
+
        
     //     setTimeout(()=>{
     //         var boundingBox = new THREE.Box3().setFromObject(textWsymGrp.current);
@@ -118,7 +104,7 @@ const PendentModel = (props) => {
         })
 
 
-        useFrame(() => cubeCamera.update(gl, scene));
+
 
     // const texture = useTexture(`/assets/textures/ruby/NORM.jpg`)
 
@@ -135,9 +121,9 @@ const PendentModel = (props) => {
              
             <group ref={textWsymGrp} >
                 <group ref={textGroup} >
-                    <mesh  position={[-50, 0, 0]} ref={txtSurface}  >
-                        <textGeometry   args={[text, { font, size: 20, height: thickness, curveSegments: 5, bevelEnabled: true, bevelThickness: 1, bevelSize: 1, bevelOffset: 0,bevelSegments:3 }]} />
-                        <meshPhysicalMaterial  
+                    <mesh raycast={boundingBoxPoints}  position={[-50, 0, 0]} ref={txtSurface}  >
+                        <textGeometry   args={[text, { font, size: length, height: thickness, curveSegments: 5, bevelEnabled: true, bevelThickness: 1, bevelSize: 1, bevelOffset: 0,bevelSegments:3 }]} />
+                        <meshStandardMaterial  
                         attach='material' 
                          
                         color={base} 
@@ -148,7 +134,7 @@ const PendentModel = (props) => {
                         // aoMap={aoMap} 
                         // normalMap={texture}  
                         metalness={1} 
-                        envMap={cubeCamera.renderTarget.texture}
+                        
                         roughness={.3} />
                     </mesh>
                 </group>
@@ -164,7 +150,7 @@ const PendentModel = (props) => {
           
 
           {/* diamond and stone component */}
-               {/* {txtSurface.current&& <Diamond props={{txtSurface,text}} />} */}
+               {txtSurface.current&& <Diamond props={{txtSurface,text,crimps}} />}
           
 
 

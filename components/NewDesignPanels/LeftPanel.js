@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import AddIcon from '@material-ui/icons/Add';
 
 import Bail from "components/Bails/Bail";
@@ -21,28 +21,27 @@ import { Typography } from "@material-ui/core";
 import MenuItem from '@material-ui/core/MenuItem';
 
 import Button from "@material-ui/core/Button";
-
+import Crimping from "components/Crimping/Crimping"
 
 
 import useCollapse from 'react-collapsed'
 
-const LeftPanel = ({props}) => {
+const LeftPanel = ({ props }) => {
 
-const {classes} = props
-    // bail expand and collapse 
-    const { getCollapseProps, getToggleProps, isExpanded, setExpanded } = useCollapse()
+  const { classes } = props
+  // bail expand and collapse 
+  const { getCollapseProps, getToggleProps, isExpanded, setExpanded } = useCollapse()
 
-    
+
   const [font, setFont] = useState(fonts[0].familyName);
   const [text, setText] = useState('nnaya');                  //Vıcky
-  const [Crimping1, setCrimping1] = useState('None');
-  const [Crimping2, setCrimping2] = useState('None');
   const [length, setLength] = useState(20);
   const [width, setWidth] = useState(5);
   const [base, setBase] = useState('#FFC900');
   const [thickness, setThickness] = useState(4);
   const [currSizeProp, setCurrSizeProp] = useState('Length');
   const [bails, bailsCount] = useState([]);
+  const [crimps,setCrimps]= useState([]);
   const [symbol, setSymbol] = useState('');
   const dispatch = useDispatch()
 
@@ -67,12 +66,8 @@ const {classes} = props
     setExpanded(true)
   };
 
-  const handleChange = (event) => {
-    setCrimping1(event.target.value);
-  };
-  const handleChange2 = (event) => {
-    setCrimping2(event.target.value);
-  };
+
+
 
 
 
@@ -83,193 +78,170 @@ const {classes} = props
   }
 
 
-    // dispatching desing's properties
-    useEffect(() => {
-      dispatch({ type: DESIGN_PROPS_REQUEST });
-      dispatch(designProps({
-        text,
-        base,
-        length,
-        width,
-        thickness,
-        font,
-        bails,
-        symbol
-      }))
-    }, [text, base, font, length, width, thickness, bails, symbol])
+  // dispatching desing's properties
+  useEffect(() => {
+    dispatch({ type: DESIGN_PROPS_REQUEST });
+    dispatch(designProps({
+      text,
+      base,
+      length,
+      width,
+      thickness,
+      font,
+      bails,
+      symbol,
+      crimps
+    }))
+  }, [text, base, font, length, width, thickness, bails, symbol,crimps])
 
 
   return (
     <GridItem xs={12} sm={12} md={3}>
-          <Card >
-            <CardBody>
+      <Card >
+        <CardBody>
 
-              <Typography>Settings</Typography>
-              <CustomInput
-                labelText="Text (Your Name)"
-                id="text"
-                inputProps={{
-                  onChange: getText,
-                  value: text,
-                  maxLength: 10
-                }}
-                formControlProps={{
-                  fullWidth: true,
-                  marginTop: 0
-                }}
+          <Typography>Settings</Typography>
+          <CustomInput
+            labelText="Text (Your Name)"
+            id="text"
+            inputProps={{
+              onChange: getText,
+              value: text,
+              maxLength: 10
+            }}
+            formControlProps={{
+              fullWidth: true,
+              marginTop: 0
+            }}
+          />
+
+
+
+
+
+
+          {fonts.length && <FormControl style={{ width: '100%', marginTop: '1rem' }}>
+            <InputLabel >Font</InputLabel>
+            <Select
+              value={font}
+              label="font"
+              onChange={(e) => setFont(e.target.value)}
+            >
+
+              {fonts.map(ff => <MenuItem key={ff.familyName} value={ff.familyName}  >{ff.familyName}</MenuItem>)
+
+              }
+            </Select>
+          </FormControl>}
+
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ marginTop: '1rem', marginRight: '2rem', justifyContent: 'space-between' }} className={classes.flexRow}>
+              <FormControl sx={{ m: 1, minWidth: 120 }} size="small"  >
+                <InputLabel >Sizes</InputLabel>
+                <Select
+                  size="small"
+                  value={currSizeProp}
+                  label="Size"
+                  onChange={(e => setCurrSizeProp(e.target.value))}
+                >
+                  <MenuItem value={'Length'}>Length</MenuItem>
+                  <MenuItem value={'Width'}>Width</MenuItem>
+                  <MenuItem value={'Thickness'}>Thickness</MenuItem>
+                </Select>
+              </FormControl>
+
+            </div>
+            <div style={{ marginTop: '2rem', width: '100%' }} className={classes.flexRow} >
+              <Slider
+                aria-label="Sizes"
+                onChange={setSizes}
+                style={{ marginRight: '1rem' }}
+                min={currSizeProp === 'Length' ? 20 : 1}
+                max={currSizeProp === 'Length' ? 30 : 10}
+                value={currSizeProp === 'Length' ?
+                  length
+                  :
+                  (
+                    currSizeProp === 'Width' ?
+                      width : thickness
+                  )
+                }
+                color="primary"
               />
+              <input onChange={e => setSizes(e, parseInt(e.target.value))} style={{ padding: '.2rem', cursor: 'text' }} type='number' maxLength={100} minLength={1} className={classes.symbol} value={currSizeProp === 'Length' ?
+                length
+                :
+                (
+                  currSizeProp === 'Width' ?
+                    width : thickness
+                )} />
+            </div>
+          </div>
+
+          <div style={{ marginTop: '1rem' }}  >
+
+            <InputLabel className="settings-head">Your Base</InputLabel>
+            <div onClick={(e) => setBase(e.target.style.background)} className={classes.flexRow}>
+              <div className={classes.base} style={{ background: '#FFC900' }} ></div>
+              <div className={classes.base} style={{ background: '#B76E79' }} ></div>
+              <div className={classes.base} style={{ background: '#C0C0C0' }} ></div>
+            </div>
 
 
-
-
-
-
-              {fonts.length && <FormControl style={{ width: '100%', marginTop: '1rem' }}>
-                <InputLabel >Font</InputLabel>
-                <Select
-                  value={font}
-                  label="font"
-                  onChange={(e) => setFont(e.target.value)}
-                >
-
-                  {fonts.map(ff => <MenuItem key={ff.familyName} value={ff.familyName}  >{ff.familyName}</MenuItem>)
-
-                  }
-                </Select>
-              </FormControl>}
-
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <div style={{ marginTop: '1rem', marginRight: '2rem', justifyContent: 'space-between' }} className={classes.flexRow}>
-                  <FormControl sx={{ m: 1, minWidth: 120 }} size="small"  >
-                    <InputLabel >Sizes</InputLabel>
-                    <Select
-                      size="small"
-                      value={currSizeProp}
-                      label="Size"
-                      onChange={(e => setCurrSizeProp(e.target.value))}
-                    >
-                      <MenuItem value={'Length'}>Length</MenuItem>
-                      <MenuItem value={'Width'}>Width</MenuItem>
-                      <MenuItem value={'Thickness'}>Thickness</MenuItem>
-                    </Select>
-                  </FormControl>
-
-                </div>
-                <div style={{ marginTop: '2rem', width: '100%' }} className={classes.flexRow} >
-                  <Slider
-                    aria-label="Sizes"
-                    onChange={setSizes}
-                    style={{ marginRight: '1rem' }}
-                    min={currSizeProp === 'Length' ? 20 : 1}
-                    max={currSizeProp === 'Length' ? 30 : 10}
-                    value={currSizeProp === 'Length' ?
-                      length
-                      :
-                      (
-                        currSizeProp === 'Width' ?
-                          width : thickness
-                      )
-                    }
-                    color="primary"
-                  />
-                  <input onChange={e => setSizes(e, parseInt(e.target.value))} style={{ padding: '.2rem', cursor: 'text' }} type='number' maxLength={100} minLength={1} className={classes.symbol} value={currSizeProp === 'Length' ?
-                    length
-                    :
-                    (
-                      currSizeProp === 'Width' ?
-                        width : thickness
-                    )} />
-                </div>
+          </div>
+          <div style={{ marginTop: '1rem' }}  >
+            <div>
+              <InputLabel className="settings-head">Add Symbol</InputLabel>
+              <div onClick={(e) => setSymbol(e.target.innerHTML)} className={classes.flexRow}>
+                <div name='heart' className={classes.symbol}  >♡</div>
+                <div className={classes.symbol}  >#</div>
+                <div className={classes.symbol}  >☆</div>
+                <div className={classes.symbol}  >∞</div>
+                <div className={classes.symbol}  >&</div>
               </div>
+            </div>
+          </div>
 
-              <div style={{ marginTop: '1rem' }}  >
-
-                <InputLabel className="settings-head">Your Base</InputLabel>
-                <div onClick={(e) => setBase(e.target.style.background)} className={classes.flexRow}>
-                  <div className={classes.base} style={{ background: '#FFC900' }} ></div>
-                  <div className={classes.base} style={{ background: '#B76E79' }} ></div>
-                  <div className={classes.base} style={{ background: '#C0C0C0' }} ></div>
-                </div>
-
-
-              </div>
-              <div style={{ marginTop: '1rem' }}  >
-                <div>
-                  <InputLabel className="settings-head">Add Symbol</InputLabel>
-                  <div onClick={(e) => setSymbol(e.target.innerHTML)} className={classes.flexRow}>
-                    <div name='heart' className={classes.symbol}  >♡</div>
-                    <div className={classes.symbol}  >#</div>
-                    <div className={classes.symbol}  >☆</div>
-                    <div className={classes.symbol}  >∞</div>
-                    <div className={classes.symbol}  >&</div>
-                  </div>
-                </div>
-              </div>
-
-              <FormControl style={{ width: '100%', marginTop: '1rem' }}>
-                <InputLabel >Crimping#1</InputLabel>
-                <Select
-                  value={Crimping1}
-                  label="Crimping#1"
-                  onChange={handleChange}
-                >
-                  <MenuItem value="None">
-                    <em>None</em>
-                  </MenuItem>
-                  <MenuItem value={10}>White Diamond</MenuItem>
-                  <MenuItem value={20}>Black Stone</MenuItem>
-                  <MenuItem value={30}>Ruby</MenuItem>
-                </Select>
-              </FormControl>
+          {
+            [...text].map((letter,index)=>(
+              <>
+              <Crimping props={{letter,crimps,setCrimps,index}}  />
               <br />
+              </>
 
+            ))
+              
+          }
 
-              <FormControl style={{ width: '100%', marginTop: '1rem' }}>
-                <InputLabel >Crimping#2</InputLabel>
-                <Select
-                  value={Crimping2}
-                  label="Crimping#2"
-                  onChange={handleChange2}
-                >
-                  <MenuItem value="None">
-                    <em>None</em>
-                  </MenuItem>
-                  <MenuItem value={10}>Mix & Match</MenuItem>
-                  <MenuItem value={20}>Jean Blue Stones</MenuItem>
-                  <MenuItem value={30}>White Stones</MenuItem>
-                </Select>
-
-              </FormControl>
-
-              {/* <Button onClick={() => setShowBailModal(true)} style={{ width: '100%', marginTop: '1rem' }} size="small" variant="outlined" >
+          {/* <Button onClick={() => setShowBailModal(true)} style={{ width: '100%', marginTop: '1rem' }} size="small" variant="outlined" >
                 Configure Bail
               </Button> */}
 
 
-              <div>
-                {/* <button {...getToggleProps()}> */}
-                <div style={{ width: '100%', marginTop: '1rem', justifyContent: 'space-between' }} className={classes.flexRow}>
-                  <Button disabled={true} {...getToggleProps()} size="small" >
+          <div>
+            {/* <button {...getToggleProps()}> */}
+            <div style={{ width: '100%', marginTop: '1rem', justifyContent: 'space-between' }} className={classes.flexRow}>
+              <Button disabled={true} {...getToggleProps()} size="small" >
 
 
-                    {(isExpanded ? <><KeyboardArrowUpIcon /></> : <><KeyboardArrowDownIcon /></>) } Bails {`(${bails.length})`}
-                    {/* Bails */}
-                  </Button>
-                  <Button size="small" onClick={setBailNumber} > <AddIcon /></Button>
-                </div>
-                <section {...getCollapseProps()}>
+                {(isExpanded ? <><KeyboardArrowUpIcon /></> : <><KeyboardArrowDownIcon /></>)} Bails {`(${bails.length})`}
+                {/* Bails */}
+              </Button>
+              <Button size="small" onClick={setBailNumber} > <AddIcon /></Button>
+            </div>
+            <section {...getCollapseProps()}>
 
-                  {bails.map((bail, i) => <Bail key={i} index={i} bails={bails} setBailsData={bailsCount} classes={classes} />)
-                  }
-                </section>
-              </div>
+              {bails.map((bail, i) => <Bail key={i} index={i} bails={bails} setBailsData={bailsCount} classes={classes} />)
+              }
+            </section>
+          </div>
 
 
 
-            </CardBody>
-          </Card>
+        </CardBody>
+      </Card>
 
-        </GridItem>
+    </GridItem>
   )
 }
 
