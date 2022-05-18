@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
 const Crimping = ({ props }) => {
     const { letter, index, crimps, setCrimps } = props
 
-    const [crimping, setCrimping] = useState(null);
+    const [crimping, setCrimping] = useState('None');
     const { designProps } = useSelector(state => state.designProps)
 
     const handleChange = (event) => {
@@ -40,7 +40,7 @@ const Crimping = ({ props }) => {
                 label={`Crimping#`}
                 onChange={handleChange}
             >
-                <MenuItem value="None">
+                <MenuItem value={'None'}>
                     <em>None</em>
                 </MenuItem>
                 <MenuItem value={'blue'}>Blue Diamond</MenuItem>

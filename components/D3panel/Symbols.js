@@ -2,13 +2,15 @@ import { useRef, useEffect, useState, useMemo } from 'react'
 import * as THREE from 'three'
 import { useLoader } from 'react-three-fiber'
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader'
-
+import { useSelector } from 'react-redux';
 let shape
 let rotation = [3.14, 0, 0]
 let scale, tf
 
-const Symbols = ({ props }) => {
-  const { symbol, boundingBoxPoints, base, length, thickness, setBoundingBox2Points } = props
+const Symbols = ({ boundingBoxPoints }) => {
+  const { designProps } = useSelector(state => state.designProps)
+  const { symbol, base, length, thickness } = designProps
+  
 
   const { min, max } = boundingBoxPoints
   const [position, setPosition] = useState([max.x, 0, max.z])

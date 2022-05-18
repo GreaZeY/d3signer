@@ -144,7 +144,7 @@ function newDesign() {
 
 
   const { loading } = useSelector(state => state.designProps)
-
+console.log(loading)
   const handleClick = () => {
     if (selectedIndex === 0) {
       stlExporter()

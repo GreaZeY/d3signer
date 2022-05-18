@@ -41,7 +41,7 @@ const LeftPanel = ({ props }) => {
   const [thickness, setThickness] = useState(4);
   const [currSizeProp, setCurrSizeProp] = useState('Length');
   const [bails, bailsCount] = useState([]);
-  const [crimps,setCrimps]= useState([]);
+  const [crimps,setCrimps]= useState(new Array(text.length));
   const [symbol, setSymbol] = useState('');
   const dispatch = useDispatch()
 
@@ -75,11 +75,13 @@ const LeftPanel = ({ props }) => {
     let txt = e.target.value
     txt = txt.replace(' ', '')
     setText(txt)
+    setCrimps(new Array(txt.length))
   }
 
 
-  // dispatching desing's properties
+  // dispatching design's properties
   useEffect(() => {
+    
     dispatch({ type: DESIGN_PROPS_REQUEST });
     dispatch(designProps({
       text,

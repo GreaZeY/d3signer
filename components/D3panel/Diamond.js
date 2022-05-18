@@ -1,12 +1,10 @@
-import { useRef, useEffect, useState, useMemo } from 'react'
-import { useFBX, useTexture, Point, Points } from '@react-three/drei'
-import { MeshSurfaceSampler } from "three/examples/jsm/math/MeshSurfaceSampler.js";
-import { useThree } from '@react-three/fiber';
-// import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
-// import { useLoader } from '@react-three/fiber'
+import { useRef, useEffect } from 'react'
+import { useSelector } from 'react-redux';
 import * as THREE from 'three'
-const pi = 3.14
 
+import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry'
+
+import {BufferGeometryUtils} from "three/examples/jsm/utils/BufferGeometryUtils"
 
 function compareX(a, b) {
   if (a.x < b.x) {
@@ -29,22 +27,12 @@ function compareY(a, b) {
 const generatePoints = (geometry) => {
   let vertices = []
   const positionAttribute = geometry.getAttribute('position');
-  const mypoints = [];
   for (let i = 0; i < positionAttribute.count; i++) {
     const vector = new THREE.Vector2();
     vector.fromBufferAttribute(positionAttribute, i);
-    //  delete vector.z
-
-
-
-
     vertices.push(vector)
-    mypoints.push({ x: vector.x, y: vector.y })
-
   }
-
   return vertices
-
 }
 
 const splitArrayIntoChunksOfLen = (arr, len) => {
@@ -56,29 +44,31 @@ const splitArrayIntoChunksOfLen = (arr, len) => {
 }
 
 
-const Diamond = ({ props }) => {
-
-  const { txtSurface, text, crimps } = props
+const Diamond = ({ txtSurface }) => {
+  const { designProps } = useSelector(state => state.designProps)
+  const { text, crimps, font } = designProps
 
   
   const stone = useRef();
 
   useEffect(() => {
-    console.log("generate start" , new Date())
+   
     const geometry = txtSurface.current.geometry
     // const vertices = generatePoints(geometry)
 
     stone.current.children =[]
-    console.log('fsfs',stone)
+
     
 
-    let mypoints = []
-    const positionAttribute = geometry.getAttribute('position');
-    for (let i = 0; i < positionAttribute.count; i++) {
-      const vector = new THREE.Vector2();
-      vector.fromBufferAttribute(positionAttribute, i);
-      mypoints.push({ x: vector.x, y: vector.y })
-    }
+    let mypoints = generatePoints(geometry)
+
+    // BufferGeometryUtils.mergeVertices(mypoints)
+    // const positionAttribute = geometry.getAttribute('position');
+    // for (let i = 0; i < positionAttribute.count; i++) {
+    //   const vector = new THREE.Vector2();
+    //   vector.fromBufferAttribute(positionAttribute, i);
+    //   mypoints.push({ x: vector.x, y: vector.y })
+    // }
 
     let alphabetCount = text.length;
     let drawnPoints = [];
@@ -104,15 +94,12 @@ const Diamond = ({ props }) => {
  
     for (var itn = 0; itn < alphabetPairs.length; itn++) {
 
-      if(crimps[itn]) {
+      if(crimps[itn]&&crimps[itn]!=='None') {
       let mesh = new THREE.InstancedMesh(new THREE.SphereGeometry(.5), new THREE.MeshPhysicalMaterial({ metalness: 1, roughness: .35, color: crimps[itn] }),  alphabetPairs[itn].length * 5);
-      //mesh.position.set(-50 + itn * 10, 0, 5)
 
-      console.log("mesh point", alphabetPairs[itn][0].x);
+      mesh.position.set(-50 , 0, 4)
 
-      //mesh.position.set(-50 + alphabetPairs[itn][0].x, 0, 5)
-
-      mesh.position.set(-50 , 0, 5)
+      console.log(mesh)
 
       if (mesh) {
         const _matrix = new THREE.Matrix4();
@@ -124,43 +111,22 @@ const Diamond = ({ props }) => {
           mesh.setMatrixAt(setMatrixAt, _matrix);
           setMatrixAt ++;
         }
-        //mesh.instanceMatrix.needsUpdate = true;
-        // stone.current.remove(stone.current.children[0])
+        mesh.instanceMatrix.needsUpdate = true;
         stone.current.add(mesh);
       }
       }
     }
 
 
-    console.log("generate end" , new Date())
 
 
-  }, [text,crimps])
+  }, [text,crimps,font])
 
 
 
 
   return (
-    // null
-    // <primitive position={[0,0,0]} object={dan} />
-
     <group ref={stone}>
-      {/* <instancedMesh position={[-50, 0, 5]} ref={instance} args={[
-        0,
-        dia.children[0].material,
-        10000
-      ]}>
-
-        <sphereGeometry args={[.5]} />
-        <meshPhysicalMaterial attach='material' metalness={1} roughness={.35} />
-
-
-
-      </instancedMesh> */}
-
-
-
-
     </group>
   )
 }
