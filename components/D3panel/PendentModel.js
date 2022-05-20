@@ -74,7 +74,7 @@ const PendentModel = ({controls}) => {
                 <Bails controls={ controls }/>
 
             {/* diamond and stone component */}
-            {txtSurface.current && <Diamond txtSurface={ txtSurface } />}
+            {txtSurface.current && <Diamond txtSurface={ txtSurface } textGroup={textGroup} />}
 
         </group>
 
