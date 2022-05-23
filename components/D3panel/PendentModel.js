@@ -12,9 +12,18 @@ import Symbol from './Symbols.js'
 
 import { useFrame } from '@react-three/fiber'
 
+
+const bevelProps = {
+    bevelEnabled: true,
+    bevelThickness: 1.5,
+    bevelSize: 1.5,
+    bevelSegments: 30,
+    curveSegments: 10,
+}
+
 extend({ TextGeometry })
 
-const PendentModel = ({controls}) => {
+const PendentModel = ({ controls }) => {
 
     const { designProps } = useSelector(state => state.designProps)
     const {
@@ -36,6 +45,7 @@ const PendentModel = ({controls}) => {
     const textGroup = useRef()
     const textWsymGrp = useRef()
     const light = useRef()
+    const stone = useRef()
 
     const font = new FontLoader().parse(fonts.filter(ff => ff.familyName === currFont)[0]);
 
@@ -52,29 +62,49 @@ const PendentModel = ({controls}) => {
 
     })
 
+    const handlePointerMove = e => {
+        stone.current.visible=true
+        const point = e.point
+        stone.current.position.set(point.x, point.y, 6)
+    }
+    const placeStone = e =>{
+        const point = e.point
+        const geometry = new THREE.SphereGeometry( .5, 32, 16 );
+const material = new THREE.MeshPhysicalMaterial({ metalness: 1, roughness: .35, color: 'red' })
+const dia = new THREE.Mesh( geometry, material );
+dia.position.set(point.x, point.y, 6)
+textWsymGrp.current.add(dia)
 
+    }
     return (
 
         <group  >
             <directionalLight ref={light} intensity={.5} position={[0, 0, -2500]} />
             <group ref={textWsymGrp} >
                 <group ref={textGroup} >
-                    <mesh raycast={boundingBoxPoints} position={[-50, 0, 0]} ref={txtSurface}  >
-                        <textGeometry args={[text, { font, size: length, height: thickness, curveSegments: 5, bevelEnabled: true, bevelThickness: 1, bevelSize: 1, bevelOffset: 0, bevelSegments: 3 }]} />
+                    <mesh onClick={placeStone} onPointerMove={handlePointerMove} onPointerEnter={()=>stone.current.visible=true} onPointerLeave={()=>stone.current.visible=false} position={[-50, 0, 0]} ref={txtSurface}>
+                        <textGeometry args={[text, { font, size: length, height: thickness, ...bevelProps }]} />
                         <meshStandardMaterial
                             attach='material'
                             color={base}
+                            wireframe={false}
                             metalness={1}
                             roughness={.3} />
                     </mesh>
                 </group>
-                    <Symbol boundingBoxPoints={boundingBoxPoints} />
+                <Symbol boundingBoxPoints={boundingBoxPoints} />
+                <mesh visible={false} ref={stone} >
+                    <sphereBufferGeometry args={[.5, 24, 24]} />
+                    <meshBasicMaterial transparent color={"grey"} />
+                </mesh>
             </group>
-          
-                <Bails controls={ controls }/>
+
+
+
+            <Bails controls={controls} />
 
             {/* diamond and stone component */}
-            {txtSurface.current && <Diamond txtSurface={ txtSurface } textGroup={textGroup} />}
+            {txtSurface.current && <Diamond txtSurface={txtSurface} textGroup={textGroup} />}
 
         </group>
 
