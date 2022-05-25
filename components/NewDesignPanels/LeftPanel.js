@@ -205,6 +205,8 @@ const LeftPanel = ({ props }) => {
               <img style={{border:currStone==='red'&&'2px solid #8e24aa'}} src='/assets/crimps/red.png' className={classes.base} alt='red' />
               <img style={{border:currStone==='green'&&'2px solid #8e24aa'}} src='/assets/crimps/green.png' className={classes.base} alt='green' />
               <img style={{border:currStone==='yellow'&&'2px solid #8e24aa'}} src='/assets/crimps/yellow.png' className={classes.base} alt='yellow' />
+              <img style={{border:currStone==='white'&&'2px solid #8e24aa'}} src='/assets/crimps/white.png' className={classes.base} alt='white' />
+              <img style={{border:currStone==='voilet'&&'2px solid #8e24aa'}} src='/assets/crimps/voilet.png' className={classes.base} alt='purple' />
             </div>
           }
 
