@@ -15,15 +15,10 @@ import { fonts } from "components/D3panel/assets/allFonts"
 import { DESIGN_PROPS_REQUEST } from "../../lib/constants/designPropsConstants"
 import GridItem from "components/Grid/GridItem.js";
 import Card from "components/Card/Card.js";
-
 import CardBody from "components/Card/CardBody.js";
 import { Typography } from "@material-ui/core";
 import MenuItem from '@material-ui/core/MenuItem';
-
 import Button from "@material-ui/core/Button";
-import Crimping from "components/Crimping/Crimping"
-
-
 import useCollapse from 'react-collapsed'
 
 const LeftPanel = ({ props }) => {
@@ -41,7 +36,7 @@ const LeftPanel = ({ props }) => {
   const [thickness, setThickness] = useState(4);
   const [currSizeProp, setCurrSizeProp] = useState('Length');
   const [bails, bailsCount] = useState([]);
-  const [crimps,setCrimps]= useState(new Array(text.length));
+  const [currStone, setCurrStone] = useState('');
   const [symbol, setSymbol] = useState('');
   const dispatch = useDispatch()
 
@@ -81,7 +76,7 @@ const LeftPanel = ({ props }) => {
 
   // dispatching design's properties
   useEffect(() => {
-    
+
     dispatch({ type: DESIGN_PROPS_REQUEST });
     dispatch(designProps({
       text,
@@ -92,9 +87,9 @@ const LeftPanel = ({ props }) => {
       font,
       bails,
       symbol,
-      crimps
+      currStone
     }))
-  }, [text, base, font, length, width, thickness, bails, symbol,crimps])
+  }, [text, base, font, length, width, thickness, bails, symbol, currStone])
 
 
   return (
@@ -195,24 +190,22 @@ const LeftPanel = ({ props }) => {
             <div>
               <InputLabel className="settings-head">Add Symbol</InputLabel>
               <div onClick={(e) => setSymbol(e.target.innerHTML)} className={classes.flexRow}>
-                <div name='heart' className={classes.symbol}  >♡</div>
-                <div className={classes.symbol}  >#</div>
-                <div className={classes.symbol}  >☆</div>
-                <div className={classes.symbol}  >∞</div>
-                <div className={classes.symbol}  >&</div>
+                <div title='heart' className={classes.symbol}  >♡</div>
+                <div title='Octothorp' className={classes.symbol}  >#</div>
+                <div title='Star' className={classes.symbol}  >☆</div>
+                <div title='Infinity' className={classes.symbol}  >∞</div>
+                <div title='Ampersand' className={classes.symbol}  >&</div>
               </div>
             </div>
           </div>
 
           {
-            [...text].map((letter,index)=>(
-              <>
-              <Crimping props={{letter,crimps,setCrimps,index}}  />
-              <br />
-              </>
-
-            ))
-              
+            <div onClick={(e) => setCurrStone(e.target.alt)} style={{ marginTop: '1rem' }} >
+              <InputLabel className="settings-head">Diamonds & Stones</InputLabel>
+              <img style={{border:currStone==='red'&&'2px solid #8e24aa'}} src='/assets/crimps/red.png' className={classes.base} alt='red' />
+              <img style={{border:currStone==='green'&&'2px solid #8e24aa'}} src='/assets/crimps/green.png' className={classes.base} alt='green' />
+              <img style={{border:currStone==='yellow'&&'2px solid #8e24aa'}} src='/assets/crimps/yellow.png' className={classes.base} alt='yellow' />
+            </div>
           }
 
           {/* <Button onClick={() => setShowBailModal(true)} style={{ width: '100%', marginTop: '1rem' }} size="small" variant="outlined" >

@@ -33,6 +33,7 @@ const PendentModel = ({ controls }) => {
         width,
         thickness,
         font: currFont,
+        currStone
     } = designProps
 
 
@@ -70,10 +71,10 @@ const PendentModel = ({ controls }) => {
     const placeStone = e =>{
         const point = e.point
         const geometry = new THREE.SphereGeometry( .5, 32, 16 );
-const material = new THREE.MeshPhysicalMaterial({ metalness: 1, roughness: .35, color: 'red' })
-const dia = new THREE.Mesh( geometry, material );
-dia.position.set(point.x, point.y, 6)
-textWsymGrp.current.add(dia)
+        const material = new THREE.MeshPhysicalMaterial({ metalness: 1, roughness: .35, color: currStone })
+        const dia = new THREE.Mesh( geometry, material );
+        dia.position.set(point.x, point.y, 6)
+        textWsymGrp.current.add(dia)
 
     }
     return (
@@ -104,7 +105,7 @@ textWsymGrp.current.add(dia)
             <Bails controls={controls} />
 
             {/* diamond and stone component */}
-            {txtSurface.current && <Diamond txtSurface={txtSurface} textGroup={textGroup} />}
+            {/* {txtSurface.current && <Diamond txtSurface={txtSurface} textGroup={textGroup} />} */}
 
         </group>
 
