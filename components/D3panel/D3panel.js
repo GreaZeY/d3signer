@@ -10,8 +10,9 @@ const D3panel = ({ model }) => {
 console.log('d3panel rendered')
   return (
     <Canvas camera={{ position: [0, 0, 100] }} style={{ height: `78vh`, }} >
-      <ambientLight intensity={.5} />
-      <OrbitControls ref={controls} />
+      <ambientLight intensity={1} />
+      <OrbitControls enableDamping ref={controls} />
+      
       <pointLight intensity={.2} position={[-50, 0, 0]} />
       <pointLight intensity={.5} position={[-1050, 0, 1000]} />
       <spotLight intensity={1} position={[0, 10, 0]} angle={-22 / 7} />

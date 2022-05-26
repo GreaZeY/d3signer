@@ -83,11 +83,11 @@ function newDesign() {
       height: '1rem',
       borderRadius: '50%',
       cursor: 'pointer',
-      border: '1px Solid white',
+      border: '2px Solid white',
       transition: '.5s',
       marginRight: '.2rem',
       "&:hover": {
-        border: '1px Solid gray',
+        border: '2px Solid gray',
       }
     },
     symbol: {

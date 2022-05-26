@@ -76,9 +76,9 @@ function UserProfile() {
     dispatch(updateProfile({id:user._id,userData},
       alert.success
     ))
-    setTimeout(()=>{
-      location.reload()
-    },2000)
+    // setTimeout(()=>{
+    //   location.reload()
+    // },2000)
     
   }
 
