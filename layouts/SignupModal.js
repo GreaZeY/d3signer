@@ -11,6 +11,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import CustomInput from "components/CustomInput/CustomInput.js";
 import { useDispatch, useSelector } from 'react-redux';
 import { register, clearErrors } from "../lib/actions/userAction";
+import Spinner from "components/loaders/spinner";
 
 import { useAlert } from 'react-alert';
 
