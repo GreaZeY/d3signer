@@ -1,16 +1,20 @@
 
-import { useRef, useEffect, useState, useCallback } from 'react'
+import { useRef, useEffect, useState, useMemo } from 'react'
 import * as THREE from 'three'
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry'
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
 import { extend } from '@react-three/fiber'
 import { fonts } from './assets/allFonts';
 import { useSelector } from 'react-redux';
-import Diamond from './Diamond'
 import Bails from './Bails'
 import Symbol from './Symbols.js'
-
 import { useFrame } from '@react-three/fiber'
+import { useFBX } from '@react-three/drei';
+
+// import Diamond from './Diamond'
+// import { importAll } from '../../lib/utils';
+// const stoneModels = importAll(require.context('public/assets/crimps/fbx', false, /\.(fbx)$/));
+// console.log(stoneModels)
 
 
 const bevelProps = {
@@ -22,6 +26,8 @@ const bevelProps = {
 }
 
 extend({ TextGeometry })
+
+
 
 const PendentModel = ({ controls }) => {
 
@@ -37,7 +43,7 @@ const PendentModel = ({ controls }) => {
     } = designProps
 
 
-    console.log('PendentModel rendered')
+
 
     const [boundingBoxPoints, setBoundingBoxPoints] = useState({ max: {}, min: {} })
     // const [boundingBoxPoints2, setBoundingBox2Points] = useState({ max: {}, min: {} })
@@ -48,42 +54,43 @@ const PendentModel = ({ controls }) => {
     const light = useRef()
     const stone = useRef()
 
-    const font = new FontLoader().parse(fonts.filter(ff => ff.familyName === currFont)[0]);
+    const font = useMemo(() => getFont(currFont), [currFont]);
+    const diamond = useMemo(() => loadStone(currStone), [currStone]);
 
     useEffect(() => {
         var helper = new THREE.Box3().setFromObject(textGroup.current);
         setBoundingBoxPoints(helper)
+
 
     }, [designProps])
 
     useFrame((state,) => {
         const { x, y, z } = state.camera.position
         light.current.position.set(x, y, z + 10);
-
-
     })
 
     const handlePointerMove = e => {
-        stone.current.visible=true
+        stone.current.visible = true
         const point = e.point
-        stone.current.position.set(point.x, point.y, 6)
+        stone.current.material.transparent = true
+        stone.current.geometry.wireframe = true
+        stone.current.position.set(point.x, point.y, 5)
     }
-    const placeStone = e =>{
+    const placeStone = e => {
         const point = e.point
-        const geometry = new THREE.SphereGeometry( .5, 32, 16 );
-        const material = new THREE.MeshPhysicalMaterial({ metalness: 1, roughness: .35, color: currStone })
-        const dia = new THREE.Mesh( geometry, material );
-        dia.position.set(point.x, point.y, 6)
+        const dia = stone.current.clone()
+        dia.position.set(point.x, point.y, 5)
         textWsymGrp.current.add(dia)
-
     }
+
+
     return (
 
         <group  >
             <directionalLight ref={light} intensity={.5} position={[0, 0, -2500]} />
             <group ref={textWsymGrp} >
                 <group ref={textGroup} >
-                    <mesh onClick={placeStone} onPointerMove={handlePointerMove} onPointerEnter={()=>stone.current.visible=true} onPointerLeave={()=>stone.current.visible=false} position={[-50, 0, 0]} ref={txtSurface}>
+                    <mesh position={[-50, 0, 0]} ref={txtSurface} onClick={placeStone} onPointerMove={handlePointerMove} onPointerEnter={() => stone.current.visible = true} onPointerLeave={() => stone.current.visible = false}>
                         <textGeometry args={[text, { font, size: length, height: thickness, ...bevelProps }]} />
                         <meshStandardMaterial
                             attach='material'
@@ -94,10 +101,7 @@ const PendentModel = ({ controls }) => {
                     </mesh>
                 </group>
                 <Symbol boundingBoxPoints={boundingBoxPoints} />
-                <mesh visible={false} ref={stone} >
-                    <sphereBufferGeometry args={[.5, 24, 24]} />
-                    <meshBasicMaterial transparent color={"grey"} />
-                </mesh>
+                <primitive ref={stone} object={diamond} />
             </group>
 
 
@@ -117,6 +121,19 @@ const PendentModel = ({ controls }) => {
 
 export default PendentModel;
 
+//loading font
+const getFont = (currFont) => {
+    return new FontLoader().parse(fonts.filter(ff => ff.familyName === currFont)[0])
+}
+
+// loading FBX Stone Model 
+const loadStone = (currStone) => {
+    let path = '/assets/crimps/fbx/stone_royal_cut.fbx'
+    let dia = useFBX(path)?.children[0].clone()
+    dia.rotation.set(Math.PI / 2, 0, 0)
+    dia.material = new THREE.MeshPhysicalMaterial({ color: '#FF0078', metalness: 1, roughness: .35 })
+    return dia
+}
 
 
 

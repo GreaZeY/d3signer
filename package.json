@@ -25,6 +25,7 @@
     "font-picker-react": "^3.5.2",
     "history": "5.0.0",
     "i": "^0.3.7",
+    "list-react-files": "^0.2.0",
     "mongo": "^0.1.0",
     "next": "^12.1.5",
     "next-compose-plugins": "2.2.1",

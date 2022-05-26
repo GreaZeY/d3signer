@@ -20,6 +20,9 @@ import { Typography } from "@material-ui/core";
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from "@material-ui/core/Button";
 import useCollapse from 'react-collapsed'
+import { importAll } from '../../lib/utils';
+
+const stoneImages = importAll(require.context('public/assets/crimps/stoneImages', false, /\.(png)$/));
 
 const LeftPanel = ({ props }) => {
 
@@ -70,7 +73,6 @@ const LeftPanel = ({ props }) => {
     let txt = e.target.value
     txt = txt.replace(' ', '')
     setText(txt)
-    setCrimps(new Array(txt.length))
   }
 
 
@@ -202,11 +204,16 @@ const LeftPanel = ({ props }) => {
           {
             <div onClick={(e) => setCurrStone(e.target.alt)} style={{ marginTop: '1rem' }} >
               <InputLabel className="settings-head">Diamonds & Stones</InputLabel>
-              <img style={{border:currStone==='red'&&'2px solid #8e24aa'}} src='/assets/crimps/red.png' className={classes.base} alt='red' />
+              {
+                stoneImages.map(img=>(
+                  <img src={img.src} style={{border:currStone===img.src&&'2px solid #8e24aa'}} className={classes.base} alt={img.src} />
+                ))
+              }
+              {/* <img  src='/assets/crimps/red.png' className={classes.base} alt='red' />
               <img style={{border:currStone==='green'&&'2px solid #8e24aa'}} src='/assets/crimps/green.png' className={classes.base} alt='green' />
               <img style={{border:currStone==='yellow'&&'2px solid #8e24aa'}} src='/assets/crimps/yellow.png' className={classes.base} alt='yellow' />
               <img style={{border:currStone==='white'&&'2px solid #8e24aa'}} src='/assets/crimps/white.png' className={classes.base} alt='white' />
-              <img style={{border:currStone==='voilet'&&'2px solid #8e24aa'}} src='/assets/crimps/voilet.png' className={classes.base} alt='purple' />
+              <img style={{border:currStone==='voilet'&&'2px solid #8e24aa'}} src='/assets/crimps/voilet.png' className={classes.base} alt='purple' /> */}
             </div>
           }
 

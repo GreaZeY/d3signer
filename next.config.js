@@ -6,8 +6,9 @@ const webpack = require("webpack");
 const path = require("path");
 
 module.exports = withPlugins([ ], {
-  webpack(config, options) {
+  webpack(config) {
     config.resolve.modules.push(path.resolve("./"));
     return config;
   },
+
 });

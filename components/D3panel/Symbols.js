@@ -3,6 +3,7 @@ import * as THREE from 'three'
 import { useLoader } from 'react-three-fiber'
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader'
 import { useSelector } from 'react-redux';
+
 let shape
 let rotation = [3.14, 0, 0]
 let scale, tf
@@ -10,7 +11,7 @@ let scale, tf
 const Symbols = ({ boundingBoxPoints }) => {
   const { designProps } = useSelector(state => state.designProps)
   const { symbol, base, length, thickness } = designProps
-  
+
 
   const { min, max } = boundingBoxPoints
   const [position, setPosition] = useState([max.x, 0, max.z])
@@ -79,7 +80,15 @@ const Symbols = ({ boundingBoxPoints }) => {
   const symbolRef = useRef()
 
 
-
+  const extrudeSettings = { 
+    depth: thickness * 8 * tf, 
+    bevelEnabled: true, 
+    curveSegments: 10, 
+    bevelSegments: 30, 
+    steps: 0,    
+    bevelThickness: 10,
+    bevelSize: 10,
+  };
 
   useEffect(() => {
     if (!symbol) return
@@ -121,20 +130,15 @@ const Symbols = ({ boundingBoxPoints }) => {
 
   }, [symbol, length, thickness, boundingBoxPoints])
 
-
-
-
-  const extrudeSettings = { depth: thickness * 8 * tf, bevelEnabled: true, curveSegments: 100, bevelSegments: 20, steps: 0, bevelSize: 10, bevelThickness: 10 };
-
+  if (!symbol) return<></>
   return (
     <group ref={symbolRef} >
       <mesh
         scale={scale}
         position={position}
         rotation={rotation}
-        
       >
-        <extrudeBufferGeometry  attach="geometry" args={[shape, extrudeSettings]} />
+        <extrudeGeometry  attach="geometry" args={[shape, extrudeSettings]} />
         <meshPhysicalMaterial attach='material' color={base} metalness={1} roughness={.35} />
       </mesh>
     </group>
