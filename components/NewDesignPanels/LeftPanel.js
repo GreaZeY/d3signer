@@ -21,30 +21,29 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Button from "@material-ui/core/Button";
 import useCollapse from 'react-collapsed'
 import { importAll } from '../../lib/utils';
-
-const stoneImages = importAll(require.context('public/assets/crimps/stoneImages', false, /\.(png)$/));
-
+import { stoneShapes, stoneColor} from "./panelData";
+// const stoneImages = importAll(require.context('public/assets/crimps/stoneImages', true, /\.(png)$/));
+// const imgDir = '/assets/crimps/stoneImages'
+const shapeDir = '/assets/crimps/stoneShapes'
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 const LeftPanel = ({ props }) => {
 
   const { classes } = props
   // bail expand and collapse 
   const { getCollapseProps, getToggleProps, isExpanded, setExpanded } = useCollapse()
 
-
   const [font, setFont] = useState(fonts[0].familyName);
-  const [text, setText] = useState('nnaya');                  //Vıcky
+  const [text, setText] = useState('Anya');
   const [length, setLength] = useState(20);
   const [width, setWidth] = useState(5);
   const [base, setBase] = useState('#FFC900');
   const [thickness, setThickness] = useState(4);
   const [currSizeProp, setCurrSizeProp] = useState('Length');
   const [bails, bailsCount] = useState([]);
-  const [currStone, setCurrStone] = useState('');
+  const [currStoneColor, setCurrStoneColor] = useState('');
+  const [currStoneShape, setCurrStoneShape] = useState('');
   const [symbol, setSymbol] = useState('');
   const dispatch = useDispatch()
-
-
-
 
   const setSizes = (e, val) => {
     currSizeProp === 'Length' ?
@@ -63,11 +62,6 @@ const LeftPanel = ({ props }) => {
     bailsCount(bailArr)
     setExpanded(true)
   };
-
-
-
-
-
 
   const getText = e => {
     let txt = e.target.value
@@ -89,9 +83,13 @@ const LeftPanel = ({ props }) => {
       font,
       bails,
       symbol,
-      currStone
+      currStoneColor,
+      currStoneShape,
     }))
-  }, [text, base, font, length, width, thickness, bails, symbol, currStone])
+  }, [text, base, font, length, width, thickness, bails, symbol, currStoneColor,currStoneShape])
+
+
+  const [showTip,setShowTip] = useState(false)
 
 
   return (
@@ -201,35 +199,50 @@ const LeftPanel = ({ props }) => {
             </div>
           </div>
 
-          {
-            <div onClick={(e) => setCurrStone(e.target.alt)} style={{ marginTop: '1rem' }} >
-              <InputLabel className="settings-head">Diamonds & Stones</InputLabel>
-              {
+          <fieldset style={{ position:'relative',marginTop: '1rem',border:'1px solid rgb(185 183 183)' }}>
+          <legend className={classes.flexRow+" settings-head"}>Diamonds & Stones <InfoOutlinedIcon onMouseEnter={()=>setShowTip(true)} onMouseLeave={()=>setShowTip(false)} title='Tip' style={{fontSize:'1rem',color:'black',cursor:'pointer',marginLeft:'.3rem'}} /> </legend>
+            {
+              showTip&&
+              <div className={classes.modal} >
+                Choose Shape and color first to place stones,
+                <br/>
+                 and Right Click to remove the placed stone.
+              </div>
+            }
+            <div onClick={(e) => setCurrStoneShape(e.target.alt)}  >
+              <InputLabel className="settings-head">Shape</InputLabel>
+              <div className={classes.flexRow} style={{flexWrap:'wrap'}} >
+                {
+                  stoneShapes.map(shape=>(
+                    <div style={{border:currStoneShape===shape&&'2px solid #8e24aa'}} className={classes.stoneShape+' '+classes.flexRow}>
+                    <img  className={classes.img} src={`${shapeDir}/${shape}.png`} alt={shape} />
+                    </div>
+                  ))
+                }
+              </div>
+            </div>
+              {/* {
                 stoneImages.map(img=>(
                   <img src={img.src} style={{border:currStone===img.src&&'2px solid #8e24aa'}} className={classes.base} alt={img.src} />
                 ))
-              }
-              {/* <img  src='/assets/crimps/red.png' className={classes.base} alt='red' />
-              <img style={{border:currStone==='green'&&'2px solid #8e24aa'}} src='/assets/crimps/green.png' className={classes.base} alt='green' />
-              <img style={{border:currStone==='yellow'&&'2px solid #8e24aa'}} src='/assets/crimps/yellow.png' className={classes.base} alt='yellow' />
-              <img style={{border:currStone==='white'&&'2px solid #8e24aa'}} src='/assets/crimps/white.png' className={classes.base} alt='white' />
-              <img style={{border:currStone==='voilet'&&'2px solid #8e24aa'}} src='/assets/crimps/voilet.png' className={classes.base} alt='purple' /> */}
-            </div>
-          }
-
-          {/* <Button onClick={() => setShowBailModal(true)} style={{ width: '100%', marginTop: '1rem' }} size="small" variant="outlined" >
-                Configure Bail
-              </Button> */}
-
-
+              } */}
+            <div  style={{ marginTop: '.5rem' }} onClick={(e) => setCurrStoneColor(e.target.alt||e.target.style.background)} >
+              <InputLabel className="settings-head">Color</InputLabel>
+              <div className={classes.flexRow} style={{flexWrap:'wrap'}} >
+                {
+                  stoneColor.map(color=>(
+                    <div style={{border:currStoneColor===color&&'2px solid #8e24aa',background:color}} className={classes.stoneShape+' '+classes.flexRow}>
+                    {/* <img className={classes.img} src={`${imgDir}/${color}.png`} alt={color} /> */}
+                    </div>
+                  ))
+                }
+              </div>
+              </div>
+            </fieldset>
           <div>
-            {/* <button {...getToggleProps()}> */}
             <div style={{ width: '100%', marginTop: '1rem', justifyContent: 'space-between' }} className={classes.flexRow}>
               <Button disabled={true} {...getToggleProps()} size="small" >
-
-
                 {(isExpanded ? <><KeyboardArrowUpIcon /></> : <><KeyboardArrowDownIcon /></>)} Bails {`(${bails.length})`}
-                {/* Bails */}
               </Button>
               <Button size="small" onClick={setBailNumber} > <AddIcon /></Button>
             </div>

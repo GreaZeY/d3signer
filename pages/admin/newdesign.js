@@ -40,15 +40,16 @@ function newDesign() {
 
   const useStyles = makeStyles({
     modal: {
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      height: '100vh',
-      width: '100vw',
-      backgroundColor: "rgba(77,77,77,0.6)",
+      position: 'absolute',
+        left:-10,
       zIndex: "100",
       display: 'flex',
-      // alignItems: 'center',
+      background:'black',
+      color:'white',
+      padding:'1rem',
+      borderRadius:'8px',
+      width:'110%',
+      textAlign: 'center',
 
     },
     flexRow: {
@@ -89,6 +90,23 @@ function newDesign() {
       "&:hover": {
         border: '2px Solid gray',
       }
+    },
+    stoneShape: {
+      width: '1rem',
+      height: '1rem',
+      borderRadius: '50%',
+      cursor: 'pointer',
+      border: '2px Solid white',
+      transition: '.5s',
+      marginRight: '.2rem',
+      "&:hover": {
+        border: '2px Solid gray',
+      }
+    },
+    img:{
+      width: '1rem',
+      height: '1rem',
+      objectFit:'cover',
     },
     symbol: {
       border: '1px solid #ECEBEB',

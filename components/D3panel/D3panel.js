@@ -7,7 +7,6 @@ import { Provider } from "react-redux";
 const D3panel = ({ model }) => {
 
   const controls = useRef()
-console.log('d3panel rendered')
   return (
     <Canvas camera={{ position: [0, 0, 100] }} style={{ height: `78vh`, }} >
       <ambientLight intensity={1} />
