@@ -19,8 +19,6 @@ const Bails = ({ controls }) => {
     const [selectedBail, setSelectedBail] = useState(null)
 
 
-
-
     useEffect(() => {
         if (transform.current) {
             const tControls = transform.current

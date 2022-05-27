@@ -1,6 +1,7 @@
 import { Suspense, useRef } from 'react'
 import { Canvas } from '@react-three/fiber'
 import PendentModel from './PendentModel'
+import Bails from './Bails'
 import { OrbitControls } from "@react-three/drei";
 import { store } from "../../lib/store";
 import { Provider } from "react-redux";
@@ -19,7 +20,8 @@ const D3panel = ({ model }) => {
       <Suspense fallback={"Loading"}>
         <group ref={model}  >
           <Provider store={store} >
-            <PendentModel controls={controls} />
+            <PendentModel/>
+            <Bails controls={controls} />
           </Provider >
         </group>
       </Suspense>

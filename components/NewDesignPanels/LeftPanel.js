@@ -11,8 +11,7 @@ import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import { useDispatch } from 'react-redux';
 import { designProps } from "../../lib/actions/designAction"
-import { fonts } from "components/D3panel/assets/allFonts"
-import { DESIGN_PROPS_REQUEST } from "../../lib/constants/designPropsConstants"
+import { fonts } from './assets/allFonts';
 import GridItem from "components/Grid/GridItem.js";
 import Card from "components/Card/Card.js";
 import CardBody from "components/Card/CardBody.js";
@@ -20,12 +19,13 @@ import { Typography } from "@material-ui/core";
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from "@material-ui/core/Button";
 import useCollapse from 'react-collapsed'
-import { importAll } from '../../lib/utils';
+// import { importAll } from '../../lib/utils';
 import { stoneShapes, stoneColor} from "./panelData";
 // const stoneImages = importAll(require.context('public/assets/crimps/stoneImages', true, /\.(png)$/));
 // const imgDir = '/assets/crimps/stoneImages'
 const shapeDir = '/assets/crimps/stoneShapes'
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
+
 const LeftPanel = ({ props }) => {
 
   const { classes } = props
@@ -72,8 +72,6 @@ const LeftPanel = ({ props }) => {
 
   // dispatching design's properties
   useEffect(() => {
-
-    dispatch({ type: DESIGN_PROPS_REQUEST });
     dispatch(designProps({
       text,
       base,
@@ -203,9 +201,8 @@ const LeftPanel = ({ props }) => {
           <legend className={classes.flexRow+" settings-head"}>Diamonds & Stones <InfoOutlinedIcon onMouseEnter={()=>setShowTip(true)} onMouseLeave={()=>setShowTip(false)} title='Tip' style={{fontSize:'1rem',color:'black',cursor:'pointer',marginLeft:'.3rem'}} /> </legend>
             {
               showTip&&
-              <div className={classes.modal} >
+              <div className={classes.infoTip} >
                 Choose Shape and color first to place stones,
-                <br/>
                  and Right Click to remove the placed stone.
               </div>
             }

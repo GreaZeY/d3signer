@@ -24,7 +24,7 @@ import MenuList from '@material-ui/core/MenuList';
 import { useSelector } from 'react-redux';
 
 import LeftPanel from "../../components/NewDesignPanels/LeftPanel";
-import D3panel from "../../components/D3panel/D3panel"
+import D3panel from "../../components/NewDesignPanels/D3panel"
 
 import DotLoader from "components/loaders/dotLoader";
 import { saveAs } from 'file-saver';
@@ -39,16 +39,15 @@ const options = ['STL', 'OBJ', 'PNG'];
 function newDesign() {
 
   const useStyles = makeStyles({
-    modal: {
+    infoTip: {
       position: 'absolute',
-        left:-10,
+      left:-10,
       zIndex: "100",
       display: 'flex',
       background:'black',
       color:'white',
       padding:'1rem',
       borderRadius:'8px',
-      width:'110%',
       textAlign: 'center',
 
     },
