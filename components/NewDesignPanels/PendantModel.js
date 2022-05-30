@@ -6,10 +6,14 @@ import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
 import { extend, useFrame } from '@react-three/fiber'
 import { fonts } from './assets/allFonts';
 import { useSelector, useDispatch } from 'react-redux';
+import { MODEL_GENERATED, GENERATING_MODEL } from '../../lib/constants/designPropsConstants';
 // import { designProps as designPropsFunc } from '../../lib/actions/designAction';
 
 import Symbol from './Symbols.js'
 import { useFBX, Html } from '@react-three/drei';
+import { ThreeBSP } from './three-csg'
+
+
 
 // import Diamond from './Diamond'
 // import { importAll } from '../../lib/utils';
@@ -18,18 +22,18 @@ import { useFBX, Html } from '@react-three/drei';
 
 let targetStone = null
 const bevelProps = {
-    bevelEnabled: true,
-    bevelThickness: 1.5,
-    bevelSize: 1.5,
-    bevelSegments: 30,
-    curveSegments: 10,
+    // bevelEnabled: true,
+    // bevelThickness: 1.5,
+    // bevelSize: 1.5,
+    // bevelSegments: 10,
+    // curveSegments: 10,
 }
 
 extend({ TextGeometry })
 
+let textGeometry = new TextGeometry()
 
-
-const PendentModel = () => {
+const pendantModel = () => {
 
     const { designProps } = useSelector(state => state.designProps)
     const {
@@ -48,60 +52,93 @@ const PendentModel = () => {
     // const [boundingBoxPoints2, setBoundingBox2Points] = useState({ max: {}, min: {} })
 
     const txtSurface = useRef()
-    const pendent = useRef()
+    const pendant = useRef()
     const light = useRef()
     const stone = useRef()
     const stoneGroup = useRef()
-    // const dispatch = useDispatch()
+    const dispatch = useDispatch()
 
     const font = useMemo(() => getFont(currFont), [currFont]);
-    const diamond = useMemo(() => loadStone(currStoneShape), [currStoneShape]);
+    const diamond = useMemo(() => loadStone(currStoneShape, currStoneColor, stoneGroup), [currStoneShape]);
 
     useEffect(() => {
-        var helper = new THREE.Box3().setFromObject(pendent.current);
+        var helper = new THREE.Box3().setFromObject(pendant.current);
         setBoundingBoxPoints(helper)
-    }, [designProps])
+
+        textGeometry = new TextGeometry(text, {
+            font,
+            size: length,
+            height: thickness,
+            ...bevelProps
+        })
+    }, [text, length, font, thickness, base])
+
+    useEffect(() => {
+        stone.current?.material?.color.set(currStoneColor)
+    }, [currStoneColor])
 
 
     const handlePointerMove = e => {
         if (!currStoneColor && !currStoneShape) return
-        const dia = stone.current.clone()
-        dia.visible = true
-        dia.material.color.set(currStoneColor)
         const point = e.point
-        stone.current.position.set(point.x, point.y, 5)
+        stone.current.position.set(point.x, point.y, 3.5)
         // stone.current.material.transparent = true
         // stone.current.material.opacity = .5
     }
-    const placeStone = e => {
+    const placeStone = () => {
+        console.log(stoneGroup.current)
         if (!currStoneColor && !currStoneShape) return
-        const point = e.point
-        // setStones([...stones,[point.x,point.y,5]])
-        const dia = stone.current.clone()
-        dia.position.set(point.x, point.y, 5)
-        dia.material.color.set(currStoneColor)
-        // dia.material.transparent = false
-        // dia.material.opacity = 1
+        dispatch({ type: GENERATING_MODEL })
+        const dia = diamond.clone()
         dia.name = 'stone'
-        pendent.current.add(dia)
+        dia.material.transparent = false
+        dia.material.opacity = 1
+        // stoneGroup.current.add(dia)
+
+
+
+        const sBSP = new ThreeBSP(dia);
+        const bBSP = new ThreeBSP(txtSurface.current);
+
+        const sub = bBSP.subtract(sBSP);
+        const newMesh = sub.toMesh();
+
+        // newMesh.material = txtSurface.current.material
+        textGeometry = newMesh.geometry
+        console.log(txtSurface)
+        txtSurface.current.geometry = newMesh.geometry
+        // txtSurface.current.position.copy(txtSurface.current.position) 
+
+        txtSurface.current.position.set(0, 0, 0)
+
+
+
+
+        // stoneGroup.current.add(newMesh)
+
+        // txtSurface.current.geometry = dia.geometry
+        // setStones([...stones,[point.x,point.y,5]])
+
+        dispatch({ type: MODEL_GENERATED })
     }
 
 
     // const [stones,setStones] = useState([])
     useEffect(() => {
         // dispatch(designPropsFunc({...designProps,stones}))
-        window.addEventListener('mousedown', (e) => onPointerDown(e, pendent))
+        window.addEventListener('mousedown', (e) => onPointerDown(e, stoneGroup))
         return () => {
-            window.removeEventListener('mousedown', (e) => onPointerDown(e, pendent))
+            window.removeEventListener('mousedown', (e) => onPointerDown(e, stoneGroup))
         }
     }, [])
 
 
-    useFrame((state,) => {
+    useFrame((state) => {
+        console.log(state)
         const { x, y, z } = state.camera.position
         light.current.position.set(x, y, z + 10);
 
-        let intersects = state.raycaster.intersectObjects(pendent.current.children);
+        let intersects = state.raycaster.intersectObjects(stoneGroup.current.children);
         intersects.forEach(obj => {
             if (obj.object.name === 'stone') {
                 targetStone = obj.object
@@ -111,12 +148,14 @@ const PendentModel = () => {
 
     })
 
+
+
     return (
         <>
-            <directionalLight ref={light} intensity={.5} position={[0, 0, -2500]} />
-            <group ref={pendent} >
-                <mesh position={[-50, 0, 0]} ref={txtSurface} onClick={placeStone} onPointerMove={handlePointerMove} onPointerEnter={() => stone.current.visible = true} onPointerLeave={() => stone.current.visible = false}>
-                    <textGeometry args={[text, { font, size: length, height: thickness, ...bevelProps }]} />
+            <directionalLight ref={light} intensity={.5} />
+            <group ref={pendant} >
+                <mesh geometry={textGeometry} position={[-50, 0, 0]} ref={txtSurface} onClick={placeStone} onPointerMove={handlePointerMove} onPointerEnter={() => diamond.visible = true} onPointerLeave={() => diamond.visible = false}>
+                    {/* <bufferGeometry geometry={new THREE.SphereGeometry(30)}  /> */}
                     <meshStandardMaterial
                         attach='material'
                         color={base}
@@ -127,7 +166,7 @@ const PendentModel = () => {
                 </mesh>
             </group>
             <group ref={stoneGroup}>
-                <primitive ref={stone} object={diamond} visible={false} />
+                <primitive ref={stone} object={diamond} color={currStoneColor} visible={false} />
             </group>
             <Symbol boundingBoxPoints={boundingBoxPoints} />
         </>
@@ -137,7 +176,7 @@ const PendentModel = () => {
 
 
 
-export default PendentModel;
+export default pendantModel;
 
 //loading font
 const getFont = (currFont) => {
@@ -145,18 +184,18 @@ const getFont = (currFont) => {
 }
 
 // loading FBX Stone Model 
-const loadStone = (currStoneShape) => {
-    if (!currStoneShape) return new THREE.Group()
-    let path = `/assets/crimps/fbx/${currStoneShape}.fbx`
+const loadStone = (shape, color, grp) => {
+    if (!shape) return new THREE.Group()
+    let path = `/assets/crimps/fbx/${shape}.fbx`
     let dia = useFBX(path)?.children[0].clone()
     dia.rotation.set(Math.PI / 2, Math.PI, 0)
-    dia.material = new THREE.MeshStandardMaterial({ metalness: 1, roughness: .35 })
+    dia.material = new THREE.MeshStandardMaterial({ color, metalness: 1, roughness: .35 })
     return dia
 }
 
-const onPointerDown = (e, pendent) => {
+const onPointerDown = (e, grp) => {
     if (e.button === 2 && targetStone) {
-        pendent.current.remove(targetStone)
+        grp.current.remove(targetStone)
     }
 
 }
