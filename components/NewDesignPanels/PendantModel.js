@@ -93,7 +93,7 @@ const pendantModel = () => {
         dia.name = 'stone'
         dia.material.transparent = false
         dia.material.opacity = 1
-        // stoneGroup.current.add(dia)
+        stoneGroup.current.add(dia)
 
 
 
