@@ -10,10 +10,8 @@ import { MODEL_GENERATED, GENERATING_MODEL } from '../../lib/constants/designPro
 // import { designProps as designPropsFunc } from '../../lib/actions/designAction';
 
 import Symbol from './Symbols.js'
-import { useFBX, Html } from '@react-three/drei';
+import { useFBX } from '@react-three/drei';
 import { ThreeBSP } from './three-csg'
-
-
 
 // import Diamond from './Diamond'
 // import { importAll } from '../../lib/utils';
@@ -45,11 +43,11 @@ const pendantModel = () => {
         font: currFont,
         currStoneColor,
         currStoneShape,
-    } = designProps
+    } = designProps;
 
+    const camera = useRef()
 
     const [boundingBoxPoints, setBoundingBoxPoints] = useState({ max: {}, min: {} })
-    // const [boundingBoxPoints2, setBoundingBox2Points] = useState({ max: {}, min: {} })
 
     const txtSurface = useRef()
     const pendant = useRef()
@@ -59,7 +57,7 @@ const pendantModel = () => {
     const dispatch = useDispatch()
 
     const font = useMemo(() => getFont(currFont), [currFont]);
-    const diamond = useMemo(() => loadStone(currStoneShape, currStoneColor, stoneGroup), [currStoneShape]);
+    const diamond = useMemo(() => loadStone(currStoneShape, currStoneColor, stoneGroup), [currStoneShape, currStoneColor]);
 
     useEffect(() => {
         var helper = new THREE.Box3().setFromObject(pendant.current);
@@ -73,9 +71,13 @@ const pendantModel = () => {
         })
     }, [text, length, font, thickness, base])
 
+    // useEffect(() => {
+    //     stone.current?.material?.color.set(currStoneColor)
+    // }, [currStoneColor])
+
     useEffect(() => {
-        stone.current?.material?.color.set(currStoneColor)
-    }, [currStoneColor])
+        if (stoneGroup.current) stoneGroup.current.children = []
+    }, [length, font, thickness])
 
 
     const handlePointerMove = e => {
@@ -94,8 +96,6 @@ const pendantModel = () => {
         dia.material.transparent = false
         dia.material.opacity = 1
         stoneGroup.current.add(dia)
-
-
 
         const sBSP = new ThreeBSP(dia);
         const bBSP = new ThreeBSP(txtSurface.current);
@@ -134,7 +134,6 @@ const pendantModel = () => {
 
 
     useFrame((state) => {
-        console.log(state)
         const { x, y, z } = state.camera.position
         light.current.position.set(x, y, z + 10);
 
@@ -145,15 +144,15 @@ const pendantModel = () => {
             }
         })
         if (intersects.length === 0) targetStone = null
-
     })
-
 
 
     return (
         <>
             <directionalLight ref={light} intensity={.5} />
-            <group ref={pendant} >
+            <perspectiveCamera ref={camera} />
+
+            <group name='pendant' ref={pendant} >
                 <mesh geometry={textGeometry} position={[-50, 0, 0]} ref={txtSurface} onClick={placeStone} onPointerMove={handlePointerMove} onPointerEnter={() => diamond.visible = true} onPointerLeave={() => diamond.visible = false}>
                     {/* <bufferGeometry geometry={new THREE.SphereGeometry(30)}  /> */}
                     <meshStandardMaterial
@@ -164,8 +163,9 @@ const pendantModel = () => {
                         roughness={.3}
                     />
                 </mesh>
+
             </group>
-            <group ref={stoneGroup}>
+            <group name='stoneGroup' ref={stoneGroup}>
                 <primitive ref={stone} object={diamond} color={currStoneColor} visible={false} />
             </group>
             <Symbol boundingBoxPoints={boundingBoxPoints} />
