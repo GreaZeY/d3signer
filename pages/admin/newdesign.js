@@ -154,6 +154,7 @@ function newDesign() {
 
   const [open, setOpen] = useState(false);
   const anchorRef = useRef(null);
+  const model = useRef()
   const [selectedIndex, setSelectedIndex] = useState(1);
   const [exportLoading, setExportLoading] = useState(false)
 
@@ -161,13 +162,17 @@ function newDesign() {
 
 
   const { loading } = useSelector(state => state.designProps)
-console.log(loading)
+
   const handleClick = () => {
+    let modelClone = model.current.clone()
+    let stoneGroup = modelClone.children.filter(kid=>(kid.type==='Group'&&kid.name==="stoneGroup"))
+    modelClone.remove(stoneGroup[0])
+    console.log(model,modelClone)
     if (selectedIndex === 0) {
-      stlExporter()
+      stlExporter(modelClone)
       return
     }
-    objExporter()
+    objExporter(modelClone)
 
   };
 
@@ -201,28 +206,28 @@ console.log(loading)
 
 
   // Exporters
-  const model = useRef()
+  
 
-  const stlExporter = () => {
+  const stlExporter = (model) => {
     setExportLoading(true)
     import('three/examples/jsm/exporters/STLExporter')
       .then(module => {
         const exporter = new module.STLExporter();
         // let newScene= {...scene}
-        let str = exporter.parse(model.current, { binary: true }); // Export the scene
+        let str = exporter.parse(model, { binary: true }); // Export the scene
         let blob = new Blob([str], { type: 'text/plain' }); // Generate Blob from the string
         saveAs(blob, 'export.stl');
         setExportLoading(false)
       });
   }
 
-  const objExporter = () => {
+  const objExporter = (model) => {
     setExportLoading(true)
     import('three/examples/jsm/exporters/OBJExporter')
       .then(module => {
         const exporter = new module.OBJExporter();
         // let newScene= {...scene}
-        let str = exporter.parse(model.current, { binary: true }); // Export the scene
+        let str = exporter.parse(model, { binary: true }); // Export the scene
         let blob = new Blob([str], { type: 'text/plain' }); // Generate Blob from the string
         saveAs(blob, 'export.obj');
         setExportLoading(false)
