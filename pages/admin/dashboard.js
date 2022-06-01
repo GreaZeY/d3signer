@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 // react plugin for creating charts
 import ChartistGraph from "react-chartist";
 // @material-ui/core
@@ -42,76 +42,87 @@ import CardFooter from "components/Card/CardFooter.js";
 // } from "variables/charts.js";
 
 import styles from "assets/jss/nextjs-material-dashboard/views/dashboardStyle.js";
+import { useDispatch ,useSelector} from "react-redux";
+import { deleteDesigns, getAllDesigns } from "../../lib/actions/designAction";
+import Link from "next/link";
+
+
+
+
+
+
 
 function Dashboard() {
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getAllDesigns());
+
+  }, [])
+
+
+
+
   const useStyles = makeStyles(styles);
   const classes = useStyles();
-  const demoDesigns = [{
-    name: 'My Awesome design', 
-    color:'#FFDF00',
-    size:40,
-    type:'White Diamonds',
-    url:'https://cdn.shopify.com/s/files/1/0015/4638/7531/products/rosegoldpendant_720x.jpg?v=1640465863'
-  },{
-    name:'I love rose',
-    color:'#B76E79',
-    size: 50,
-    type:'Blue purl',
-    url:'https://cdn.shopify.com/s/files/1/0534/1092/2660/products/2B6A98210.jpg?v=1646210187'
-  },{
-    name: 'Purple is great',
-    color:'#bec2cb',
-    type:'Red rose',
-    size:22,
-    url:'https://cdn.shopify.com/s/files/1/0515/0831/4272/products/crown-wh-compressed_2_700x700.jpg?v=1635429183'
-  }];
+
+  const {designs,loading}= useSelector(state => state.designProps);
+  
   return (
     <div>
       {/* <h3>Your Design</h3> */}
       <GridContainer>
-      {demoDesigns.map((design) => (
-        <GridItem xs={12} sm={12} md={4}>
-          <Card chart>
-            <CardHeader color="primary" style={{padding: 0}}>
-          
-              <img style={{ width: '100%', height: '250px', objectFit: 'cover' }} className="ct-chart" src={design.url} />
-            </CardHeader>
-            <CardBody>
-              <div style={{display:'flex', justifyContent:'space-between'}}>
-              <h4 className={classes.cardTitle}>{design.name}</h4>
-               <div className={classes.stats}>
-                 <div> <CloudDownload /> STL</div>
-                 <div> <CloudDownload  style={{ marginLeft: '.5rem' }}/> OBJ</div>
-                 </div>
-              </div>
-              <p className={classes.cardCategory}>
-              <div style={{display: 'flex', marginBottom: '.5rem'}}>
-                {/* <AccessTime style={{marginRight: '.5rem', marginBottom: '.5rem'}} /> */}
-                Created on 
-                 22 Apr, 2022  
+        {designs.map((design) => (
+          <GridItem xs={12} sm={12} md={4}>
+            <Card chart>
+              <CardHeader color="primary" style={{ padding: 0 }}>
+
+                <img style={{ width: '100%', height: '250px', objectFit: 'cover' }} className="ct-chart" src={design.url} />
+              </CardHeader>
+              <CardBody>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <h4 className={classes.cardTitle}>{design.text}</h4>
+                  <div className={classes.stats}>
+                    <div> <CloudDownload /> STL</div>
+                    <div> <CloudDownload style={{ marginLeft: '.5rem' }} /> OBJ</div>
+                  </div>
                 </div>
-                {/* <span className={classes.successText}>
+                <p className={classes.cardCategory}>
+                  <div style={{ display: 'flex', marginBottom: '.5rem' }}>
+                    {/* <AccessTime style={{marginRight: '.5rem', marginBottom: '.5rem'}} /> */}
+                    Created on
+                    {design.createdAt}
+                  </div>
+                  {/* <span className={classes.successText}>
                   <ArrowUpward className={classes.upArrowCardCategory} /> 55%
                 </span>{" "}
                 time and some other parameter */}
-                <div style={{display: 'flex', alignItems:'center'}}>
-                <div style={{borderRadius: '50%',  backgroundColor: design.color, width: '1rem', height: '1rem', color: design.color, marginRight: '.25rem' }}></div> 
-                base / {design.size} cm with {design.type}
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <div style={{ borderRadius: '50%', backgroundColor: design.base, width: '1rem', height: '1rem', color: design.color, marginRight: '.25rem' }}></div>
+                    base / {design.length} mm with {design.currStoneShape}
+                  </div>
+                </p>
+              </CardBody>
+              <CardFooter chart>
+                <div className={classes.stats}>
+                  <Link  href='/admin/newdesign'>
+                  <div style={{cursor:'pointer'}}>
+                  <Edit /> Edit
+                  </div>
+                  </Link>
+                  <div onClick={()=>dispatch(deleteDesigns(design._id))} style={{cursor:'pointer'}}>
+                    <DeleteForever style={{ marginLeft: '1rem' }} /> Delete
+                  </div>
+                  
                 </div>
-              </p>
-            </CardBody>
-            <CardFooter chart>
-              <div className={classes.stats}>
-                <Edit /> Edit 
-                <DeleteForever style={{ marginLeft: '1rem' }}/> Delete 
-              </div>
-            </CardFooter>
-          </Card>
-        </GridItem> 
-      ))}
-        
+              </CardFooter>
+            </Card>
+          </GridItem>
+        ))}
+
       </GridContainer>
-     
+
     </div>
   );
 }
