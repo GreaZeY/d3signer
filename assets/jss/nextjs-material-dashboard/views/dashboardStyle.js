@@ -77,6 +77,43 @@ const dashboardStyle = {
       lineHeight: "1",
     },
   },
+  confirmNo:{
+    color:'black',
+    fontSize:'.7rem',
+    padding:'.5rem .8rem',
+    transition:'.7s',
+    '&:hover':{
+      color:'grey !important'
+    }
+  },
+  confirmYes:{
+    fontSize:'.7rem',
+    color:'red',
+    borderColor:'red',
+    padding:'.5rem .8rem',
+    transition:'.7s',
+    '&:hover':{
+      color:'white',
+      background:'red',
+    }
+  },
+
+  
+  alert:{
+    borderRadius:'8px',
+    background:'white',
+    padding:'2rem',
+    width:'40vw',
+    paddingBottom:'4rem',
+    '& p':{
+      marginBottom:'1rem',
+      fontSize:'1rem',
+    },
+    '& div':{
+      float:'right',
+ 
+    }
+  }
 };
 
 export default dashboardStyle;

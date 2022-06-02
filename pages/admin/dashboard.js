@@ -46,13 +46,23 @@ import { useDispatch ,useSelector} from "react-redux";
 import { deleteDesigns, getAllDesigns } from "../../lib/actions/designAction";
 import Link from "next/link";
 
+import { confirmAlert } from 'react-confirm-alert'; // Import
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
+import { useAlert } from 'react-alert';
+import { Typography } from "@material-ui/core";
 
-
-
+import { Button } from "@material-ui/core";
 
 
 function Dashboard() {
+
+  const alert =  useAlert()
+  const useStyles = makeStyles(styles);
+  const classes = useStyles();
+  
+
+  const {designs,loading}= useSelector(state => state.designProps);
 
   const dispatch = useDispatch();
 
@@ -62,12 +72,37 @@ function Dashboard() {
   }, [])
 
 
+  const handleDelete=(design)=>{
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          <div className={classes.alert}>
+            <Typography style={{margin:0}} >Delete {design.text}</Typography>
+            <p>Are you sure you want to delete this Item?</p>
+            <div>
+            <Button onClick={onClose} color="secondary" className={classes.confirmNo} >No</Button>
+            <Button variant="outlined" color="danger" className={classes.confirmYes} 
+              onClick={() => dispatch(deleteDesigns(design._id,alert,onClose))
+              }
+              
+            >
+              Yes, Delete it!
+            </Button>
+            </div>
+          </div>
+        );
+      }
+    });
+    
+
+    
 
 
-  const useStyles = makeStyles(styles);
-  const classes = useStyles();
+  }
 
-  const {designs,loading}= useSelector(state => state.designProps);
+
+
+  
   
   return (
     <div>
@@ -78,7 +113,7 @@ function Dashboard() {
             <Card chart>
               <CardHeader color="primary" style={{ padding: 0 }}>
 
-                <img style={{ width: '100%', height: '250px', objectFit: 'cover' }} className="ct-chart" src={design.url} />
+                <img style={{ background:'white',width: '100%', height: '250px', objectFit: 'cover' }} className="ct-chart" src={design.url} />
               </CardHeader>
               <CardBody>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -111,7 +146,7 @@ function Dashboard() {
                   <Edit /> Edit
                   </div>
                   </Link>
-                  <div onClick={()=>dispatch(deleteDesigns(design._id))} style={{cursor:'pointer'}}>
+                  <div onClick={()=>handleDelete(design)} style={{cursor:'pointer'}}>
                     <DeleteForever style={{ marginLeft: '1rem' }} /> Delete
                   </div>
                   
