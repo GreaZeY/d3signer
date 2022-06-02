@@ -66,6 +66,7 @@ const LeftPanel = ({ props }) => {
     bailArr.length++
     bailArr[bailArr.length - 1] = { position: [0, 0, 0], sizes: {} }
     bailsCount(bailArr)
+    
     setExpanded(true)
   };
 
