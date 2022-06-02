@@ -31,7 +31,6 @@ import { saveAs } from 'file-saver';
 import Spinner from "components/loaders/spinner";
 
 import { saveDesign } from "../../lib/actions/designAction";
-import { Redirect } from "next";
 import Router from "next/router";
 
 
@@ -170,23 +169,24 @@ function newDesign() {
   const { loading,designProps } = useSelector(state => state.designProps);
 
 
-  const handleClick = () => {
+  const handleClick = async() => {
+    setExportLoading(true)
     let modelClone = model.current.clone()
     let stoneGroup = modelClone.children.filter(kid=>(kid.type==='Group'&&kid.name==="stoneGroup"))
     modelClone.remove(stoneGroup[0])
-    console.log(model,modelClone)
     if (selectedIndex === 0) {
-      stlExporter(modelClone)
-      return
+      await stlExporter(modelClone)
+      setExportLoading(false)
+      return 
     }
     if (selectedIndex === 1) {
-      objExporter(modelClone)
-      return
+      await objExporter(modelClone)
+      setExportLoading(false)
+      return 
     }
-    savePng()
+    await savePng()
+    setExportLoading(false)
   }
-
-
 
   const handleMenuItemClick = (event, index) => {
     setSelectedIndex(index);
@@ -201,25 +201,20 @@ function newDesign() {
     if (anchorRef.current && anchorRef.current.contains(event.target)) {
       return;
     }
-
     setOpen(false);
   };
 
-
-
-
-
-
-
-
+  const handleSavePost= async ()=>{
+    const url = getCanvasImgData()
+    let designToSave = {...designProps,url}
+    await dispatch(saveDesign(designToSave));
+    Router.push("/admin/dashboard");
+  }
 
 
 
   // Exporters
-  
-
   const stlExporter = (model) => {
-    setExportLoading(true)
     import('three/examples/jsm/exporters/STLExporter')
       .then(module => {
         const exporter = new module.STLExporter();
@@ -227,36 +222,29 @@ function newDesign() {
         let str = exporter.parse(model, { binary: true }); // Export the scene
         let blob = new Blob([str], { type: 'text/plain' }); // Generate Blob from the string
         saveAs(blob, 'export.stl');
-        setExportLoading(false)
       });
   }
 
   const objExporter = (model) => {
-    setExportLoading(true)
     import('three/examples/jsm/exporters/OBJExporter')
       .then(module => {
         const exporter = new module.OBJExporter();
-        // let newScene= {...scene}
         let str = exporter.parse(model, { binary: true }); // Export the scene
         let blob = new Blob([str], { type: 'text/plain' }); // Generate Blob from the string
         saveAs(blob, 'export.obj');
-        setExportLoading(false)
       });
   }
 
-  const savePng = async () => {
-    let canvas = document.getElementsByTagName('canvas')[0];
-  let dataURL = canvas.toDataURL('image/png');
-  let blob = await fetch(dataURL).then(r => r.blob()); 
+const savePng = async () => {
+  const dataURL= getCanvasImgData()
+  const blob = await fetch(dataURL).then(r => r.blob()); 
   saveAs(blob, 'export.png');
-  const handleSavePost= async ()=>{
-    await dispatch(saveDesign(designProps));
-
-    Router.push("/admin/dashboard");
-  
-  }
 }
 
+const getCanvasImgData=()=>{
+  let canvas = document.getElementsByTagName('canvas')[0];
+  return canvas.toDataURL('image/png');
+}
   return (
     <div>
 

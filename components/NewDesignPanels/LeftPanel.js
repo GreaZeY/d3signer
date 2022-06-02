@@ -9,7 +9,7 @@ import Slider from '@material-ui/core/Slider';
 import CustomInput from "components/CustomInput/CustomInput.js";
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import { useDispatch } from 'react-redux';
+import { useDispatch,useSelector } from 'react-redux';
 import { designProps } from "../../lib/actions/designAction"
 import { fonts } from './assets/allFonts';
 import GridItem from "components/Grid/GridItem.js";
@@ -32,26 +32,32 @@ const LeftPanel = ({ props }) => {
   // bail expand and collapse 
   const { getCollapseProps, getToggleProps, isExpanded, setExpanded } = useCollapse()
 
-  const [font, setFont] = useState(fonts[0].familyName);
-  const [text, setText] = useState('Anya');
-  const [length, setLength] = useState(20);
-  const [width, setWidth] = useState(5);
-  const [base, setBase] = useState('#FFC900');
-  const [thickness, setThickness] = useState(4);
   const [currSizeProp, setCurrSizeProp] = useState('Length');
   const [bails, bailsCount] = useState([]);
-  const [currStoneColor, setCurrStoneColor] = useState('');
-  const [currStoneShape, setCurrStoneShape] = useState('');
-  const [symbol, setSymbol] = useState('');
+
+  const { designProps:currDesign } = useSelector(state => state.designProps)
+  const {
+      text,
+      base,
+      length,
+      width,
+      thickness,
+      font,
+      currStoneColor,
+      currStoneShape,
+  } = currDesign;
+
   const dispatch = useDispatch()
 
   const setSizes = (e, val) => {
     currSizeProp === 'Length' ?
-      setLength(val)
+    dispatch(designProps({...currDesign,length:val}))
       :
       (
         currSizeProp === 'Width' ?
-          setWidth(val) : setThickness(val)
+        dispatch(designProps({...currDesign,width:val})) 
+        : 
+        dispatch(designProps({...currDesign,thickness:val}))
       )
   }
 
@@ -66,25 +72,17 @@ const LeftPanel = ({ props }) => {
   const getText = e => {
     let txt = e.target.value
     txt = txt.replace(' ', '')
-    setText(txt)
+    dispatch(designProps({...currDesign,text:txt}))
   }
 
 
   // dispatching design's properties
   useEffect(() => {
     dispatch(designProps({
-      text,
-      base,
-      length,
-      width,
-      thickness,
-      font,
+      ...currDesign,
       bails,
-      symbol,
-      currStoneColor,
-      currStoneShape,
     }))
-  }, [text, base, font, length, width, thickness, bails, symbol, currStoneColor,currStoneShape])
+  }, [ bails])
 
 
   const [showTip,setShowTip] = useState(false)
@@ -120,7 +118,7 @@ const LeftPanel = ({ props }) => {
             <Select
               value={font}
               label="font"
-              onChange={(e) => setFont(e.target.value)}
+              onChange={(e) => dispatch(designProps({...currDesign,font:e.target.value}))}
             >
 
               {fonts.map(ff => <MenuItem key={ff.familyName} value={ff.familyName}  >{ff.familyName}</MenuItem>)
@@ -176,7 +174,7 @@ const LeftPanel = ({ props }) => {
           <div style={{ marginTop: '1rem' }}  >
 
             <InputLabel className="settings-head">Your Base</InputLabel>
-            <div onClick={(e) => setBase(e.target.style.background)} className={classes.flexRow}>
+            <div onClick={(e) => dispatch(designProps({...currDesign,base:e.target.style.background}))} className={classes.flexRow}>
               <div className={classes.base} style={{ background: '#FFC900' }} ></div>
               <div className={classes.base} style={{ background: '#B76E79' }} ></div>
               <div className={classes.base} style={{ background: '#C0C0C0' }} ></div>
@@ -187,7 +185,7 @@ const LeftPanel = ({ props }) => {
           <div style={{ marginTop: '1rem' }}  >
             <div>
               <InputLabel className="settings-head">Add Symbol</InputLabel>
-              <div onClick={(e) => setSymbol(e.target.innerHTML)} className={classes.flexRow}>
+              <div onClick={(e) => dispatch(designProps({...currDesign,symbol:e.target.innerHTML}))} className={classes.flexRow}>
                 <div title='heart' className={classes.symbol}  >♡</div>
                 <div title='Octothorp' className={classes.symbol}  >#</div>
                 <div title='Star' className={classes.symbol}  >☆</div>
@@ -206,7 +204,7 @@ const LeftPanel = ({ props }) => {
                  and Right Click to remove the placed stone.
               </div>
             }
-            <div onClick={(e) => setCurrStoneShape(e.target.alt)}  >
+            <div onClick={(e) =>  dispatch(designProps({...currDesign,currStoneShape:e.target.alt}))}  >
               <InputLabel className="settings-head">Shape</InputLabel>
               <div className={classes.flexRow} style={{flexWrap:'wrap'}} >
                 {
@@ -223,7 +221,7 @@ const LeftPanel = ({ props }) => {
                   <img src={img.src} style={{border:currStone===img.src&&'2px solid #8e24aa'}} className={classes.base} alt={img.src} />
                 ))
               } */}
-            <div  style={{ marginTop: '.5rem' }} onClick={(e) => setCurrStoneColor(e.target.alt||e.target.style.background)} >
+            <div  style={{ marginTop: '.5rem' }} onClick={(e) => dispatch(designProps({...currDesign,currStoneColor:e.target.alt||e.target.style.background})) } >
               <InputLabel className="settings-head">Color</InputLabel>
               <div className={classes.flexRow} style={{flexWrap:'wrap'}} >
                 {
