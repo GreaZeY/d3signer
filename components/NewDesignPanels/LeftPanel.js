@@ -38,13 +38,13 @@ const LeftPanel = ({ props }) => {
   const { designProps:currDesign } = useSelector(state => state.designProps)
   const {
       text,
-      base,
       length,
       width,
       thickness,
       font,
       currStoneColor,
       currStoneShape,
+      stoneSize,
   } = currDesign;
 
   const dispatch = useDispatch()
@@ -121,7 +121,7 @@ const LeftPanel = ({ props }) => {
               onChange={(e) => dispatch(designProps({...currDesign,font:e.target.value}))}
             >
 
-              {fonts.map(ff => <MenuItem key={ff.familyName} value={ff.familyName}  >{ff.familyName}</MenuItem>)
+              {fonts.map(ff => <MenuItem key={ff.original_font_information.fullName} value={ff.original_font_information.fullName}  >{ff.original_font_information.fullName}</MenuItem>)
 
               }
             </Select>
@@ -148,6 +148,7 @@ const LeftPanel = ({ props }) => {
               <Slider
                 aria-label="Sizes"
                 onChange={setSizes}
+                step={.1}
                 style={{ marginRight: '1rem' }}
                 min={currSizeProp === 'Length' ? 20 : 1}
                 max={currSizeProp === 'Length' ? 30 : 10}
@@ -161,7 +162,7 @@ const LeftPanel = ({ props }) => {
                 }
                 color="primary"
               />
-              <input onChange={e => setSizes(e, parseInt(e.target.value))} style={{ padding: '.2rem', cursor: 'text' }} type='number' maxLength={100} minLength={1} className={classes.symbol} value={currSizeProp === 'Length' ?
+              <input onChange={e => setSizes(e, parseInt(e.target.value))} style={{ padding: '.2rem', cursor: 'text',width:'2rem' }} type='number'  className={classes.symbol} step='.1' value={currSizeProp === 'Length' ?
                 length
                 :
                 (
@@ -233,6 +234,23 @@ const LeftPanel = ({ props }) => {
                 }
               </div>
               </div>
+              <div  style={{ marginTop: '.5rem' }}  >
+              <InputLabel className="settings-head">Stone Size</InputLabel>
+           <input
+              onChange= {(e)=>dispatch(designProps({...currDesign,stoneSize:e.target.value}))} 
+              value= {stoneSize}
+              type='number'
+              step='.1'
+              max= '5.0'
+              min='0.5'
+
+              className={classes.symbol}
+              style={
+                {width:'2.5rem'}
+              }
+           
+          />
+          </div>
             </fieldset>
           <div>
             <div style={{ width: '100%', marginTop: '1rem', justifyContent: 'space-between' }} className={classes.flexRow}>
@@ -243,7 +261,8 @@ const LeftPanel = ({ props }) => {
             </div>
             <section {...getCollapseProps()}>
 
-              {bails.map((bail, i) => <Bail key={i} index={i} bails={bails} setBailsData={bailsCount} classes={classes} />)
+              {
+              bails.map((bail, i) => <Bail key={i} index={i} bails={bails} setBailsData={bailsCount} classes={classes} />)
               }
             </section>
           </div>

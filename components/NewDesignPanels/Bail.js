@@ -14,7 +14,11 @@ const Bail = (props) => {
         <>
             <mesh ref={bailRef} style={{ cursor: 'pointer' }} onClick={() => setSelectedBail(bailRef)} position={position} >
                 <torusGeometry args={args} />
-                <meshPhysicalMaterial attach="material" color={base} metalness={1} roughness={0.35} />
+                <meshStandardMaterial 
+                attach="material" 
+                color={base} 
+                metalness={1}
+                roughness={0} />
             </mesh>
          
         </>

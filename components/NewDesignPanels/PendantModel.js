@@ -10,7 +10,7 @@ import { MODEL_GENERATED, GENERATING_MODEL } from '../../lib/constants/designPro
 // import { designProps as designPropsFunc } from '../../lib/actions/designAction';
 
 import Symbol from './Symbols.js'
-import { useFBX } from '@react-three/drei';
+import { useFBX, Environment } from '@react-three/drei';
 import { ThreeBSP } from './three-csg'
 
 // import Diamond from './Diamond'
@@ -43,6 +43,7 @@ const pendantModel = () => {
         font: currFont,
         currStoneColor,
         currStoneShape,
+        stoneSize
     } = designProps;
 
     const camera = useRef()
@@ -57,12 +58,12 @@ const pendantModel = () => {
     const dispatch = useDispatch()
 
     const font = useMemo(() => getFont(currFont), [currFont]);
+
     const diamond = useMemo(() => loadStone(currStoneShape, currStoneColor, stoneGroup), [currStoneShape, currStoneColor]);
 
     useEffect(() => {
         var helper = new THREE.Box3().setFromObject(pendant.current);
         setBoundingBoxPoints(helper)
-
         textGeometry = new TextGeometry(text, {
             font,
             size: length,
@@ -159,13 +160,13 @@ const pendantModel = () => {
                         color={base}
                         wireframe={false}
                         metalness={1}
-                        roughness={.3}
+                        roughness={.2}
+
                     />
                 </mesh>
-
             </group>
             <group name='stoneGroup' ref={stoneGroup}>
-                <primitive ref={stone} object={diamond} color={currStoneColor} visible={false} />
+                <primitive scale={stoneSize / .5} ref={stone} object={diamond} color={currStoneColor} visible={false} />
             </group>
             <Symbol boundingBoxPoints={boundingBoxPoints} />
         </>
@@ -179,7 +180,7 @@ export default pendantModel;
 
 //loading font
 const getFont = (currFont) => {
-    return new FontLoader().parse(fonts.filter(ff => ff.familyName === currFont)[0])
+    return new FontLoader().parse(fonts.filter(ff => ff.original_font_information.fullName === currFont)[0])
 }
 
 // loading FBX Stone Model 
