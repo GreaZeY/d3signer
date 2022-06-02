@@ -6,6 +6,11 @@ import {
 } from "assets/jss/nextjs-material-dashboard.js";
 
 const dashboardStyle = {
+  flexRow: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   successText: {
     color: successColor[0],
   },

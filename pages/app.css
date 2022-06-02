@@ -148,7 +148,7 @@ input[type=number] {
 
 /* spinner loader  */
 #loading {
-  border: 5px solid rgb(26 108 97 / 56%);
+  border: 5px solid #8e24aa;
   border-radius: 50%;
   border-top-color: #fff;
   animation: spin 1s ease-in-out infinite;

@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+
 import Button from "@material-ui/core/Button";
 import Save from "@material-ui/icons/Save";
 import Admin from "layouts/Admin.js";
@@ -31,7 +31,19 @@ import { saveAs } from 'file-saver';
 import Spinner from "components/loaders/spinner";
 
 import { saveDesign } from "../../lib/actions/designAction";
-import Router from "next/router";
+import Router,{useRouter} from "next/router";
+import { useAlert } from 'react-alert';
+import ShareIcon from '@material-ui/icons/Share'
+import ReactModal from 'react-modal';
+import { ContentPasteIcon } from '@material-ui/icons'
+// import { useStyles } from "../../components/styles/newdesignStyles";
+
+import { makeStyles } from "@material-ui/core/styles";
+import { TextField } from "@material-ui/core";
+import  { GetServerSideProps, NextPage } from "next"
+
+
+
 
 
 
@@ -39,20 +51,26 @@ import Router from "next/router";
 
 const options = ['STL', 'OBJ', 'PNG'];
 
-function newDesign() {
 
-  const dispatch=useDispatch();
+
+
+function newDesign() {
+  const alert = useAlert()
+  const dispatch = useDispatch();
+
+  const router=useRouter();
+  console.log()
 
   const useStyles = makeStyles({
     infoTip: {
       position: 'absolute',
-      left:-10,
+      left: -10,
       zIndex: "100",
       display: 'flex',
-      background:'black',
-      color:'white',
-      padding:'1rem',
-      borderRadius:'8px',
+      background: 'black',
+      color: 'white',
+      padding: '1rem',
+      borderRadius: '8px',
       textAlign: 'center',
 
     },
@@ -107,10 +125,10 @@ function newDesign() {
         border: '2px Solid gray',
       }
     },
-    img:{
+    img: {
       width: '1rem',
       height: '1rem',
-      objectFit:'cover',
+      objectFit: 'cover',
     },
     symbol: {
       border: '1px solid #ECEBEB',
@@ -149,11 +167,37 @@ function newDesign() {
       "&:hover": {
         color: 'red'
       }
+    },
+
+
+    modalStyle: {
+      position: 'fixed',
+      height: '100vh',
+      width: '100vw',
+
+      background: 'rgba(0, 0, 0, 0.514)',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      
+
+    },
+
+    containerDiv: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '15vh',
+      borderRadius: '8px',
+      width: '40vw',
+      background: 'white',
+     
     }
   });
 
   const classes = useStyles()
 
+  const [modalShow, setModalShow] = useState(false);
 
 
 
@@ -166,23 +210,23 @@ function newDesign() {
 
 
 
-  const { loading,designProps } = useSelector(state => state.designProps);
+  const { loading, designProps } = useSelector(state => state.designProps);
 
 
-  const handleClick = async() => {
+  const handleClick = async () => {
     setExportLoading(true)
     let modelClone = model.current.clone()
-    let stoneGroup = modelClone.children.filter(kid=>(kid.type==='Group'&&kid.name==="stoneGroup"))
+    let stoneGroup = modelClone.children.filter(kid => (kid.type === 'Group' && kid.name === "stoneGroup"))
     modelClone.remove(stoneGroup[0])
     if (selectedIndex === 0) {
       await stlExporter(modelClone)
       setExportLoading(false)
-      return 
+      return
     }
     if (selectedIndex === 1) {
       await objExporter(modelClone)
       setExportLoading(false)
-      return 
+      return
     }
     await savePng()
     setExportLoading(false)
@@ -204,11 +248,21 @@ function newDesign() {
     setOpen(false);
   };
 
-  const handleSavePost= async ()=>{
+  const handleSavePost = async () => {
     const url = getCanvasImgData()
-    let designToSave = {...designProps,url}
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    let mm = today.getMonth() + 1; // Months start at 0!
+    let dd = today.getDate();
+
+    if (dd < 10) dd = '0' + dd;
+    if (mm < 10) mm = '0' + mm;
+
+    let createdAt = dd + '/' + mm + '/' + yyyy;
+    let designToSave = { ...designProps, url, createdAt }
     await dispatch(saveDesign(designToSave));
-    Router.push("/admin/dashboard");
+    // Router.push("/admin/dashboard");
+    alert.success("Your design has been Saved.");
   }
 
 
@@ -235,16 +289,16 @@ function newDesign() {
       });
   }
 
-const savePng = async () => {
-  const dataURL= getCanvasImgData()
-  const blob = await fetch(dataURL).then(r => r.blob()); 
-  saveAs(blob, 'export.png');
-}
+  const savePng = async () => {
+    const dataURL = getCanvasImgData()
+    const blob = await fetch(dataURL).then(r => r.blob());
+    saveAs(blob, 'export.png');
+  }
 
-const getCanvasImgData=()=>{
-  let canvas = document.getElementsByTagName('canvas')[0];
-  return canvas.toDataURL('image/png');
-}
+  const getCanvasImgData = () => {
+    let canvas = document.getElementsByTagName('canvas')[0];
+    return canvas.toDataURL('image/png');
+  }
   return (
     <div>
 
@@ -293,13 +347,13 @@ const getCanvasImgData=()=>{
                             placement === 'bottom' ? 'center top' : 'center bottom',
                         }}
                       >
-                        <Paper style={{ zIndex: '100' }}>
+                        <Paper >
                           <ClickAwayListener onClickAway={handleClose}>
-                            <MenuList id="split-button-menu" style={{ zIndex: '100' }} autoFocusItem>
+                            <MenuList id="split-button-menu" autoFocusItem>
                               {options.map((option, index) => (
                                 <MenuItem
                                   key={option}
-                                  style={{ zIndex: '100' }}
+                                  // style={{ zIndex: '100' }}
                                   selected={index === selectedIndex}
                                   onClick={(event) => handleMenuItemClick(event, index)}
                                 ><CloudDownload style={{ marginTop: '0px', marginRight: '.5rem' }} />
@@ -313,14 +367,39 @@ const getCanvasImgData=()=>{
                     )}
                   </Popper>
 
-                  
-                    <Button size="small" startIcon={<Save />} onClick={handleSavePost}
-                      style={{ paddingLeft: '1rem', paddingRight: '1rem', marginLeft: '1rem', color: 'white', background: 'linear-gradient(60deg, #ab47bc, #8e24aa)' }}>
-                      Save
-                    </Button>
-                  
+                  <ShareIcon onClick={() => setModalShow(true)} style={{ paddingLeft: '.5rem', paddingRight: '.5rem', marginLeft: '1rem', cursor: 'pointer' }} />
+
+
+                  <Button size="small" startIcon={<Save />} onClick={handleSavePost}
+                    style={{ paddingLeft: '1rem', paddingRight: '1rem', marginLeft: '1rem', color: 'white', background: 'linear-gradient(60deg, #ab47bc, #8e24aa)' }}>
+                    Save
+                  </Button>
+
+
+                  <ReactModal
+                    isOpen={modalShow}
+                    contentLabel="onRequestClose Example"
+                    onRequestClose={() => setModalShow(false)}
+                    shouldCloseOnOverlayClick={true}
+                    className={classes.modalStyle}
+                  >
+                    <div className={classes.containerDiv}>
+                      <div>
+                        <Typography className={classes.symbol} style={{ width:'auto',padding: '.3rem .8rem', color: 'blue', borderRadius: '8px', cursor: 'text', border: '1px solid grey' }}>{`http://localhost:3000${router.pathname}`} <span class="material-symbols-outlined" style={{color:'grey',fontSize:'1rem',paddingLeft:'1rem'}}>
+                          content_copy
+                        </span></Typography>
+                       
+                      </div>
+                    </div>
+
+                  </ReactModal>
+
+
+
                 </div>
               </div>
+
+
 
               <D3panel model={model} />
               {
