@@ -88,7 +88,6 @@ const pendantModel = () => {
         // stone.current.material.opacity = .5
     }
     const placeStone = () => {
-        console.log(stoneGroup.current)
         if (!currStoneColor && !currStoneShape) return
         dispatch({ type: GENERATING_MODEL })
         const dia = diamond.clone()

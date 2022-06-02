@@ -179,9 +179,12 @@ function newDesign() {
       stlExporter(modelClone)
       return
     }
-    objExporter(modelClone)
-
-  };
+    if (selectedIndex === 1) {
+      objExporter(modelClone)
+      return
+    }
+    savePng()
+  }
 
 
 
@@ -241,12 +244,18 @@ function newDesign() {
       });
   }
 
+  const savePng = async () => {
+    let canvas = document.getElementsByTagName('canvas')[0];
+  let dataURL = canvas.toDataURL('image/png');
+  let blob = await fetch(dataURL).then(r => r.blob()); 
+  saveAs(blob, 'export.png');
   const handleSavePost= async ()=>{
     await dispatch(saveDesign(designProps));
 
     Router.push("/admin/dashboard");
   
   }
+}
 
   return (
     <div>

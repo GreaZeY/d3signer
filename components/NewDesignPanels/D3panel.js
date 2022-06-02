@@ -9,7 +9,7 @@ const D3panel = ({ model }) => {
   const controls = useRef()
  
   return (
-    <Canvas camera={{ position: [0, 0, 90] }} style={{ height: `78vh`, }} >
+    <Canvas gl={{ preserveDrawingBuffer: true }} camera={{ position: [0, 0, 90] }} style={{ height: `78vh`, }} >
       <ambientLight intensity={1} />
       <OrbitControls enableDamping ref={controls} />
       <pointLight intensity={.2} position={[-50, 0, 0]} />
