@@ -21,7 +21,7 @@ import Paper from '@material-ui/core/Paper';
 import Popper from '@material-ui/core/Popper';
 import MenuList from '@material-ui/core/MenuList';
 
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import LeftPanel from "../../components/NewDesignPanels/LeftPanel";
 import D3panel from "../../components/NewDesignPanels/D3panel"
@@ -30,6 +30,10 @@ import DotLoader from "components/loaders/dotLoader";
 import { saveAs } from 'file-saver';
 import Spinner from "components/loaders/spinner";
 
+import { saveDesign } from "../../lib/actions/designAction";
+import { Redirect } from "next";
+import Router from "next/router";
+
 
 
 
@@ -37,6 +41,8 @@ import Spinner from "components/loaders/spinner";
 const options = ['STL', 'OBJ', 'PNG'];
 
 function newDesign() {
+
+  const dispatch=useDispatch();
 
   const useStyles = makeStyles({
     infoTip: {
@@ -161,7 +167,8 @@ function newDesign() {
 
 
 
-  const { loading } = useSelector(state => state.designProps)
+  const { loading,designProps } = useSelector(state => state.designProps);
+
 
   const handleClick = () => {
     let modelClone = model.current.clone()
@@ -242,7 +249,13 @@ function newDesign() {
   let dataURL = canvas.toDataURL('image/png');
   let blob = await fetch(dataURL).then(r => r.blob()); 
   saveAs(blob, 'export.png');
+  const handleSavePost= async ()=>{
+    await dispatch(saveDesign(designProps));
+
+    Router.push("/admin/dashboard");
+  
   }
+}
 
   return (
     <div>
@@ -312,12 +325,12 @@ function newDesign() {
                     )}
                   </Popper>
 
-                  <Link href="/admin/dashboard">
-                    <Button size="small" startIcon={<Save />}
+                  
+                    <Button size="small" startIcon={<Save />} onClick={handleSavePost}
                       style={{ paddingLeft: '1rem', paddingRight: '1rem', marginLeft: '1rem', color: 'white', background: 'linear-gradient(60deg, #ab47bc, #8e24aa)' }}>
                       Save
                     </Button>
-                  </Link>
+                  
                 </div>
               </div>
 
