@@ -143,7 +143,7 @@ const Symbols = ({ boundingBoxPoints }) => {
         attach='material' 
         color={base} 
         metalness={1}
-        roughness={.5} 
+        roughness={.2} 
         />
       </mesh>
     </group>

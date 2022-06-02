@@ -56,7 +56,7 @@ function Dashboard() {
         return (
           <div className={classes.alert}>
             <Typography style={{ margin: 0 }} >Delete {design.text}</Typography>
-            <p>Are you sure you want to delete this Item?</p>
+            <p>Are you sure you want to delete this Design?</p>
             <div>
               <Button onClick={onClose} color="secondary" className={classes.confirmNo} >No</Button>
               <Button variant="outlined" color="danger" className={classes.confirmYes}

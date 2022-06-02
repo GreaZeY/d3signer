@@ -18,7 +18,7 @@ const Bail = (props) => {
                 attach="material" 
                 color={base} 
                 metalness={1}
-                roughness={0} />
+                roughness={.2} />
             </mesh>
          
         </>

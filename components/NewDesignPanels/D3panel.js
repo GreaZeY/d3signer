@@ -10,15 +10,15 @@ const D3panel = ({ model }) => {
  
   return (
     <Canvas gl={{ preserveDrawingBuffer: true }} camera={{ position: [0, 0, 90] }} style={{ height: `78vh`, }} >
-      <ambientLight intensity={1} />
       <OrbitControls enableDamping ref={controls} />
-      <pointLight intensity={.2} position={[-50, 0, 0]} />
+      {/* <ambientLight intensity={1} /> */}
+      {/* <pointLight intensity={.2} position={[-50, 0, 0]} />
       <pointLight intensity={.5} position={[-1050, 0, 1000]} />
-      <spotLight intensity={1} position={[0, 10, 0]} angle={-22 / 7} />
-      <pointLight position={[-1, -1, -10]} />
+      <spotLight intensity={.5} position={[0, 10, 0]} angle={-22 / 7} />
+      <pointLight position={[-1, -1, -10]} /> */}
       
       <Suspense fallback={"Loading"}>
-      <Environment files={'cayley.hdr'} path={'/assets/hdrMap/'} />
+      <Environment files={'home.hdr'} path={'/assets/hdrMap/'} />
         <group ref={model}  >
           <Provider store={store} >
             <PendantModel/>

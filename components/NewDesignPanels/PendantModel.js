@@ -24,11 +24,18 @@ const bevelProps = {
     // bevelThickness: 1.5,
     // bevelSize: 1.5,
     // bevelSegments: 10,
-    // curveSegments: 10,
+    curveSegments: 50,
 }
 
 extend({ TextGeometry })
 
+const cubeRenderTarget = new THREE.WebGLCubeRenderTarget( 128, {
+    format: THREE.RGBFormat,
+    generateMipmaps: true,
+    minFilter: THREE.LinearMipmapLinearFilter,
+    encoding: THREE.sRGBEncoding
+} );
+const cubeCamera = new THREE.CubeCamera( 1, 10000, cubeRenderTarget );
 let textGeometry = new TextGeometry()
 
 const pendantModel = () => {
@@ -88,9 +95,9 @@ const pendantModel = () => {
         // stone.current.material.transparent = true
         // stone.current.material.opacity = .5
     }
-    const placeStone = () => {
+    const placeStone = async () => {
         if (!currStoneColor && !currStoneShape) return
-        dispatch({ type: GENERATING_MODEL })
+        // await dispatch({ type: GENERATING_MODEL })
         const dia = diamond.clone()
         dia.name = 'stone'
         dia.material.transparent = false
@@ -119,13 +126,14 @@ const pendantModel = () => {
         // txtSurface.current.geometry = dia.geometry
         // setStones([...stones,[point.x,point.y,5]])
 
-        dispatch({ type: MODEL_GENERATED })
+        // dispatch({ type: MODEL_GENERATED })
     }
 
 
     // const [stones,setStones] = useState([])
     useEffect(() => {
         // dispatch(designPropsFunc({...designProps,stones}))
+        txtSurface.current.add(cubeCamera)
         window.addEventListener('mousedown', (e) => onPointerDown(e, stoneGroup))
         return () => {
             window.removeEventListener('mousedown', (e) => onPointerDown(e, stoneGroup))
@@ -149,7 +157,7 @@ const pendantModel = () => {
 
     return (
         <>
-            <directionalLight ref={light} intensity={.5} />
+            <spotLight  angle={1} penumbra={0} ref={light} intensity={.5} />
             <perspectiveCamera ref={camera} />
 
             <group name='pendant' ref={pendant} >
@@ -161,7 +169,6 @@ const pendantModel = () => {
                         wireframe={false}
                         metalness={1}
                         roughness={.2}
-
                     />
                 </mesh>
             </group>
@@ -184,12 +191,12 @@ const getFont = (currFont) => {
 }
 
 // loading FBX Stone Model 
-const loadStone = (shape, color, grp) => {
+const loadStone = (shape, color) => {
     if (!shape) return new THREE.Group()
     let path = `/assets/crimps/fbx/${shape}.fbx`
     let dia = useFBX(path)?.children[0].clone()
     dia.rotation.set(Math.PI / 2, Math.PI, 0)
-    dia.material = new THREE.MeshStandardMaterial({ color, metalness: 1, roughness: .35 })
+    dia.material = new THREE.MeshStandardMaterial({ color, metalness: 1, roughness: .05 })
     return dia
 }
 
