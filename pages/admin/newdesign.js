@@ -172,9 +172,12 @@ function newDesign() {
       stlExporter(modelClone)
       return
     }
-    objExporter(modelClone)
-
-  };
+    if (selectedIndex === 1) {
+      objExporter(modelClone)
+      return
+    }
+    savePng()
+  }
 
 
 
@@ -232,6 +235,13 @@ function newDesign() {
         saveAs(blob, 'export.obj');
         setExportLoading(false)
       });
+  }
+
+  const savePng = async () => {
+    let canvas = document.getElementsByTagName('canvas')[0];
+  let dataURL = canvas.toDataURL('image/png');
+  let blob = await fetch(dataURL).then(r => r.blob()); 
+  saveAs(blob, 'export.png');
   }
 
   return (
