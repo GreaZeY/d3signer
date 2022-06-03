@@ -128,9 +128,9 @@ function Dashboard() {
       </div>
 
       {loading && 
-      <div style={{height:'8vmax'}} className={classes.flexRow} >
+      <div style={{height:'70vh'}} className={classes.flexRow} >
         <Spinner style={{ height: '2rem', width: '2rem', alignSelf: 'center' }} />
-       </div>}
+      </div>}
      
       </>
       );

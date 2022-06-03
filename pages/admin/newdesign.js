@@ -31,7 +31,7 @@ import { saveAs } from 'file-saver';
 import Spinner from "components/loaders/spinner";
 
 import { saveDesign } from "../../lib/actions/designAction";
-import Router,{useRouter} from "next/router";
+import Router, { useRouter } from "next/router";
 import { useAlert } from 'react-alert';
 import ShareIcon from '@material-ui/icons/Share'
 import ReactModal from 'react-modal';
@@ -40,7 +40,13 @@ import { ContentPasteIcon } from '@material-ui/icons'
 
 import { makeStyles } from "@material-ui/core/styles";
 import { TextField } from "@material-ui/core";
-import  { GetServerSideProps, NextPage } from "next"
+import { GetServerSideProps, NextPage } from "next"
+import AnimatedTick from "../../components/Icons/AnimatedTick";
+import Container from '@material-ui/core/Container'
+import Box from '@material-ui/core/Box';
+import CustomInput from "components/CustomInput/CustomInput.js";
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import CloseIcon from '@material-ui/icons/Close';
 
 
 
@@ -58,7 +64,7 @@ function newDesign() {
   const alert = useAlert()
   const dispatch = useDispatch();
 
-  const router=useRouter();
+  const router = useRouter();
   console.log()
 
   const useStyles = makeStyles({
@@ -179,7 +185,7 @@ function newDesign() {
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-      
+      zIndex: 1000
 
     },
 
@@ -187,18 +193,64 @@ function newDesign() {
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-      height: '15vh',
+      minWidth:'25vw',
       borderRadius: '8px',
-      width: '40vw',
+      boxSizing: 'border-box',
+      flexDirection: 'column',
+
       background: 'white',
-     
+      zIndex: 1000
+
     }
+    ,
+
+    shareIcons: {
+      transition: 'transform 0.3s ease-in-out'
+    },
+
+
+    shareLink: {
+      height: '50px',
+      width: '50px',
+      fontSize: '2rem',
+      margin: '1rem',
+      textDecoration: 'none',
+      border: '1px solid transparent'
+    }
+    ,
+    modalHeader: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      width: '100%',
+      boxSizing: 'border-box',
+      padding: '1rem'
+    },
+
+    field: {
+      '& input': {
+
+        border: 'none',
+        outline: 'none',
+        fontSize: '15px'
+      },
+      margin: '1rem 0',
+      borderRadius: '4px',
+      padding: '0 0 0 5px',
+
+      border: '2px solid #e1e1e1'
+    }
+
+    ,
+
+
+
   });
 
   const classes = useStyles()
 
   const [modalShow, setModalShow] = useState(false);
 
+  const [showTick, setShowTick] = useState(false);
 
 
   const [open, setOpen] = useState(false);
@@ -265,6 +317,14 @@ function newDesign() {
     alert.success("Your design has been Saved.");
   }
 
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(`http://localhost:3000${router.pathname}`);
+
+    alert.success('Url is copied to clipboard.');
+
+    setShowTick(true);
+
+  }
 
 
   // Exporters
@@ -309,7 +369,7 @@ function newDesign() {
             <CardBody >
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Typography>Preview</Typography>
-                <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', zIndex: 100 }}>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', zIndex: `${modalShow ?'0' :'100'}` }}>
                   <ButtonGroup variant="text" ref={anchorRef} aria-label="split button">
                     <Button disabled={exportLoading} size="small" style={{ background: 'white', border: '1px solid #ECEBEB ' }} onClick={handleClick}>
                       {
@@ -376,6 +436,7 @@ function newDesign() {
                   </Button>
 
 
+
                   <ReactModal
                     isOpen={modalShow}
                     contentLabel="onRequestClose Example"
@@ -383,14 +444,78 @@ function newDesign() {
                     shouldCloseOnOverlayClick={true}
                     className={classes.modalStyle}
                   >
-                    <div className={classes.containerDiv}>
-                      <div>
-                        <Typography className={classes.symbol} style={{ width:'auto',padding: '.3rem .8rem', color: 'blue', borderRadius: '8px', cursor: 'text', border: '1px solid grey' }}>{`http://localhost:3000${router.pathname}`} <span class="material-symbols-outlined" style={{color:'grey',fontSize:'1rem',paddingLeft:'1rem'}}>
-                          content_copy
-                        </span></Typography>
-                       
+                    {/* <div>
+
+                      
+                      <div className={classes.containerDiv}>
+
+                        
+                          <Typography className={classes.symbol}
+                           style={{ width: 'auto', padding: '.3rem .8rem', color: 'blue', borderRadius: '8px', cursor: 'text', border: '1px solid grey' }}>
+                             {`http://localhost:3000${router.pathname}`} 
+
+                             {showTick?<AnimatedTick scale={0.1}/>:<span onClick={copyToClipboard} class="material-symbols-outlined" 
+                          style={{ cursor: 'pointer', color: 'grey', fontSize: '1rem', paddingLeft: '1rem' }} 
+                          title="copy">
+                            content_copy
+                          </span>}
+                          </Typography>
+                          
+                         
+
                       </div>
+                    </div> */}
+
+                    <div className={classes.containerDiv}>
+                      <header className={classes.modalHeader}>
+                        <div><span style={{
+                          fontSize: '21px',
+                          fontWeight: 600
+                        }}>Share your design</span></div>
+
+                        <div className="close" style={{ fontSize: '2rem', cursor: 'pointer' }} onClick={() => setModalShow(false)}><i class="uil uil-times"></i></div>
+                      </header>
+
+                      <div style={{padding:'0 1.5rem'}}>
+                        <div>
+                          <p style={{ fontSize: '16px' }}>Share this link via</p>
+                          <ul style={{ padding: 0 }}>
+                            <a href="#" className={classes.shareLink}><i style={{
+                              color: '#1877F2',
+                              borderColor: '#b7d4fb'
+                            }} className={`fab fa-facebook-f ${classes.shareIcons}`}></i></a>
+                            <a href="#" className={classes.shareLink}><i style={{
+                              color: '#46C1F6',
+                              borderColor: '#b6e7fc'
+                            }} className="fab fa-twitter"></i></a>
+                            <a href="#" className={classes.shareLink}><i style={{
+                              color: ' #e1306c',
+                              borderColor: '#f5bccf'
+                            }} className="fab fa-instagram"></i></a>
+
+                            <a href="#" className={classes.shareLink}><i style={{
+                              color: '#25D366',
+                              borderColor: '#bef4d2'
+                            }} className="fab fa-whatsapp"></i></a>
+                          </ul>
+                        </div>
+
+                        <p style={{ marginBottom: 0 }}>Or copy link</p>
+                        <div className={classes.field}>
+                          <i className="url-icon uil uil-link"></i>
+                          <input type="text" readonly value={`http://localhost:3000${router.pathname}`} />
+                          {false?<AnimatedTick scale={0.1}/>:<span onClick={copyToClipboard} class="material-symbols-outlined" 
+                          style={{transform: 'translateY(4px)',color:'#8e24aa !important',
+                           cursor: 'pointer', color: 'grey', fontSize: '1.2rem' }} 
+                          title="copy">
+                            content_copy
+                          </span>}
+                        </div>
+                      </div>
+
+
                     </div>
+
 
                   </ReactModal>
 
@@ -411,7 +536,7 @@ function newDesign() {
             </CardBody>
           </Card>
         </GridItem>
-
+        
       </GridContainer>
 
 
