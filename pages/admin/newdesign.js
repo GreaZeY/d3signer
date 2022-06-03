@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 import Button from "@material-ui/core/Button";
 import Save from "@material-ui/icons/Save";
@@ -251,6 +251,7 @@ function newDesign() {
   const [modalShow, setModalShow] = useState(false);
 
   const [showTick, setShowTick] = useState(false);
+  const [url, setUrl] = useState({});
 
 
   const [open, setOpen] = useState(false);
@@ -263,6 +264,12 @@ function newDesign() {
 
 
   const { loading, designProps } = useSelector(state => state.designProps);
+
+  useEffect(()=>{
+    let decodedUrl=window.location.href;
+    setUrl({decodedUrl,encodedUrl:encodeURI(decodedUrl)});
+    
+  },[])
 
 
   const handleClick = async () => {
@@ -318,7 +325,7 @@ function newDesign() {
   }
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(`http://localhost:3000${router.pathname}`);
+    navigator.clipboard.writeText(url.decodedUrl);
 
     alert.success('Url is copied to clipboard.');
 
@@ -480,11 +487,11 @@ function newDesign() {
                         <div>
                           <p style={{ fontSize: '16px' }}>Share this link via</p>
                           <ul style={{ padding: 0 }}>
-                            <a href="#" className={classes.shareLink}><i style={{
+                            <a href={`https://www.facebook.com/sharer/sharer.php?u=${url.encodedUrl}`} target='_blank' className={classes.shareLink}><i style={{
                               color: '#1877F2',
                               borderColor: '#b7d4fb'
                             }} className={`fab fa-facebook-f ${classes.shareIcons}`}></i></a>
-                            <a href="#" className={classes.shareLink}><i style={{
+                            <a href={`https://twitter.com/intent/tweet?url=${url.encodedUrl}`} target='_blank' className={classes.shareLink}><i style={{
                               color: '#46C1F6',
                               borderColor: '#b6e7fc'
                             }} className="fab fa-twitter"></i></a>
@@ -493,7 +500,7 @@ function newDesign() {
                               borderColor: '#f5bccf'
                             }} className="fab fa-instagram"></i></a>
 
-                            <a href="#" className={classes.shareLink}><i style={{
+                            <a href={`https://wa.me/?text=${url.encodedUrl}`} data-action="share/whatsapp/share" target='_blank' className={classes.shareLink}><i style={{
                               color: '#25D366',
                               borderColor: '#bef4d2'
                             }} className="fab fa-whatsapp"></i></a>
@@ -503,7 +510,7 @@ function newDesign() {
                         <p style={{ marginBottom: 0 }}>Or copy link</p>
                         <div className={classes.field}>
                           <i className="url-icon uil uil-link"></i>
-                          <input type="text" readonly value={`http://localhost:3000${router.pathname}`} />
+                          <input type="text" readonly value={url.decodedUrl} />
                           {false?<AnimatedTick scale={0.1}/>:<span onClick={copyToClipboard} class="material-symbols-outlined" 
                           style={{transform: 'translateY(4px)',color:'#8e24aa !important',
                            cursor: 'pointer', color: 'grey', fontSize: '1.2rem' }} 
