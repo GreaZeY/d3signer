@@ -37,6 +37,7 @@ specifiers:
   react-modal: ^3.15.1
   react-redux: ^7.2.8
   react-swipeable-views: 0.13.9
+  react-useanimations: ^2.0.8
   redux-devtools-extension: ^2.13.9
   redux-thunk: ^2.4.1
   three: ^0.135.0
@@ -78,6 +79,7 @@ dependencies:
   react-modal: 3.15.1_react-dom@17.0.1+react@17.0.1
   react-redux: 7.2.8_react-dom@17.0.1+react@17.0.1
   react-swipeable-views: 0.13.9_react@17.0.1
+  react-useanimations: 2.0.8_react@17.0.1
   redux-devtools-extension: 2.13.9
   redux-thunk: 2.4.1
   three: 0.135.0
@@ -2117,6 +2119,10 @@ packages:
       js-tokens: 4.0.0
     dev: false
 
+  /lottie-web/5.9.4:
+    resolution: {integrity: sha512-bSs1ZTPifnBVejO1MnQHdfrKfcn02YTCmgOh2wcAEICqRA0V7GzDh8FnwXY6+EzT+i8XOunaIloo/5xC5YNbsA==}
+    dev: false
+
   /lru-cache/6.0.0:
     resolution: {integrity: sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==}
     engines: {node: '>=10'}
@@ -3115,6 +3121,15 @@ packages:
       debounce: 1.2.1
       react: 17.0.1
       react-dom: 17.0.1_react@17.0.1
+    dev: false
+
+  /react-useanimations/2.0.8_react@17.0.1:
+    resolution: {integrity: sha512-pjA5M8qA2NF3kvvu8yuBToOt79fdqXpx3Ba32ci8uG9zSv5XHz1d4OmDqqWARwaFWLIRS1Jan3HllpsqUWiKjw==}
+    peerDependencies:
+      react: ^16.9.0
+    dependencies:
+      lottie-web: 5.9.4
+      react: 17.0.1
     dev: false
 
   /react/17.0.1:

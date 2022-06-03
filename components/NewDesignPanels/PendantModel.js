@@ -167,8 +167,8 @@ const pendantModel = () => {
                         attach='material'
                         color={base}
                         wireframe={false}
-                        metalness={1}
-                        roughness={.2}
+                        metalness={.98}
+                        roughness={.15}
                     />
                 </mesh>
             </group>
