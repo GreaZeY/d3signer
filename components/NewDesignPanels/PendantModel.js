@@ -10,7 +10,7 @@ import { MODEL_GENERATED, GENERATING_MODEL } from '../../lib/constants/designPro
 // import { designProps as designPropsFunc } from '../../lib/actions/designAction';
 
 import Symbol from './Symbols.js'
-import { useFBX } from '@react-three/drei';
+import { useFBX, Environment } from '@react-three/drei';
 import { ThreeBSP } from './three-csg'
 
 // import Diamond from './Diamond'
@@ -24,11 +24,10 @@ const bevelProps = {
     // bevelThickness: 1.5,
     // bevelSize: 1.5,
     // bevelSegments: 10,
-    // curveSegments: 10,
+    curveSegments: 50,
 }
 
 extend({ TextGeometry })
-
 let textGeometry = new TextGeometry()
 
 const pendantModel = () => {
@@ -43,6 +42,7 @@ const pendantModel = () => {
         font: currFont,
         currStoneColor,
         currStoneShape,
+        stoneSize
     } = designProps;
 
     const camera = useRef()
@@ -57,12 +57,12 @@ const pendantModel = () => {
     const dispatch = useDispatch()
 
     const font = useMemo(() => getFont(currFont), [currFont]);
+
     const diamond = useMemo(() => loadStone(currStoneShape, currStoneColor, stoneGroup), [currStoneShape, currStoneColor]);
 
     useEffect(() => {
         var helper = new THREE.Box3().setFromObject(pendant.current);
         setBoundingBoxPoints(helper)
-
         textGeometry = new TextGeometry(text, {
             font,
             size: length,
@@ -87,9 +87,9 @@ const pendantModel = () => {
         // stone.current.material.transparent = true
         // stone.current.material.opacity = .5
     }
-    const placeStone = () => {
+    const placeStone = async () => {
         if (!currStoneColor && !currStoneShape) return
-        dispatch({ type: GENERATING_MODEL })
+        // await dispatch({ type: GENERATING_MODEL })
         const dia = diamond.clone()
         dia.name = 'stone'
         dia.material.transparent = false
@@ -118,7 +118,7 @@ const pendantModel = () => {
         // txtSurface.current.geometry = dia.geometry
         // setStones([...stones,[point.x,point.y,5]])
 
-        dispatch({ type: MODEL_GENERATED })
+        // dispatch({ type: MODEL_GENERATED })
     }
 
 
@@ -148,7 +148,7 @@ const pendantModel = () => {
 
     return (
         <>
-            <directionalLight ref={light} intensity={.5} />
+            <spotLight  angle={1} penumbra={0} ref={light} intensity={.5} />
             <perspectiveCamera ref={camera} />
 
             <group name='pendant' ref={pendant} >
@@ -158,14 +158,13 @@ const pendantModel = () => {
                         attach='material'
                         color={base}
                         wireframe={false}
-                        metalness={1}
-                        roughness={.3}
+                        metalness={.98}
+                        roughness={.15}
                     />
                 </mesh>
-
             </group>
             <group name='stoneGroup' ref={stoneGroup}>
-                <primitive ref={stone} object={diamond} color={currStoneColor} visible={false} />
+                <primitive scale={stoneSize / .5} ref={stone} object={diamond} color={currStoneColor} visible={false} />
             </group>
             <Symbol boundingBoxPoints={boundingBoxPoints} />
         </>
@@ -179,16 +178,16 @@ export default pendantModel;
 
 //loading font
 const getFont = (currFont) => {
-    return new FontLoader().parse(fonts.filter(ff => ff.familyName === currFont)[0])
+    return new FontLoader().parse(fonts.filter(ff => ff.original_font_information.fullName === currFont)[0])
 }
 
 // loading FBX Stone Model 
-const loadStone = (shape, color, grp) => {
+const loadStone = (shape, color) => {
     if (!shape) return new THREE.Group()
     let path = `/assets/crimps/fbx/${shape}.fbx`
     let dia = useFBX(path)?.children[0].clone()
     dia.rotation.set(Math.PI / 2, Math.PI, 0)
-    dia.material = new THREE.MeshStandardMaterial({ color, metalness: 1, roughness: .35 })
+    dia.material = new THREE.MeshStandardMaterial({ color, metalness: 1, roughness: .05 })
     return dia
 }
 

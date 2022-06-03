@@ -108,7 +108,7 @@ const dashboardStyle = {
     borderRadius:'8px',
     background:'white',
     padding:'2rem',
-    width:'40vw',
+    width:'30vw',
     paddingBottom:'4rem',
     '& p':{
       marginBottom:'1rem',

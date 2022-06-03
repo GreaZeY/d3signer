@@ -139,7 +139,12 @@ const Symbols = ({ boundingBoxPoints }) => {
         rotation={rotation}
       >
         <extrudeGeometry  attach="geometry" args={[shape, extrudeSettings]} />
-        <meshPhysicalMaterial attach='material' color={base} metalness={1} roughness={.35} />
+        <meshStandardMaterial 
+        attach='material' 
+        color={base} 
+        metalness={1}
+        roughness={.2} 
+        />
       </mesh>
     </group>
   )
