@@ -28,14 +28,6 @@ const bevelProps = {
 }
 
 extend({ TextGeometry })
-
-const cubeRenderTarget = new THREE.WebGLCubeRenderTarget( 128, {
-    format: THREE.RGBFormat,
-    generateMipmaps: true,
-    minFilter: THREE.LinearMipmapLinearFilter,
-    encoding: THREE.sRGBEncoding
-} );
-const cubeCamera = new THREE.CubeCamera( 1, 10000, cubeRenderTarget );
 let textGeometry = new TextGeometry()
 
 const pendantModel = () => {
@@ -133,7 +125,6 @@ const pendantModel = () => {
     // const [stones,setStones] = useState([])
     useEffect(() => {
         // dispatch(designPropsFunc({...designProps,stones}))
-        txtSurface.current.add(cubeCamera)
         window.addEventListener('mousedown', (e) => onPointerDown(e, stoneGroup))
         return () => {
             window.removeEventListener('mousedown', (e) => onPointerDown(e, stoneGroup))
