@@ -41,11 +41,11 @@ import { ContentPasteIcon } from '@material-ui/icons'
 import { makeStyles } from "@material-ui/core/styles";
 import { TextField } from "@material-ui/core";
 import { GetServerSideProps, NextPage } from "next"
-import AnimatedTick from "../../components/Icons/AnimatedTick";
-import Container from '@material-ui/core/Container'
+// import AnimatedTick from "../../components/Icons/AnimatedTick";
+import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 import CustomInput from "components/CustomInput/CustomInput.js";
-import FormControlLabel from '@material-ui/core/FormControlLabel'
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import CloseIcon from '@material-ui/icons/Close';
 
 
@@ -193,7 +193,7 @@ function newDesign() {
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-      minWidth:'25vw',
+      minWidth: '25vw',
       borderRadius: '8px',
       boxSizing: 'border-box',
       flexDirection: 'column',
@@ -210,10 +210,10 @@ function newDesign() {
 
 
     shareLink: {
-      height: '50px',
+      // height: '50px',
       width: '50px',
       fontSize: '2rem',
-      margin: '1rem',
+      // margin: '1rem',
       textDecoration: 'none',
       border: '1px solid transparent'
     }
@@ -241,6 +241,12 @@ function newDesign() {
     }
 
     ,
+    linksCenter: {
+      display: 'flex',
+      justifyContent: 'space-around',
+      alignItems: 'center',
+
+    }
 
 
 
@@ -250,7 +256,7 @@ function newDesign() {
 
   const [modalShow, setModalShow] = useState(false);
 
-  const [showTick, setShowTick] = useState(false);
+  // const [showTick, setShowTick] = useState(false);
   const [url, setUrl] = useState({});
 
 
@@ -265,11 +271,11 @@ function newDesign() {
 
   const { loading, designProps } = useSelector(state => state.designProps);
 
-  useEffect(()=>{
-    let decodedUrl=window.location.href;
-    setUrl({decodedUrl,encodedUrl:encodeURI(decodedUrl)});
-    
-  },[])
+  useEffect(() => {
+    let decodedUrl = window.location.href;
+    setUrl({ decodedUrl, encodedUrl: encodeURI(decodedUrl) });
+
+  }, [])
 
 
   const handleClick = async () => {
@@ -329,7 +335,7 @@ function newDesign() {
 
     alert.success('Url is copied to clipboard.');
 
-    setShowTick(true);
+    // setShowTick(true);
 
   }
 
@@ -376,7 +382,7 @@ function newDesign() {
             <CardBody >
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Typography>Preview</Typography>
-                <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', zIndex: `${modalShow ?'0' :'100'}` }}>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', zIndex: `${modalShow ? '0' : '100'}` }}>
                   <ButtonGroup variant="text" ref={anchorRef} aria-label="split button">
                     <Button disabled={exportLoading} size="small" style={{ background: 'white', border: '1px solid #ECEBEB ' }} onClick={handleClick}>
                       {
@@ -483,10 +489,10 @@ function newDesign() {
                         <div className="close" style={{ fontSize: '2rem', cursor: 'pointer' }} onClick={() => setModalShow(false)}><i class="uil uil-times"></i></div>
                       </header>
 
-                      <div style={{padding:'0 1.5rem'}}>
+                      <div style={{ padding: '0 1.5rem' }}>
                         <div>
                           <p style={{ fontSize: '16px' }}>Share this link via</p>
-                          <ul style={{ padding: 0 }}>
+                          <ul style={{ padding: 0 }} className={classes.linksCenter}>
                             <a href={`https://www.facebook.com/sharer/sharer.php?u=${url.encodedUrl}`} target='_blank' className={classes.shareLink}><i style={{
                               color: '#1877F2',
                               borderColor: '#b7d4fb'
@@ -495,10 +501,15 @@ function newDesign() {
                               color: '#46C1F6',
                               borderColor: '#b6e7fc'
                             }} className="fab fa-twitter"></i></a>
-                            <a href="#" className={classes.shareLink}><i style={{
+                            {/* <a href="#" className={classes.shareLink}><i style={{
                               color: ' #e1306c',
                               borderColor: '#f5bccf'
-                            }} className="fab fa-instagram"></i></a>
+                            }} className="fab fa-instagram"></i></a> */}
+
+                            <a href={`https://t.me/share/url?url=${url.encodedUrl}`} target='_blank' className={classes.shareLink}><i style={{
+                              color: '#0088cc',
+                              borderColor: '#b3e6ff'
+                            }} class="fab fa-telegram-plane"></i></a>
 
                             <a href={`https://wa.me/?text=${url.encodedUrl}`} data-action="share/whatsapp/share" target='_blank' className={classes.shareLink}><i style={{
                               color: '#25D366',
@@ -511,12 +522,14 @@ function newDesign() {
                         <div className={classes.field}>
                           <i className="url-icon uil uil-link"></i>
                           <input type="text" readonly value={url.decodedUrl} />
-                          {false?<AnimatedTick scale={0.1}/>:<span onClick={copyToClipboard} class="material-symbols-outlined" 
-                          style={{transform: 'translateY(4px)',color:'#8e24aa !important',
-                           cursor: 'pointer', color: 'grey', fontSize: '1.2rem' }} 
-                          title="copy">
+                          <span onClick={copyToClipboard} class="material-symbols-outlined"
+                            style={{
+                              transform: 'translateY(4px)', 
+                              cursor: 'pointer', color: 'grey', fontSize: '1.2rem'
+                            }}
+                            title="copy">
                             content_copy
-                          </span>}
+                          </span>
                         </div>
                       </div>
 
@@ -543,7 +556,7 @@ function newDesign() {
             </CardBody>
           </Card>
         </GridItem>
-        
+
       </GridContainer>
 
 
