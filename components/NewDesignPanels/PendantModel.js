@@ -28,6 +28,8 @@ const bevelProps = {
     curveSegments: 50,
 }
 
+let stoneCount = 0
+const _matrix = new THREE.Matrix4();
 extend({ TextGeometry })
 let textGeometry = new TextGeometry()
 
@@ -55,6 +57,7 @@ const pendantModel = () => {
     const light = useRef()
     const stone = useRef()
     const stoneGroup = useRef()
+    const instance = useRef()
     const dispatch = useDispatch()
 
     const font = useMemo(() => getFont(currFont), [currFont]);
@@ -62,9 +65,9 @@ const pendantModel = () => {
     const diamond = useMemo(() => loadStone(currStoneShape, currStoneColor, stoneGroup), [currStoneShape, currStoneColor]);
 
     useEffect(() => {
-        var helper = new THREE.Box3().setFromObject(pendant.current);
+        let helper = new THREE.Box3().setFromObject(pendant.current);
         console.log(helper)
-        setBoundingBoxPoints({...helper})
+        setBoundingBoxPoints(helper)
         textGeometry = new TextGeometry(text, {
             font,
             size: length,
@@ -85,8 +88,8 @@ const pendantModel = () => {
     const handlePointerMove = e => {
         if (!currStoneColor && !currStoneShape) return
         const point = e.point
-        console.log(boundingBoxPoints,point.z)
-        stone.current.position.set(point.x, point.y, 3.3)
+        let helper = new THREE.Box3().setFromObject(txtSurface.current);
+        stone.current.position.set(point.x, point.y, helper.max.z-(stoneSize/9.8))
         // stone.current.material.transparent = true
         // stone.current.material.opacity = .5
     }
@@ -99,24 +102,20 @@ const pendantModel = () => {
         dia.material.opacity = 1
         stoneGroup.current.add(dia)
 
-        const diaBSP = new ThreeBSP(dia);
-        const textBSP = new ThreeBSP(txtSurface.current);
-
-        const sub = textBSP.subtract(diaBSP);
-        const newGeometry = sub.toBufferGeometry();
-
-        // newMesh.material = txtSurface.current.material
-        textGeometry = newGeometry
-        console.log(txtSurface)
-        txtSurface.current.geometry = newGeometry
-        // txtSurface.current.position.copy(txtSurface.current.position) 
-
+        textGeometry = subtractGeometry(txtSurface.current, dia)
+        txtSurface.current.geometry = textGeometry
         txtSurface.current.position.set(0, 0, 0)
 
 
 
+        // _matrix.makeTranslation(dia.position);
 
-        // stoneGroup.current.add(newMesh)
+        // instance.current.setMatrixAt(stoneCount, _matrix);
+
+        // stoneCount++
+
+
+
 
         // txtSurface.current.geometry = dia.geometry
         // setStones([...stones,[point.x,point.y,5]])
@@ -166,8 +165,13 @@ const pendantModel = () => {
                     />
                 </mesh>
             </group>
+            {/* <instancedMesh position={[-50, 0, 5]} ref={instance} args={[
+                diamond.geometry,
+                diamond.material,
+                1000
+            ]}></instancedMesh> */}
             <group name='stoneGroup' ref={stoneGroup}>
-                <primitive scale={stoneSize / .5} ref={stone} object={diamond} color={currStoneColor} visible={false} />
+                <primitive scale={stoneSize/6} ref={stone} object={diamond} color={currStoneColor} visible={false} />
             </group>
             <Symbol boundingBoxPoints={boundingBoxPoints} />
         </>
@@ -181,7 +185,7 @@ export default pendantModel;
 
 //loading font
 const getFont = (currFont) => {
-    return new FontLoader().parse(fonts.filter(ff => ff.original_font_information.fullName === currFont)[0])
+    return new FontLoader().parse(fonts.filter(font => font.original_font_information.fullName === currFont)[0])
 }
 
 // loading FBX Stone Model 
@@ -199,4 +203,11 @@ const onPointerDown = (e, grp) => {
         grp.current.remove(targetStone)
     }
 
+}
+
+const subtractGeometry = (subtractFrom, subtrahendMesh)=>{
+    const subtrahendBSP = new ThreeBSP(subtrahendMesh);
+    const subtractFromBSP = new ThreeBSP(subtractFrom);
+    const sub = subtractFromBSP.subtract(subtrahendBSP);
+    return sub.toBufferGeometry();
 }

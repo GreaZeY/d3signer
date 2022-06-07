@@ -329,6 +329,7 @@ function newDesign() {
   const savePng = async () => {
     const dataURL = getCanvasImgData()
     const blob = await fetch(dataURL).then(r => r.blob());
+    console.log(blob)
     saveAs(blob, 'export.png');
   }
 
@@ -342,7 +343,6 @@ function newDesign() {
     },5000)
     
   }, [])
-  console.log(canvasImg)
   return (
     <>
       <Head>
