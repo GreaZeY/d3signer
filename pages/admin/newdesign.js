@@ -231,7 +231,7 @@ function newDesign() {
   const [open, setOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(1);
   const [exportLoading, setExportLoading] = useState(false)
-  const [canvasImg, setCanvasImage] = useState('')
+  const [canvasImg, setCanvasImage] = useState(' ')
 
   const { loading, designProps } = useSelector(state => state.designProps);
 
@@ -332,13 +332,17 @@ function newDesign() {
     saveAs(blob, 'export.png');
   }
 
-  const getCanvasImgData = () => {
+  const getCanvasImgData = (pixel) => {
     let canvas = document.getElementsByTagName('canvas')[0];
     return canvas.toDataURL('image/png');
   }
   useEffect(() => {
-    setCanvasImage(getCanvasImgData())
+    setTimeout(()=>{
+      setCanvasImage(getCanvasImgData())
+    },5000)
+    
   }, [])
+  console.log(canvasImg)
   return (
     <>
       <Head>
