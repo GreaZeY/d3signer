@@ -7,6 +7,9 @@ import { store } from "../../lib/store";
 import { Provider } from "react-redux";
 const D3panel = ({ model }) => {
   const controls = useRef()
+  const env = useRef()
+
+  console.log(env.current)
  
   return (
     <Canvas gl={{ preserveDrawingBuffer: true }} camera={{ position: [0, 0, 90] }} style={{ height: `78vh`, }} >
@@ -18,7 +21,7 @@ const D3panel = ({ model }) => {
       <pointLight position={[-1, -1, -10]} /> */}
       
       <Suspense fallback={"Loading"}>
-      <Environment files={'home.hdr'} path={'/assets/hdrMap/'} />
+      <Environment files={'home.hdr'} path={'/assets/hdrMap/'} ref={env} />
         <group ref={model}  >
           <Provider store={store} >
             <PendantModel/>

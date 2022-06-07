@@ -1,18 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
-
 import Button from "@material-ui/core/Button";
 import Save from "@material-ui/icons/Save";
 import Admin from "layouts/Admin.js";
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
 import Card from "components/Card/Card.js";
-
 import CardBody from "components/Card/CardBody.js";
 import { Typography } from "@material-ui/core";
 import MenuItem from '@material-ui/core/MenuItem';
-
 import CloudDownload from "@material-ui/icons/CloudDownload";
-import Link from 'next/link'
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
@@ -20,51 +16,24 @@ import Grow from '@material-ui/core/Grow';
 import Paper from '@material-ui/core/Paper';
 import Popper from '@material-ui/core/Popper';
 import MenuList from '@material-ui/core/MenuList';
-
 import { useDispatch, useSelector } from 'react-redux';
-
 import LeftPanel from "../../components/NewDesignPanels/LeftPanel";
 import D3panel from "../../components/NewDesignPanels/D3panel"
-
 import DotLoader from "components/loaders/dotLoader";
 import { saveAs } from 'file-saver';
 import Spinner from "components/loaders/spinner";
-
 import { saveDesign } from "../../lib/actions/designAction";
-import Router, { useRouter } from "next/router";
 import { useAlert } from 'react-alert';
 import ShareIcon from '@material-ui/icons/Share'
 import ReactModal from 'react-modal';
-import { ContentPasteIcon } from '@material-ui/icons'
-// import { useStyles } from "../../components/styles/newdesignStyles";
-
 import { makeStyles } from "@material-ui/core/styles";
-import { TextField } from "@material-ui/core";
-import { GetServerSideProps, NextPage } from "next"
-// import AnimatedTick from "../../components/Icons/AnimatedTick";
-import Container from '@material-ui/core/Container';
-import Box from '@material-ui/core/Box';
-import CustomInput from "components/CustomInput/CustomInput.js";
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import CloseIcon from '@material-ui/icons/Close';
-
-
-
-
-
-
-
+import Head from 'next/head'
 
 const options = ['STL', 'OBJ', 'PNG'];
-
-
-
 
 function newDesign() {
   const alert = useAlert()
   const dispatch = useDispatch();
-
-  const router = useRouter();
   console.log()
 
   const useStyles = makeStyles({
@@ -254,20 +223,15 @@ function newDesign() {
 
   const classes = useStyles()
 
-  const [modalShow, setModalShow] = useState(false);
-
-  // const [showTick, setShowTick] = useState(false);
-  const [url, setUrl] = useState({});
-
-
-  const [open, setOpen] = useState(false);
   const anchorRef = useRef(null);
   const model = useRef()
+
+  const [modalShow, setModalShow] = useState(false);
+  const [url, setUrl] = useState({});
+  const [open, setOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(1);
   const [exportLoading, setExportLoading] = useState(false)
-
-
-
+  const [canvasImg, setCanvasImage] = useState('')
 
   const { loading, designProps } = useSelector(state => state.designProps);
 
@@ -372,92 +336,101 @@ function newDesign() {
     let canvas = document.getElementsByTagName('canvas')[0];
     return canvas.toDataURL('image/png');
   }
+  useEffect(() => {
+    setCanvasImage(getCanvasImgData())
+  }, [])
   return (
-    <div>
+    <>
+      <Head>
+        <title>{`Editing: ${designProps.text}`}</title>
+        <meta property="og:title" content={`${designProps.text}`} />
+        <meta property="og:url" content={url.decodedUrl} />
+        <meta property="og:image" content={canvasImg} />
+      </Head>
+      <div>
 
-      <GridContainer spacing={2}>
-        <LeftPanel props={{ classes }} />
-        <GridItem xs={12} sm={12} md={9}>
-          <Card  >
-            <CardBody >
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <Typography>Preview</Typography>
-                <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', zIndex: `${modalShow ? '0' : '100'}` }}>
-                  <ButtonGroup variant="text" ref={anchorRef} aria-label="split button">
-                    <Button disabled={exportLoading} size="small" style={{ background: 'white', border: '1px solid #ECEBEB ' }} onClick={handleClick}>
-                      {
-                        exportLoading ?
-                          <Spinner style={{ width: '.7rem', height: '.7rem', marginRight: '.5rem' }} />
-                          :
-                          <CloudDownload style={{ marginTop: '0px', marginRight: '.5rem' }} />
+        <GridContainer spacing={2}>
+          <LeftPanel props={{ classes }} />
+          <GridItem xs={12} sm={12} md={9}>
+            <Card  >
+              <CardBody >
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <Typography>Preview</Typography>
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', zIndex: `${modalShow ? '0' : '100'}` }}>
+                    <ButtonGroup variant="text" ref={anchorRef} aria-label="split button">
+                      <Button disabled={exportLoading} size="small" style={{ background: 'white', border: '1px solid #ECEBEB ' }} onClick={handleClick}>
+                        {
+                          exportLoading ?
+                            <Spinner style={{ width: '.7rem', height: '.7rem', marginRight: '.5rem' }} />
+                            :
+                            <CloudDownload style={{ marginTop: '0px', marginRight: '.5rem' }} />
 
-                      } {options[selectedIndex]}</Button>
-                    <Button
-                      size="small"
-                      style={{ background: 'white', border: '1px solid #ECEBEB ' }}
-                      aria-controls={open ? 'split-button-menu' : undefined}
-                      aria-expanded={open ? 'true' : undefined}
-                      aria-label="select merge strategy"
-                      aria-haspopup="menu"
-                      onClick={handleToggle}
-                      disabled={exportLoading}
-                    >
-                      <ArrowDropDownIcon />
-                    </Button>
-                  </ButtonGroup>
-                  <Popper
-                    open={open}
-                    anchorEl={anchorRef.current}
-                    role={undefined}
-                    transition
-                    disablePortal
-                  >
-                    {({ TransitionProps, placement }) => (
-                      <Grow
-                        {...TransitionProps}
-                        style={{
-                          transformOrigin:
-                            placement === 'bottom' ? 'center top' : 'center bottom',
-                        }}
+                        } {options[selectedIndex]}</Button>
+                      <Button
+                        size="small"
+                        style={{ background: 'white', border: '1px solid #ECEBEB ' }}
+                        aria-controls={open ? 'split-button-menu' : undefined}
+                        aria-expanded={open ? 'true' : undefined}
+                        aria-label="select merge strategy"
+                        aria-haspopup="menu"
+                        onClick={handleToggle}
+                        disabled={exportLoading}
                       >
-                        <Paper >
-                          <ClickAwayListener onClickAway={handleClose}>
-                            <MenuList id="split-button-menu" autoFocusItem>
-                              {options.map((option, index) => (
-                                <MenuItem
-                                  key={option}
-                                  // style={{ zIndex: '100' }}
-                                  selected={index === selectedIndex}
-                                  onClick={(event) => handleMenuItemClick(event, index)}
-                                ><CloudDownload style={{ marginTop: '0px', marginRight: '.5rem' }} />
-                                  {option}
-                                </MenuItem>
-                              ))}
-                            </MenuList>
-                          </ClickAwayListener>
-                        </Paper>
-                      </Grow>
-                    )}
-                  </Popper>
+                        <ArrowDropDownIcon />
+                      </Button>
+                    </ButtonGroup>
+                    <Popper
+                      open={open}
+                      anchorEl={anchorRef.current}
+                      role={undefined}
+                      transition
+                      disablePortal
+                    >
+                      {({ TransitionProps, placement }) => (
+                        <Grow
+                          {...TransitionProps}
+                          style={{
+                            transformOrigin:
+                              placement === 'bottom' ? 'center top' : 'center bottom',
+                          }}
+                        >
+                          <Paper >
+                            <ClickAwayListener onClickAway={handleClose}>
+                              <MenuList id="split-button-menu" autoFocusItem>
+                                {options.map((option, index) => (
+                                  <MenuItem
+                                    key={option}
+                                    // style={{ zIndex: '100' }}
+                                    selected={index === selectedIndex}
+                                    onClick={(event) => handleMenuItemClick(event, index)}
+                                  ><CloudDownload style={{ marginTop: '0px', marginRight: '.5rem' }} />
+                                    {option}
+                                  </MenuItem>
+                                ))}
+                              </MenuList>
+                            </ClickAwayListener>
+                          </Paper>
+                        </Grow>
+                      )}
+                    </Popper>
 
-                  <ShareIcon onClick={() => setModalShow(true)} style={{ paddingLeft: '.5rem', paddingRight: '.5rem', marginLeft: '1rem', cursor: 'pointer' }} />
+                    <ShareIcon onClick={() => setModalShow(true)} style={{ paddingLeft: '.5rem', paddingRight: '.5rem', marginLeft: '1rem', cursor: 'pointer' }} />
 
 
-                  <Button size="small" startIcon={<Save />} onClick={handleSavePost}
-                    style={{ paddingLeft: '1rem', paddingRight: '1rem', marginLeft: '1rem', color: 'white', background: 'linear-gradient(60deg, #ab47bc, #8e24aa)' }}>
-                    Save
-                  </Button>
+                    <Button size="small" startIcon={<Save />} onClick={handleSavePost}
+                      style={{ paddingLeft: '1rem', paddingRight: '1rem', marginLeft: '1rem', color: 'white', background: 'linear-gradient(60deg, #ab47bc, #8e24aa)' }}>
+                      Save
+                    </Button>
 
 
 
-                  <ReactModal
-                    isOpen={modalShow}
-                    contentLabel="onRequestClose Example"
-                    onRequestClose={() => setModalShow(false)}
-                    shouldCloseOnOverlayClick={true}
-                    className={classes.modalStyle}
-                  >
-                    {/* <div>
+                    <ReactModal
+                      isOpen={modalShow}
+                      onRequestClose={() => setModalShow(false)}
+                      shouldCloseOnOverlayClick={true}
+                      className={classes.modalStyle}
+                    >
+                      {/* <div>
 
                       
                       <div className={classes.containerDiv}>
@@ -479,88 +452,87 @@ function newDesign() {
                       </div>
                     </div> */}
 
-                    <div className={classes.containerDiv}>
-                      <header className={classes.modalHeader}>
-                        <div><span style={{
-                          fontSize: '21px',
-                          fontWeight: 600
-                        }}>Share your design</span></div>
+                      <div className={classes.containerDiv}>
+                        <header className={classes.modalHeader}>
+                          <div><span style={{
+                            fontSize: '21px',
+                            fontWeight: 600
+                          }}>Share your design</span></div>
 
-                        <div className="close" style={{ fontSize: '2rem', cursor: 'pointer' }} onClick={() => setModalShow(false)}><i class="uil uil-times"></i></div>
-                      </header>
+                          <div className="close" style={{ fontSize: '2rem', cursor: 'pointer' }} onClick={() => setModalShow(false)}><i class="uil uil-times"></i></div>
+                        </header>
 
-                      <div style={{ padding: '0 1.5rem' }}>
-                        <div>
-                          <p style={{ fontSize: '16px' }}>Share this link via</p>
-                          <ul style={{ padding: 0 }} className={classes.linksCenter}>
-                            <a href={`https://www.facebook.com/sharer/sharer.php?u=${url.encodedUrl}`} target='_blank' className={classes.shareLink}><i style={{
-                              color: '#1877F2',
-                              borderColor: '#b7d4fb'
-                            }} className={`fab fa-facebook-f ${classes.shareIcons}`}></i></a>
-                            <a href={`https://twitter.com/intent/tweet?url=${url.encodedUrl}`} target='_blank' className={classes.shareLink}><i style={{
-                              color: '#46C1F6',
-                              borderColor: '#b6e7fc'
-                            }} className="fab fa-twitter"></i></a>
-                            {/* <a href="#" className={classes.shareLink}><i style={{
+                        <div style={{ padding: '0 1.5rem' }}>
+                          <div>
+                            <p style={{ fontSize: '16px' }}>Share this link via</p>
+                            <ul style={{ padding: 0 }} className={classes.linksCenter}>
+                              <a href={`https://www.facebook.com/sharer/sharer.php?u=${url.encodedUrl}`} target='_blank' className={classes.shareLink}><i style={{
+                                color: '#1877F2',
+                                borderColor: '#b7d4fb'
+                              }} className={`fab fa-facebook-f ${classes.shareIcons}`}></i></a>
+                              <a href={`https://twitter.com/intent/tweet?url=${url.encodedUrl}`} target='_blank' className={classes.shareLink}><i style={{
+                                color: '#46C1F6',
+                                borderColor: '#b6e7fc'
+                              }} className="fab fa-twitter"></i></a>
+                              {/* <a href="#" className={classes.shareLink}><i style={{
                               color: ' #e1306c',
                               borderColor: '#f5bccf'
                             }} className="fab fa-instagram"></i></a> */}
 
-                            <a href={`https://t.me/share/url?url=${url.encodedUrl}`} target='_blank' className={classes.shareLink}><i style={{
-                              color: '#0088cc',
-                              borderColor: '#b3e6ff'
-                            }} class="fab fa-telegram-plane"></i></a>
+                              <a href={`https://t.me/share/url?url=${url.encodedUrl}`} target='_blank' className={classes.shareLink}><i style={{
+                                color: '#0088cc',
+                                borderColor: '#b3e6ff'
+                              }} class="fab fa-telegram-plane"></i></a>
 
-                            <a href={`https://wa.me/?text=${url.encodedUrl}`} data-action="share/whatsapp/share" target='_blank' className={classes.shareLink}><i style={{
-                              color: '#25D366',
-                              borderColor: '#bef4d2'
-                            }} className="fab fa-whatsapp"></i></a>
-                          </ul>
+                              <a href={`https://wa.me/?text=${url.encodedUrl}`} data-action="share/whatsapp/share" target='_blank' className={classes.shareLink}><i style={{
+                                color: '#25D366',
+                                borderColor: '#bef4d2'
+                              }} className="fab fa-whatsapp"></i></a>
+                            </ul>
+                          </div>
+
+                          <p style={{ marginBottom: 0 }}>Or copy link</p>
+                          <div className={classes.field}>
+                            <i className="url-icon uil uil-link"></i>
+                            <input type="text" readonly value={url.decodedUrl} />
+                            <span onClick={copyToClipboard} class="material-symbols-outlined"
+                              style={{
+                                transform: 'translateY(4px)',
+                                cursor: 'pointer', color: 'grey', fontSize: '1.2rem'
+                              }}
+                              title="copy">
+                              content_copy
+                            </span>
+                          </div>
                         </div>
 
-                        <p style={{ marginBottom: 0 }}>Or copy link</p>
-                        <div className={classes.field}>
-                          <i className="url-icon uil uil-link"></i>
-                          <input type="text" readonly value={url.decodedUrl} />
-                          <span onClick={copyToClipboard} class="material-symbols-outlined"
-                            style={{
-                              transform: 'translateY(4px)', 
-                              cursor: 'pointer', color: 'grey', fontSize: '1.2rem'
-                            }}
-                            title="copy">
-                            content_copy
-                          </span>
-                        </div>
+
                       </div>
 
 
-                    </div>
-
-
-                  </ReactModal>
+                    </ReactModal>
 
 
 
+                  </div>
                 </div>
-              </div>
 
 
 
-              <D3panel model={model} />
-              {
-                loading && <div className={classes.loaderContainer} >
-                  <DotLoader />
-                </div>
-              }
+                <D3panel model={model} />
+                {
+                  loading && <div className={classes.loaderContainer} >
+                    <DotLoader />
+                  </div>
+                }
 
-            </CardBody>
-          </Card>
-        </GridItem>
+              </CardBody>
+            </Card>
+          </GridItem>
 
-      </GridContainer>
-
-
-    </div>
+        </GridContainer>
+      </div>
+    </>
   );
 }
 

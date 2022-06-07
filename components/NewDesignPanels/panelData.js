@@ -7,9 +7,28 @@ export const stoneShapes = [
 ] 
 
 export const stoneColor = [
-    'red',
-    'green',
+    'darkred',
+    'darkgreen',
     'yellow',
-    'silver',
+    'pink',
     'purple',
 ] 
+
+export const colors = [
+    {
+        name: 'Gold',
+        color: '#FFD700'
+    },
+    {
+        name: 'Silver',
+        color: '#C3C7C7'
+    },
+    {
+        name: 'Rose Gold',
+        color: '#B76E79'
+    },
+    {
+        name: 'Sterling Silver',
+        color: '#9EAFC2'
+    }
+]

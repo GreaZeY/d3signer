@@ -19,7 +19,7 @@ import { Typography } from "@material-ui/core";
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from "@material-ui/core/Button";
 import useCollapse from 'react-collapsed'
-import { stoneShapes, stoneColor } from "./panelData";
+import { stoneShapes, stoneColor,colors } from "./panelData";
 const shapeDir = '/assets/crimps/stoneShapes'
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 
@@ -27,25 +27,6 @@ import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 // import { importAll } from '../../lib/utils';
 // const stoneImages = importAll(require.context('public/assets/crimps/stoneImages', true, /\.(png)$/));
 // const imgDir = '/assets/crimps/stoneImages'
-
-const colors = [
-  {
-    name: 'Gold',
-    color: '#FFD700'
-  },
-  {
-    name: 'Silver',
-    color: '#C3C7C7'
-  },
-  {
-    name: 'Rose Gold',
-    color: '#B76E79'
-  },
-  {
-    name: 'Sterling Silver',
-    color: '#9EAFC2'
-  }
-]
 
 const LeftPanel = ({ props }) => {
 

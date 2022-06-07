@@ -6,6 +6,7 @@ import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
 import { extend, useFrame } from '@react-three/fiber'
 import { fonts } from './assets/allFonts';
 import { useSelector, useDispatch } from 'react-redux';
+
 import { MODEL_GENERATED, GENERATING_MODEL } from '../../lib/constants/designPropsConstants';
 // import { designProps as designPropsFunc } from '../../lib/actions/designAction';
 
@@ -62,7 +63,8 @@ const pendantModel = () => {
 
     useEffect(() => {
         var helper = new THREE.Box3().setFromObject(pendant.current);
-        setBoundingBoxPoints(helper)
+        console.log(helper)
+        setBoundingBoxPoints({...helper})
         textGeometry = new TextGeometry(text, {
             font,
             size: length,
@@ -83,7 +85,8 @@ const pendantModel = () => {
     const handlePointerMove = e => {
         if (!currStoneColor && !currStoneShape) return
         const point = e.point
-        stone.current.position.set(point.x, point.y, 3.5)
+        console.log(boundingBoxPoints,point.z)
+        stone.current.position.set(point.x, point.y, 3.3)
         // stone.current.material.transparent = true
         // stone.current.material.opacity = .5
     }
@@ -96,16 +99,16 @@ const pendantModel = () => {
         dia.material.opacity = 1
         stoneGroup.current.add(dia)
 
-        const sBSP = new ThreeBSP(dia);
-        const bBSP = new ThreeBSP(txtSurface.current);
+        const diaBSP = new ThreeBSP(dia);
+        const textBSP = new ThreeBSP(txtSurface.current);
 
-        const sub = bBSP.subtract(sBSP);
-        const newMesh = sub.toMesh();
+        const sub = textBSP.subtract(diaBSP);
+        const newGeometry = sub.toBufferGeometry();
 
         // newMesh.material = txtSurface.current.material
-        textGeometry = newMesh.geometry
+        textGeometry = newGeometry
         console.log(txtSurface)
-        txtSurface.current.geometry = newMesh.geometry
+        txtSurface.current.geometry = newGeometry
         // txtSurface.current.position.copy(txtSurface.current.position) 
 
         txtSurface.current.position.set(0, 0, 0)
@@ -197,4 +200,3 @@ const onPointerDown = (e, grp) => {
     }
 
 }
-
