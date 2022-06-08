@@ -19,14 +19,19 @@ import { Typography } from "@material-ui/core";
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from "@material-ui/core/Button";
 import useCollapse from 'react-collapsed'
-import { stoneShapes, stoneColor,colors } from "./panelData";
+import { stoneShapes, stoneColor, colors } from "./panelData";
 const shapeDir = '/assets/crimps/stoneShapes'
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 
+import Brilliant from "./StoneComponents/Brilliant";
+import Trilliant from "./StoneComponents/Trilliant";
+import Eight from "./StoneComponents/Eight"
+import Pear from "./StoneComponents/Pear";
+import StepCut from "./StoneComponents/StepCut"
 
-// import { importAll } from '../../lib/utils';
-// const stoneImages = importAll(require.context('public/assets/crimps/stoneImages', true, /\.(png)$/));
-// const imgDir = '/assets/crimps/stoneImages'
+
+
+
 
 const LeftPanel = ({ props }) => {
 
@@ -183,12 +188,13 @@ const LeftPanel = ({ props }) => {
           <div style={{ marginTop: '1rem' }}  >
             <div>
               <InputLabel className="settings-head">Add Symbol</InputLabel>
-              <div onClick={(e) => dispatch(designProps({ ...currDesign, symbol: e.target.innerHTML }))} className={classes.flexRow}>
-                <div title='heart' className={classes.symbol}  >♡</div>
+              <div onClick={(e) => dispatch(designProps({ ...currDesign, symbol: e.target.title }))} className={classes.flexRow}>
+                <div title='Heart' className={classes.symbol}  >♡</div>
                 <div title='Octothorp' className={classes.symbol}  >#</div>
                 <div title='Star' className={classes.symbol}  >☆</div>
                 <div title='Infinity' className={classes.symbol}  >∞</div>
                 <div title='Ampersand' className={classes.symbol}  >&</div>
+                <div title='Crown' className={classes.symbol}  >♛</div>
               </div>
             </div>
           </div>
@@ -208,27 +214,68 @@ const LeftPanel = ({ props }) => {
                 {
                   stoneShapes.map(shape => (
                     <div style={{ border: currStoneShape === shape && '2px solid #8e24aa' }} className={classes.stoneShape + ' ' + classes.flexRow}>
-                      <img className={classes.img} src={`${shapeDir}/${shape}.png`} alt={shape} />
+                      <img className={classes.img} src={`${shapeDir}/${shape}.svg`} alt={shape} />
+
                     </div>
                   ))
                 }
               </div>
+
             </div>
             {/* {
                 stoneImages.map(img=>(
                   <img src={img.src} style={{border:currStone===img.src&&'2px solid #8e24aa'}} className={classes.base} alt={img.src} />
                 ))
               } */}
-            <div style={{ marginTop: '.5rem' }} onClick={(e) => dispatch(designProps({ ...currDesign, currStoneColor: e.target.alt || e.target.style.background }))} >
+            <div style={{ marginTop: '.5rem' }}  >
               <InputLabel className="settings-head">Color</InputLabel>
               <div className={classes.flexRow} style={{ flexWrap: 'wrap' }} >
                 {
-                  stoneColor.map(color => (
-                    <div style={{ border: currStoneColor === color && '2px solid #8e24aa', background: color }} className={classes.stoneShape + ' ' + classes.flexRow}>
-                      {/* <img className={classes.img} src={`${imgDir}/${color}.png`} alt={color} /> */}
-                    </div>
-                  ))
+                  //   stoneColor.map(color => (
+                  //     // <div style={{ border: currStoneColor === color && '2px solid #8e24aa', background: color }} className={classes.stoneShape + ' ' + classes.flexRow}>
+                  //     //   {/* <img className={classes.img} src={`${imgDir}/${color}.png`} alt={color} /> */}
+                  //     // </div>
+
+
+                  // ))
+
+                  currStoneShape === 'brilliant' ?
+                    stoneColor.map(color => (
+                      <div
+                        
+                       style={{ border: currStoneColor === color && '2px solid #8e24aa', background: color }} className={classes.stoneShape + ' ' + classes.flexRow}>
+                        <Brilliant onClick={(e) => dispatch(designProps({ ...currDesign, currStoneColor: e.target.style.background }))}  width='1rem' color={color} />
+                      </div>
+                    ))
+                    :
+                    currStoneShape === 'trilliant' ?
+                      stoneColor.map(color => (
+                        <div style={{ border: currStoneColor === color && '2px solid #8e24aa', background: color }} className={classes.stoneShape + ' ' + classes.flexRow}>
+                          <Trilliant width='1rem' color={color} />
+                        </div>
+                      ))
+                      :
+                      currStoneShape === 'eight' ?
+
+                        stoneColor.map(color => (
+                          <div style={{ border: currStoneColor === color && '2px solid #8e24aa', background: color }} className={classes.stoneShape + ' ' + classes.flexRow}>
+
+                            <Eight width='1rem' color={color} />
+                          </div>))
+                        :
+                        currStoneShape === 'pear' ?
+                          stoneColor.map(color => (
+                            <div style={{ border: currStoneColor === color && '2px solid #8e24aa', background: color }} className={classes.stoneShape + ' ' + classes.flexRow}>
+                              <Pear width='1rem' color={color} />
+                            </div>))
+                          : stoneColor.map(color => (
+                            <div style={{ border: currStoneColor === color && '2px solid #8e24aa', background: color }} className={classes.stoneShape + ' ' + classes.flexRow}>
+                              <StepCut width='1rem' color={color} />
+                            </div>))
                 }
+
+
+
               </div>
             </div>
             <div style={{ marginTop: '.5rem' }}  >

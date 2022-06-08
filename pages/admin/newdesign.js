@@ -28,7 +28,7 @@ import ShareIcon from '@material-ui/icons/Share'
 import ReactModal from 'react-modal';
 import { makeStyles } from "@material-ui/core/styles";
 import Head from 'next/head'
-
+import axios from "axios";
 const options = ['STL', 'OBJ', 'PNG'];
 
 function newDesign() {
@@ -104,6 +104,7 @@ function newDesign() {
       width: '1rem',
       height: '1rem',
       objectFit: 'cover',
+
     },
     symbol: {
       border: '1px solid #ECEBEB',
@@ -243,6 +244,7 @@ function newDesign() {
 
 
   const handleClick = async () => {
+    axios.post('/api/downloadcount',{time:Date.now()})
     setExportLoading(true)
     let modelClone = model.current.clone()
     let stoneGroup = modelClone.children.filter(kid => (kid.type === 'Group' && kid.name === "stoneGroup"))
@@ -337,19 +339,19 @@ function newDesign() {
     let canvas = document.getElementsByTagName('canvas')[0];
     return canvas.toDataURL('image/png');
   }
-  useEffect(() => {
-    setTimeout(()=>{
-      setCanvasImage(getCanvasImgData())
-    },5000)
+  // useEffect(() => {
+  //   setTimeout(()=>{
+  //     setCanvasImage(getCanvasImgData())
+  //   },5000)
     
-  }, [])
+  // }, [])
   return (
     <>
       <Head>
         <title>{`Editing: ${designProps.text}`}</title>
         <meta property="og:title" content={`${designProps.text}`} />
         <meta property="og:url" content={url.decodedUrl} />
-        <meta property="og:image" content={canvasImg} />
+        {/* <meta property="og:image" content={canvasImg} /> */}
       </Head>
       <div>
 

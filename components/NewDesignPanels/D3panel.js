@@ -9,10 +9,10 @@ const D3panel = ({ model }) => {
   const controls = useRef()
   const env = useRef()
 
-  console.log(env.current)
+
  
   return (
-    <Canvas gl={{ preserveDrawingBuffer: true }} camera={{ position: [0, 0, 90] }} style={{ height: `78vh`, }} >
+    <Canvas gl={{ preserveDrawingBuffer: true }}camera={{ position: [0, 0, 90] }} style={{ height: `78vh`, }} >
       <OrbitControls enableDamping ref={controls} />
       {/* <ambientLight intensity={1} /> */}
       {/* <pointLight intensity={.2} position={[-50, 0, 0]} />
@@ -24,7 +24,7 @@ const D3panel = ({ model }) => {
       <Environment files={'home.hdr'} path={'/assets/hdrMap/'} ref={env} />
         <group ref={model}  >
           <Provider store={store} >
-            <PendantModel/>
+            <PendantModel controls={controls} />
             <Bails controls={controls} />
           </Provider >
         </group>
@@ -35,3 +35,8 @@ const D3panel = ({ model }) => {
 }
 
 export default D3panel;
+
+
+// room env
+// const pmremGenerator = new THREE.PMREMGenerator(gl);
+// scene.environment = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture;

@@ -4,20 +4,21 @@ import * as THREE from 'three'
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry'
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
 import { extend, useFrame } from '@react-three/fiber'
+import {Html} from '@react-three/drei'
 import { fonts } from './assets/allFonts';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { MODEL_GENERATED, GENERATING_MODEL } from '../../lib/constants/designPropsConstants';
+// import { MODEL_GENERATED, GENERATING_MODEL } from '../../lib/constants/designPropsConstants';
 // import { designProps as designPropsFunc } from '../../lib/actions/designAction';
 
 import Symbol from './Symbols.js'
-import { useFBX, Environment } from '@react-three/drei';
+import { useFBX } from '@react-three/drei';
 import { ThreeBSP } from './three-csg'
 
 // import Diamond from './Diamond'
 // import { importAll } from '../../lib/utils';
 // const stoneModels = importAll(require.context('public/assets/crimps/fbx', false, /\.(fbx)$/));
-// console.log(stoneModels)
+
 
 let targetStone = null
 const bevelProps = {
@@ -28,12 +29,11 @@ const bevelProps = {
     curveSegments: 50,
 }
 
-let stoneCount = 0
-const _matrix = new THREE.Matrix4();
+// let stoneCount = 0
 extend({ TextGeometry })
 let textGeometry = new TextGeometry()
 
-const pendantModel = () => {
+const pendantModel = ({ controls}) => {
 
     const { designProps } = useSelector(state => state.designProps)
     const {
@@ -50,30 +50,41 @@ const pendantModel = () => {
 
     const camera = useRef()
 
-    const [boundingBoxPoints, setBoundingBoxPoints] = useState({ max: {}, min: {} })
+    // const [boundingBoxPoints, setBoundingBoxPoints] = useState({ max: {}, min: {} })
 
     const txtSurface = useRef()
     const pendant = useRef()
     const light = useRef()
     const stone = useRef()
     const stoneGroup = useRef()
-    const instance = useRef()
-    const dispatch = useDispatch()
+    // const instance = useRef()
+    // const dispatch = useDispatch()
 
     const font = useMemo(() => getFont(currFont), [currFont]);
 
     const diamond = useMemo(() => loadStone(currStoneShape, currStoneColor, stoneGroup), [currStoneShape, currStoneColor]);
 
     useEffect(() => {
-        let helper = new THREE.Box3().setFromObject(pendant.current);
-        console.log(helper)
-        setBoundingBoxPoints(helper)
         textGeometry = new TextGeometry(text, {
             font,
             size: length,
             height: thickness,
             ...bevelProps
         })
+
+    //     setTimeout(()=>{
+
+    //     if (!txtSurface.current.geometry) return console.log('returned from tto')
+        
+    //     // new THREE.Box3().setFromObject(txtSurface.current).getCenter(txtSurface.current.position).multiplyScalar(-1)
+
+    //         let box3 = new THREE.Box3().setFromObject(txtSurface.current);
+    //     console.log(box3)
+    //     txtSurface.current.position.x = (box3.max.x - box3.min.x) / 2;
+    //     txtSurface.current.position.y = (box3.max.y - box3.min.y) / 2;
+    // },5000)
+
+
     }, [text, length, font, thickness, base])
 
     // useEffect(() => {
@@ -107,10 +118,21 @@ const pendantModel = () => {
         txtSurface.current.position.set(0, 0, 0)
 
 
+        // const _matrix = new THREE.Matrix4();
 
-        // _matrix.makeTranslation(dia.position);
+        
+        // _matrix.makeTranslation(dia.position.x, dia.position.y, dia.position.z);
+
+        // _matrix.makeRotationX(Math.PI / 2) 
+
 
         // instance.current.setMatrixAt(stoneCount, _matrix);
+        
+        
+        // instance.current.instanceMatrix.needsUpdate = true;
+
+        // // instance.current.position.copy(txtSurface.current.position)
+
 
         // stoneCount++
 
@@ -154,18 +176,24 @@ const pendantModel = () => {
             <perspectiveCamera ref={camera} />
 
             <group name='pendant' ref={pendant} >
-                <mesh geometry={textGeometry} position={[-50, 0, 0]} ref={txtSurface} onClick={placeStone} onPointerMove={handlePointerMove} onPointerEnter={() => diamond.visible = true} onPointerLeave={() => diamond.visible = false}>
-                    {/* <bufferGeometry geometry={new THREE.SphereGeometry(30)}  /> */}
+                <mesh 
+                geometry={textGeometry} 
+                position={[-50, 0, 0]} 
+                ref={txtSurface} 
+                onClick={placeStone} 
+                onPointerMove={handlePointerMove} 
+                onPointerEnter={() => diamond.visible = true} 
+                onPointerLeave={() => diamond.visible = false}>
+                    
                     <meshStandardMaterial
                         attach='material'
                         color={base}
-                        wireframe={false}
                         metalness={.98}
                         roughness={.15}
                     />
                 </mesh>
             </group>
-            {/* <instancedMesh position={[-50, 0, 5]} ref={instance} args={[
+            {/* <instancedMesh position={[-50, 0, 10]} ref={instance} args={[
                 diamond.geometry,
                 diamond.material,
                 1000
@@ -173,7 +201,14 @@ const pendantModel = () => {
             <group name='stoneGroup' ref={stoneGroup}>
                 <primitive scale={stoneSize/6} ref={stone} object={diamond} color={currStoneColor} visible={false} />
             </group>
-            <Symbol boundingBoxPoints={boundingBoxPoints} />
+            {/* {txtSurface.current && <Symbol txtSurface={txtSurface} controls={controls}/>} */}
+
+            {/* <Html position={[-50, 0, 0]}>
+                <div style={{background:'black',color:'white',position:'fixed',top:0,right:0}} >
+                    Length:20mm
+                </div>
+                
+            </Html> */}
         </>
     )
 }
