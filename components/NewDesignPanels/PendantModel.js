@@ -4,7 +4,7 @@ import * as THREE from 'three'
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry'
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
 import { extend, useFrame } from '@react-three/fiber'
-import {Html} from '@react-three/drei'
+import { Html } from '@react-three/drei'
 import { fonts } from './assets/allFonts';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -31,9 +31,9 @@ const bevelProps = {
 
 // let stoneCount = 0
 extend({ TextGeometry })
-let textGeometry = new TextGeometry()
+// let textGeometry = new TextGeometry()
 
-const pendantModel = ({ controls}) => {
+const pendantModel = ({ controls }) => {
 
     const { designProps } = useSelector(state => state.designProps)
     const {
@@ -65,28 +65,50 @@ const pendantModel = ({ controls}) => {
     const diamond = useMemo(() => loadStone(currStoneShape, currStoneColor, stoneGroup), [currStoneShape, currStoneColor]);
 
     useEffect(() => {
-        setBoundingBoxPoints(null)
-        textGeometry = new TextGeometry(text, {
-            font,
-            size: length,
-            height: thickness,
-            ...bevelProps
-        })
-
-    //     setTimeout(()=>{
-
-    //     if (!txtSurface.current.geometry) return console.log('returned from tto')
-        
-    //     // new THREE.Box3().setFromObject(txtSurface.current).getCenter(txtSurface.current.position).multiplyScalar(-1)
-
-    //         let box3 = new THREE.Box3().setFromObject(txtSurface.current);
-    //     console.log(box3)
-    //     txtSurface.current.position.x = (box3.max.x - box3.min.x) / 2;
-    //     txtSurface.current.position.y = (box3.max.y - box3.min.y) / 2;
-    // },5000)
+   
 
 
-    }, [text, length, font, thickness, base])
+        if (!txtSurface.current.geometry) return console.log('returned from tto')
+
+        // new THREE.Box3().setFromObject(pendant.current).getCenter(pendant.current.position).multiplyScalar(-1)
+
+        // pendant.current.position.set(-50,0,0)
+
+        // txtSurface.current.geometry.computeBoundingBox()
+        //     let box3 =txtSurface.current.geometry.boundingBox
+        // console.log(box3)
+        // pendant.current.position.x = (box3.max.x - box3.min.x) / 2;
+        // pendant.current.position.y = (box3.max.y - box3.min.y) / 2;
+
+
+        var cent = new THREE.Vector3();
+        var size = new THREE.Vector3();
+        var bbox = new THREE.Box3().setFromObject(txtSurface.current);
+        bbox.getCenter(cent);
+        bbox.getSize(size);
+    
+
+    
+        //Now get the updated/scaled bounding box again..
+        bbox.setFromObject(txtSurface.current);
+        bbox.getCenter(cent);
+        bbox.getSize(size);
+    
+        txtSurface.current.position.x = -cent.x;
+        txtSurface.current.position.y = 0;
+        txtSurface.current.position.z = -cent.z;
+
+
+
+
+
+
+
+const box = new THREE.BoxHelper( pendant.current, 'red' );
+console.log(box)
+// pendant.current.add( box );
+
+    }, [text, length, font, thickness])
 
     // useEffect(() => {
     //     stone.current?.material?.color.set(currStoneColor)
@@ -101,7 +123,7 @@ const pendantModel = ({ controls}) => {
         if (!currStoneColor && !currStoneShape) return
         const point = e.point
         let helper = new THREE.Box3().setFromObject(txtSurface.current);
-        stone.current.position.set(point.x, point.y, helper.max.z-(stoneSize/9.8))
+        stone.current.position.set(point.x, point.y, helper.max.z - (stoneSize / 9.8))
         // stone.current.material.transparent = true
         // stone.current.material.opacity = .5
     }
@@ -114,22 +136,22 @@ const pendantModel = ({ controls}) => {
         dia.material.opacity = 1
         stoneGroup.current.add(dia)
 
-        textGeometry = subtractGeometry(txtSurface.current, dia)
-        txtSurface.current.geometry = textGeometry
-        txtSurface.current.position.set(0, 0, 0)
+        // textGeometry = subtractGeometry(txtSurface.current, dia)
+        // txtSurface.current.geometry = textGeometry
+        // txtSurface.current.position.set(0, 0, 0)
 
 
         // const _matrix = new THREE.Matrix4();
 
-        
+
         // _matrix.makeTranslation(dia.position.x, dia.position.y, dia.position.z);
 
         // _matrix.makeRotationX(Math.PI / 2) 
 
 
         // instance.current.setMatrixAt(stoneCount, _matrix);
-        
-        
+
+
         // instance.current.instanceMatrix.needsUpdate = true;
 
         // // instance.current.position.copy(txtSurface.current.position)
@@ -173,19 +195,19 @@ const pendantModel = ({ controls}) => {
 
     return (
         <>
-            <spotLight  angle={1} penumbra={0} ref={light} intensity={.5} />
+            <spotLight angle={1} penumbra={0} ref={light} intensity={.5} />
             <perspectiveCamera ref={camera} />
 
             <group name='pendant' ref={pendant} >
-                <mesh 
-                geometry={textGeometry} 
-                position={[-50, 0, 0]} 
-                ref={txtSurface} 
-                onClick={placeStone} 
-                onPointerMove={handlePointerMove} 
-                onPointerEnter={() => diamond.visible = true} 
-                onPointerLeave={() => diamond.visible = false}>
-                    
+                <mesh
+                    position={[0, 0, 0]}
+                    ref={txtSurface}
+                    onClick={placeStone}
+                    onPointerMove={handlePointerMove}
+                    onPointerEnter={() => diamond.visible = true}
+                    onPointerLeave={() => diamond.visible = false}>
+                    <textGeometry args={[text, { font, size: length, height: thickness, ...bevelProps }]} />
+
                     <meshStandardMaterial
                         attach='material'
                         color={base}
@@ -200,9 +222,9 @@ const pendantModel = ({ controls}) => {
                 1000
             ]}></instancedMesh> */}
             <group name='stoneGroup' ref={stoneGroup}>
-                <primitive scale={stoneSize/6} ref={stone} object={diamond} color={currStoneColor} visible={false} />
+                <primitive scale={stoneSize / 6} ref={stone} object={diamond} color={currStoneColor} visible={false} />
             </group>
-            {txtSurface.current && <Symbol txtSurface={txtSurface} controls={controls}/>}
+            {txtSurface.current && <Symbol txtSurface={txtSurface} controls={controls} />}
 
             {/* <Html position={[-50, 0, 0]}>
                 <div style={{background:'black',color:'white',position:'fixed',top:0,right:0}} >
@@ -241,7 +263,7 @@ const onPointerDown = (e, grp) => {
 
 }
 
-const subtractGeometry = (subtractFrom, subtrahendMesh)=>{
+const subtractGeometry = (subtractFrom, subtrahendMesh) => {
     const subtrahendBSP = new ThreeBSP(subtrahendMesh);
     const subtractFromBSP = new ThreeBSP(subtractFrom);
     const sub = subtractFromBSP.subtract(subtrahendBSP);
