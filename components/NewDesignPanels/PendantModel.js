@@ -201,7 +201,7 @@ const pendantModel = ({ controls}) => {
             <group name='stoneGroup' ref={stoneGroup}>
                 <primitive scale={stoneSize/6} ref={stone} object={diamond} color={currStoneColor} visible={false} />
             </group>
-            {/* {txtSurface.current && <Symbol txtSurface={txtSurface} controls={controls}/>} */}
+            {txtSurface.current && <Symbol txtSurface={txtSurface} controls={controls}/>}
 
             {/* <Html position={[-50, 0, 0]}>
                 <div style={{background:'black',color:'white',position:'fixed',top:0,right:0}} >

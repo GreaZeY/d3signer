@@ -241,37 +241,32 @@ const LeftPanel = ({ props }) => {
 
                   currStoneShape === 'brilliant' ?
                     stoneColor.map(color => (
-                      <div
-                        
-                       style={{ border: currStoneColor === color && '2px solid #8e24aa', background: color }} className={classes.stoneShape + ' ' + classes.flexRow}>
-                        <Brilliant onClick={(e) => dispatch(designProps({ ...currDesign, currStoneColor: e.target.style.background }))}  width='1rem' color={color} />
-                      </div>
+
+
+                      <Brilliant onClick={(e) => dispatch(designProps({ ...currDesign, currStoneColor: e.target.style.background }))} width='1rem' color={color} />
+
                     ))
                     :
                     currStoneShape === 'trilliant' ?
                       stoneColor.map(color => (
-                        <div style={{ border: currStoneColor === color && '2px solid #8e24aa', background: color }} className={classes.stoneShape + ' ' + classes.flexRow}>
-                          <Trilliant width='1rem' color={color} />
-                        </div>
+                        <Trilliant width='1rem' color={color} />
+
                       ))
                       :
                       currStoneShape === 'eight' ?
 
                         stoneColor.map(color => (
-                          <div style={{ border: currStoneColor === color && '2px solid #8e24aa', background: color }} className={classes.stoneShape + ' ' + classes.flexRow}>
 
-                            <Eight width='1rem' color={color} />
-                          </div>))
+                          <Eight width='1rem' color={color} />
+                        ))
                         :
                         currStoneShape === 'pear' ?
                           stoneColor.map(color => (
-                            <div style={{ border: currStoneColor === color && '2px solid #8e24aa', background: color }} className={classes.stoneShape + ' ' + classes.flexRow}>
-                              <Pear width='1rem' color={color} />
-                            </div>))
+                            <Pear width='1rem' color={color} />
+                          ))
                           : stoneColor.map(color => (
-                            <div style={{ border: currStoneColor === color && '2px solid #8e24aa', background: color }} className={classes.stoneShape + ' ' + classes.flexRow}>
-                              <StepCut width='1rem' color={color} />
-                            </div>))
+                            <StepCut width='1rem' color={color} />
+                          ))
                 }
 
 
