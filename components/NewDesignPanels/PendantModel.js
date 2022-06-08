@@ -50,7 +50,7 @@ const pendantModel = ({ controls}) => {
 
     const camera = useRef()
 
-    // const [boundingBoxPoints, setBoundingBoxPoints] = useState({ max: {}, min: {} })
+    const [boundingBoxPoints, setBoundingBoxPoints] = useState({ max: {}, min: {} })
 
     const txtSurface = useRef()
     const pendant = useRef()
@@ -65,6 +65,7 @@ const pendantModel = ({ controls}) => {
     const diamond = useMemo(() => loadStone(currStoneShape, currStoneColor, stoneGroup), [currStoneShape, currStoneColor]);
 
     useEffect(() => {
+        setBoundingBoxPoints(null)
         textGeometry = new TextGeometry(text, {
             font,
             size: length,
