@@ -92,6 +92,12 @@ const LeftPanel = ({ props }) => {
     }))
   }, [bails])
 
+  const setStoneColor = e => {
+    if (e.target.tagName !== 'svg' || e.target.tagName !== 'path')
+      dispatch(designProps({ ...currDesign, currStoneColor: e.target.getAttribute('fill') }))
+
+  }
+
 
   const [showTip, setShowTip] = useState(false)
 
@@ -229,7 +235,7 @@ const LeftPanel = ({ props }) => {
               } */}
             <div style={{ marginTop: '.5rem' }}  >
               <InputLabel className="settings-head">Color</InputLabel>
-              <div className={classes.flexRow} style={{ flexWrap: 'wrap' }} >
+              <div className={classes.flexRow} onClick={setStoneColor} style={{ flexWrap: 'wrap' }} >
                 {
                   //   stoneColor.map(color => (
                   //     // <div style={{ border: currStoneColor === color && '2px solid #8e24aa', background: color }} className={classes.stoneShape + ' ' + classes.flexRow}>
@@ -241,22 +247,16 @@ const LeftPanel = ({ props }) => {
 
                   currStoneShape === 'brilliant' ?
                     stoneColor.map(color => (
-
-
-                      <Brilliant onClick={(e) => dispatch(designProps({ ...currDesign, currStoneColor: e.target.style.background }))} width='1rem' color={color} />
-
+                      <Brilliant width='1rem' color={color} />
                     ))
                     :
                     currStoneShape === 'trilliant' ?
                       stoneColor.map(color => (
                         <Trilliant width='1rem' color={color} />
-
                       ))
                       :
                       currStoneShape === 'eight' ?
-
                         stoneColor.map(color => (
-
                           <Eight width='1rem' color={color} />
                         ))
                         :
@@ -268,8 +268,6 @@ const LeftPanel = ({ props }) => {
                             <StepCut width='1rem' color={color} />
                           ))
                 }
-
-
 
               </div>
             </div>
