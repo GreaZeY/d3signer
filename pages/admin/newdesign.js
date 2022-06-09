@@ -232,7 +232,7 @@ function newDesign() {
   const [open, setOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(1);
   const [exportLoading, setExportLoading] = useState(false)
-  const [canvasImg, setCanvasImage] = useState(' ')
+  // const [canvasImg, setCanvasImage] = useState(' ')
 
   const { loading, designProps } = useSelector(state => state.designProps);
 
@@ -244,7 +244,7 @@ function newDesign() {
 
 
   const handleClick = async () => {
-    axios.post('/api/downloadcount',{time:Date.now()})
+    axios.post('/api/downloadcount', { time: Date.now() })
     setExportLoading(true)
     let modelClone = model.current.clone()
     let stoneGroup = modelClone.children.filter(kid => (kid.type === 'Group' && kid.name === "stoneGroup"))
@@ -329,22 +329,40 @@ function newDesign() {
   }
 
   const savePng = async () => {
-    const dataURL = getCanvasImgData()
+    const dataURL = await getCanvasImgData()
     const blob = await fetch(dataURL).then(r => r.blob());
-    console.log(blob)
+    console.log(dataURL, blob)
     saveAs(blob, 'export.png');
   }
 
-  const getCanvasImgData = (pixel) => {
+  const getCanvasImgData = async () => {
     let canvas = document.getElementsByTagName('canvas')[0];
-    return canvas.toDataURL('image/png');
+    const canvas2d = document.createElement('canvas')
+    var context = canvas2d.getContext("2d");
+    canvas2d.width = "700"
+    canvas2d.height = "500"
+    context.font = "12px Rubik";
+    const imObjFunction = () => {
+      return new Promise((resolve, reject) => {
+        var imageObj = new Image();
+        imageObj.onload = function () {
+          context.drawImage(imageObj, 10, 10);
+          context.fillText(`Length: ${designProps.length}`, 600, 20);
+          context.fillText(`Width: ${designProps.width}`, 600, 35);
+          context.fillText(`Thickness: ${designProps.thickness}`, 600, 50);
+          context.fillText(`Stone Size: ${designProps.stoneSize}`, 600, 65);
+          resolve(true)
+        };
+        imageObj.src = canvas.toDataURL('image/png');
+      })
+    }
+    const isDrawn = await imObjFunction()
+    // document.body.appendChild(canvas2d)
+    if (isDrawn) return canvas2d.toDataURL('image/png');
+
+    alert.error('An Error Occurred!')
   }
-  // useEffect(() => {
-  //   setTimeout(()=>{
-  //     setCanvasImage(getCanvasImgData())
-  //   },5000)
-    
-  // }, [])
+
   return (
     <>
       <Head>
