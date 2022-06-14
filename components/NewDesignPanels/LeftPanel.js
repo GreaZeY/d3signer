@@ -19,7 +19,7 @@ import { Typography } from "@material-ui/core";
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from "@material-ui/core/Button";
 import useCollapse from 'react-collapsed'
-import { stoneShapes, stoneColor, colors } from "./panelData";
+import { stoneShapes, stoneColor, colors, bailType } from "./panelData";
 const shapeDir = '/assets/crimps/stoneShapes'
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 
@@ -49,9 +49,9 @@ const LeftPanel = ({ props }) => {
     width,
     thickness,
     font,
-    currStoneColor,
     currStoneShape,
     stoneSize,
+    currBailType
   } = currDesign;
 
   const dispatch = useDispatch()
@@ -289,14 +289,29 @@ const LeftPanel = ({ props }) => {
               />
             </div>
           </fieldset>
-          <div>
+          <div style={{ marginTop: '1rem' }} >
             <div style={{ width: '100%', marginTop: '1rem', justifyContent: 'space-between' }} className={classes.flexRow}>
+              
               <Button disabled={true} {...getToggleProps()} size="small" >
                 {(isExpanded ? <><KeyboardArrowUpIcon /></> : <><KeyboardArrowDownIcon /></>)} Bails {`(${bails.length})`}
               </Button>
               <Button size="small" onClick={setBailNumber} > <AddIcon /></Button>
             </div>
             <section {...getCollapseProps()}>
+              <InputLabel style={{ marginLeft: '1rem' }} className="settings-head">Bails</InputLabel>
+              <div className={classes.flexRow} style={{ flexWrap: 'wrap',marginLeft:'1rem' }} >
+                {
+                  bailType.map(bail => (
+                    <div
+                      onClick={(e) => dispatch(designProps({ ...currDesign, currBailType: e.target.alt }))}
+                      key={bail}
+                      style={{ border: currBailType === bail && '3px solid #8e24aa' }}
+                      className={classes.bailType + ' ' + classes.flexRow}>
+                      <img width={25} height={25} src={`/assets/bails/img/${bail}.png`} alt={bail} />
+                    </div>
+                  ))
+                }
+              </div>
 
               {
                 bails.map((bail, i) => <Bail key={i} index={i} bails={bails} setBailsData={bailsCount} classes={classes} />)

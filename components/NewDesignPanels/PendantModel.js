@@ -178,6 +178,7 @@ const pendantModel = ({ controls}) => {
 
             <group name='pendant' ref={pendant} >
                 <mesh 
+                scale={[2,2,1]}
                 geometry={textGeometry} 
                 position={[-50, 0, 0]} 
                 ref={txtSurface} 

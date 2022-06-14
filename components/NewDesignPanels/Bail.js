@@ -1,19 +1,21 @@
-import { useRef, useEffect } from 'react'
+import { useMemo } from 'react'
+import { useLoader } from '@react-three/fiber'
+import { STLLoader } from 'three/examples/jsm/loaders/STLLoader'
+
 
 const Bail = (props) => {
 
-    const { position, args, base, setSelectedBail } = props
-    const bailRef = useRef()
+    const { position, base, transform, currBailType } = props
 
-    useEffect(() => {
-        setSelectedBail(bailRef)
-    }, [])
+    const bailGeometry = useMemo(() => loadBail(currBailType), [currBailType]);
+    console.log(bailGeometry)
+
 
 
     return (
         <>
-            <mesh ref={bailRef} style={{ cursor: 'pointer' }} onClick={() => setSelectedBail(bailRef)} position={position} >
-                <torusGeometry args={args} />
+            <mesh rotation={[0, 3.14 / 2, 0]} geometry={bailGeometry.clone()} style={{ cursor: 'pointer' }} onClick={(e) => transform.current.attach(e.object)} position={position} >
+                {/* <torusGeometry args={args} /> */}
                 <meshStandardMaterial 
                 attach="material" 
                 color={base} 
@@ -26,3 +28,7 @@ const Bail = (props) => {
 }
 
 export default Bail
+
+const loadBail = bail =>{
+    return useLoader(STLLoader, `/assets/bails/stl/${bail}.stl`)
+}

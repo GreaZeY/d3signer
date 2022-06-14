@@ -32,3 +32,9 @@ export const colors = [
         color: '#9EAFC2'
     }
 ]
+
+export const bailType = [
+    'bail1',
+    'bail2',
+    'bail3',
+] 

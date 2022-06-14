@@ -100,6 +100,16 @@ function newDesign() {
         border: '2px Solid gray',
       }
     },
+    bailType: {
+      borderRadius: '50%',
+      cursor: 'pointer',
+      border: '3px Solid white',
+      transition: '.5s',
+      marginRight: '.2rem',
+      "&:hover": {
+        border: '3px Solid gray',
+      }
+    },
     img: {
       width: '1rem',
       height: '1rem',
