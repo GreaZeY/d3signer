@@ -26,6 +26,9 @@ import { saveDesign } from "../../lib/actions/designAction";
 import { useAlert } from 'react-alert';
 import ShareIcon from '@material-ui/icons/Share'
 import ReactModal from 'react-modal';
+import Fab from '@material-ui/core/Fab';
+import SettingsIcon from '@material-ui/icons/Settings';
+
 import { makeStyles } from "@material-ui/core/styles";
 import Head from 'next/head'
 import axios from "axios";
@@ -208,7 +211,6 @@ function newDesign() {
 
     field: {
       '& input': {
-
         border: 'none',
         outline: 'none',
         fontSize: '15px'
@@ -216,7 +218,6 @@ function newDesign() {
       margin: '1rem 0',
       borderRadius: '4px',
       padding: '0 0 0 5px',
-
       border: '2px solid #e1e1e1'
     }
 
@@ -225,6 +226,13 @@ function newDesign() {
       display: 'flex',
       justifyContent: 'space-around',
       alignItems: 'center',
+
+    },
+    fabButton:{
+      position:'fixed',
+      bottom:0,
+      right:0,
+      background: 'linear-gradient(60deg, #ab47bc, #8e24aa)',
 
     }
 
@@ -588,6 +596,12 @@ function newDesign() {
 
         </GridContainer>
       </div>
+      {
+        windowWidth <= 960 && <Fab className={classes.fabButton} color="secondary" variant="extended" onClick={() => window.scrollTo(0, document.body.scrollHeight)} >
+          <SettingsIcon sx={{ mr: 1 }} />
+          Navigate to Settings
+        </Fab>
+      }
     </>
   );
 }

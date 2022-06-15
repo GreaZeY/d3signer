@@ -3,11 +3,43 @@ import { TransformControls } from 'three/examples/jsm/controls/TransformControls
 import { useRef, useEffect } from 'react'
 import { useSelector } from 'react-redux';
 import { extend, useThree } from '@react-three/fiber'
-// import { Controls, useControl } from 'react-three-gui';
+import { useControl } from 'react-three-gui';
+import {ChangeMode} from '../ThreeGUIControls/guiContolsComponents'
+
+// import {GUI} from 'three/examples/jsm/libs/lil-gui.module.min.js'
+
+// const gui = new GUI()
+// const cubeFolder = gui.addFolder('Cube')
+// cubeFolder.add(0, 'x', 0, Math.PI * 2)
+// cubeFolder.add(0, 'y', 0, Math.PI * 2)
+// cubeFolder.add(0, 'z', 0, Math.PI * 2)
+// cubeFolder.open()
+
 
 extend({ TransformControls })
 
-const Bails = ({ controls }) => {
+const Bails = ({ controls, guiControls }) => {
+    // guiControls.current.style.display = 'none'
+
+    // const rotationX = useControl('Rotation X', { type: 'number' });
+    // const rotationY = useControl('Rotation Y', { type: 'number' });
+    // const rotationZ = useControl('Rotation Z', { type: 'number' });
+
+   
+
+    let mode = useControl('Mode1', {
+        type: 'custom',
+        value: 'translate',
+        component: ChangeMode,
+    });
+
+    const closeControls = ()=>{
+        transform.current?.detach()
+        guiControls.current.style.display = 'none'
+    }
+    
+    useControl('Close', { type: 'button', onClick:closeControls });
+
     const {
         camera,
         gl: { domElement }
@@ -20,6 +52,8 @@ const Bails = ({ controls }) => {
     const canvasClickListener = () => {
         if (transform.current?.children[0]?.object) {
             // transform.current?.detach()
+
+            guiControls.current.style.display = 'block'
         }
     }
 
@@ -41,10 +75,6 @@ const Bails = ({ controls }) => {
             }
         }
     })
-
-
-
-    transform.current?.detach()
 
     return (
         <>
@@ -71,12 +101,14 @@ const Bails = ({ controls }) => {
                     {
                         // selectedBail &&
                         <transformControls
-                            mode={'translate'}
+                            mode={mode}
                             ref={transform}
                             args={[camera, domElement]}
                         // onUpdate={self => self.attach(selectedBail.current)} 
                         />
                     }
+
+                    
 
                 </>
             }
