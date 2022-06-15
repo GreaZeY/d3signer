@@ -3,6 +3,7 @@ import { TransformControls } from 'three/examples/jsm/controls/TransformControls
 import { useRef, useEffect } from 'react'
 import { useSelector } from 'react-redux';
 import { extend, useThree } from '@react-three/fiber'
+// import { Controls, useControl } from 'react-three-gui';
 
 extend({ TransformControls })
 
