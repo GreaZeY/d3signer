@@ -73,11 +73,8 @@ const pendantModel = ({ controls}) => {
             ...bevelProps
         })
 
-    //     setTimeout(()=>{
-
-    //     if (!txtSurface.current.geometry) return console.log('returned from tto')
-        
-    //     // new THREE.Box3().setFromObject(txtSurface.current).getCenter(txtSurface.current.position).multiplyScalar(-1)
+      
+        // new THREE.Box3().setFromObject(txtSurface.current).getCenter(txtSurface.current.position).multiplyScalar(-1)
 
     //         let box3 = new THREE.Box3().setFromObject(txtSurface.current);
     //     console.log(box3)
@@ -178,9 +175,7 @@ const pendantModel = ({ controls}) => {
 
             <group name='pendant' ref={pendant} >
                 <mesh 
-                scale={[2,2,1]}
                 geometry={textGeometry} 
-                position={[-50, 0, 0]} 
                 ref={txtSurface} 
                 onClick={placeStone} 
                 onPointerMove={handlePointerMove} 

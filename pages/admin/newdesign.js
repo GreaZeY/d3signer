@@ -242,6 +242,7 @@ function newDesign() {
   const [open, setOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(1);
   const [exportLoading, setExportLoading] = useState(false)
+  const [windowWidth, setWindowWidth] = useState(0)
   // const [canvasImg, setCanvasImage] = useState(' ')
 
   const { loading, designProps } = useSelector(state => state.designProps);
@@ -250,8 +251,29 @@ function newDesign() {
     let decodedUrl = window.location.href;
     setUrl({ decodedUrl, encodedUrl: encodeURI(decodedUrl) });
 
+
   }, [])
 
+   useEffect(() => {
+     if (typeof window !== 'undefined') {
+       // Handler to call on window resize
+       function handleResize() {
+         // Set window width/height to state
+         setWindowWidth(window.innerWidth)
+       }
+
+       // Add event listener
+       window.addEventListener("resize", handleResize);
+
+       // Call handler right away so state gets updated with initial window size
+       handleResize();
+
+       // Remove event listener on cleanup
+       return () => window.removeEventListener("resize", handleResize);
+     }
+  }, [])
+
+  console.log(windowWidth)
 
   const handleClick = async () => {
     axios.post('/api/downloadcount', { time: Date.now() })
@@ -383,7 +405,7 @@ function newDesign() {
       </Head>
       <div>
 
-        <GridContainer spacing={2}>
+        <GridContainer direction={windowWidth <=960?"column-reverse":''} spacing={2}>
           <LeftPanel props={{ classes }} />
           <GridItem xs={12} sm={12} md={9}>
             <Card  >

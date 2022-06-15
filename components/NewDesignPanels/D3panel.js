@@ -5,13 +5,13 @@ import Bails from './Bails'
 import { OrbitControls,Environment } from "@react-three/drei";
 import { store } from "../../lib/store";
 import { Provider } from "react-redux";
+import { Controls, useControl } from 'react-three-gui';
 const D3panel = ({ model }) => {
   const controls = useRef()
   const env = useRef()
-
-
  
   return (
+    <Controls.Provider>
     <Canvas gl={{ preserveDrawingBuffer: true }}camera={{ position: [0, 0, 90] }} style={{ height: `78vh`, }} >
       <OrbitControls enableDamping ref={controls} />
       {/* <ambientLight intensity={1} /> */}
@@ -21,7 +21,7 @@ const D3panel = ({ model }) => {
       <pointLight position={[-1, -1, -10]} /> */}
       
       <Suspense fallback={"Loading"}>
-      <Environment files={'home.hdr'} path={'/assets/hdrMap/'} ref={env} />
+        <Environment files={'home.hdr'} path={'/assets/hdrMap/'} ref={env} />
         <group ref={model}  >
           <Provider store={store} >
             <PendantModel controls={controls} />
@@ -30,7 +30,7 @@ const D3panel = ({ model }) => {
         </group>
       </Suspense>
     </Canvas>
-
+      </Controls.Provider>
   )
 }
 

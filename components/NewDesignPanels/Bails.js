@@ -13,19 +13,35 @@ const Bails = ({ controls }) => {
     } = useThree()
 
     const { designProps } = useSelector(state => state.designProps)
-    const { bails, base, currBailType } = designProps
+    const { bails, base } = designProps
     const transform = useRef()
 
-    // const [selectedBail, setSelectedBail] = useState(null)
+    const canvasClickListener = () => {
+        if (transform.current?.children[0]?.object) {
+            // transform.current?.detach()
+        }
+    }
+
+
 
     useEffect(() => {
         if (transform.current) {
             const tControls = transform.current
             const callback = (event) => (controls.current.enabled = !event.value)
             tControls.addEventListener('dragging-changed', callback)
-            return () => tControls.removeEventListener('dragging-changed', callback)
+
+            domElement.addEventListener('click', canvasClickListener)
+
+
+
+            return () => {
+                tControls.removeEventListener('dragging-changed', callback)
+                domElement.removeEventListener('click', canvasClickListener)
+            }
         }
     })
+
+
 
     transform.current?.detach()
 
@@ -38,10 +54,13 @@ const Bails = ({ controls }) => {
                             <Bail
                                 key={i}
                                 position={[0, -10, 0]}
-                                args={[bail.sizes.diameter / 10 * 2, bail.sizes.width / 10, 100, 100]}
+                                args={{
+                                    radius: bail.sizes.diameter / 10 * 2,
+                                    tube: bail.sizes.width / 10,
+                                }}
+
                                 base={base}
-                                currBailType={currBailType}
-                                // setSelectedBail={setSelectedBail}
+                                currBailType={bail.type}
                                 transform={transform}
 
                             />

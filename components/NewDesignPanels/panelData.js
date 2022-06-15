@@ -34,6 +34,7 @@ export const colors = [
 ]
 
 export const bailType = [
+    'bail0',
     'bail1',
     'bail2',
     'bail3',

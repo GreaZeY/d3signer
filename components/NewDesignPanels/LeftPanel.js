@@ -41,7 +41,8 @@ const LeftPanel = ({ props }) => {
 
   const [currSizeProp, setCurrSizeProp] = useState('Length');
   const [bails, bailsCount] = useState([]);
-
+  const [currBailType, setCurrBailType] = useState('bail0');
+  
   const { designProps: currDesign } = useSelector(state => state.designProps)
   const {
     text,
@@ -51,7 +52,6 @@ const LeftPanel = ({ props }) => {
     font,
     currStoneShape,
     stoneSize,
-    currBailType
   } = currDesign;
 
   const dispatch = useDispatch()
@@ -303,7 +303,7 @@ const LeftPanel = ({ props }) => {
                 {
                   bailType.map(bail => (
                     <div
-                      onClick={(e) => dispatch(designProps({ ...currDesign, currBailType: e.target.alt }))}
+                      onClick={(e) => setCurrBailType(e.target.alt )}
                       key={bail}
                       style={{ border: currBailType === bail && '3px solid #8e24aa' }}
                       className={classes.bailType + ' ' + classes.flexRow}>
@@ -314,7 +314,7 @@ const LeftPanel = ({ props }) => {
               </div>
 
               {
-                bails.map((bail, i) => <Bail key={i} index={i} bails={bails} setBailsData={bailsCount} classes={classes} />)
+                bails.map((bail, i) => <Bail key={i} index={i} currBailType={currBailType} bails={bails} setBailsData={bailsCount} classes={classes} />)
               }
             </section>
           </div>

@@ -10,7 +10,7 @@ const sizes =  { diameter: 13, thickness: 1, width: 10 }
 const Bail = (props) => {
 
 
-    const { classes, bails, setBailsData, index } = props
+    const { classes, bails, setBailsData, index, currBailType } = props
     const { designProps } = useSelector(state => state.designProps)
     
     const [bailDiameter, setBailDiameter] = useState(sizes.diameter);
@@ -43,6 +43,8 @@ const Bail = (props) => {
     useEffect(() => {
         let currBail = [...bails]
         currBail[index].position = currBailPosition
+        if(!currBail[index].type) currBail[index].type = currBailType
+        if(!currBail[index].dimensionType) currBail[index].dimensionType = currBailType === 'bail0'?'Diameter':'Size'
         currBail[index].sizes.diameter = bailDiameter
         currBail[index].sizes.width = bailWidth
         currBail[index].sizes.thickness = bailThickness
@@ -70,7 +72,9 @@ const Bail = (props) => {
                         label="Size"
                         onChange={(e => setCurrBailProp(e.target.value))}
                     >
-                        <MenuItem value={'bailDiameter'}>Diameter</MenuItem>
+                        <MenuItem value={'bailDiameter'}>{
+                            designProps?.bails[index]?.dimensionType
+                        }</MenuItem>
                         <MenuItem value={'bailWidth'}>Width</MenuItem>
                         <MenuItem value={'bailThickness'}>Thickness</MenuItem>
                     </Select>
