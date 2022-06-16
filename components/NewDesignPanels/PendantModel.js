@@ -29,7 +29,7 @@ const bevelProps = {
     curveSegments: 50,
 }
 
-// let stoneCount = 0
+let stoneCount = 0
 extend({ TextGeometry })
 // let textGeometry = new TextGeometry()
 
@@ -50,29 +50,35 @@ const pendantModel = ({ controls }) => {
 
     const camera = useRef()
 
-    const [boundingBoxPoints, setBoundingBoxPoints] = useState({ max: {}, min: {} })
+    // const [boundingBoxPoints, setBoundingBoxPoints] = useState({ max: {}, min: {} })
 
     const txtSurface = useRef()
     const pendant = useRef()
     const light = useRef()
     const stone = useRef()
     const stoneGroup = useRef()
-    // const instance = useRef()
+    const instance = useRef()
     // const dispatch = useDispatch()
 
     const font = useMemo(() => getFont(currFont), [currFont]);
 
     const diamond = useMemo(() => loadStone(currStoneShape, currStoneColor, stoneGroup), [currStoneShape, currStoneColor]);
 
+  
+
     useEffect(() => {
-   
+
+        if (txtSurface.current?.geometry) {
+            console.log(txtSurface.current)
+            new THREE.Box3().setFromObject(txtSurface.current).center(txtSurface.current.position).multiplyScalar(-1)
+        }
+
+        // if (!txtSurface.current.geometry) return console.log('returned from tto')
+
+        // new THREE.Box3().setFromObject(pendant.current).center(pendant.current.position).multiplyScalar(-1)
 
 
-        if (!txtSurface.current.geometry) return console.log('returned from tto')
 
-        // new THREE.Box3().setFromObject(pendant.current).getCenter(pendant.current.position).multiplyScalar(-1)
-
-        // pendant.current.position.set(-50,0,0)
 
         // txtSurface.current.geometry.computeBoundingBox()
         //     let box3 =txtSurface.current.geometry.boundingBox
@@ -81,22 +87,8 @@ const pendantModel = ({ controls }) => {
         // pendant.current.position.y = (box3.max.y - box3.min.y) / 2;
 
 
-        var cent = new THREE.Vector3();
-        var size = new THREE.Vector3();
-        var bbox = new THREE.Box3().setFromObject(txtSurface.current);
-        bbox.getCenter(cent);
-        bbox.getSize(size);
-    
 
-    
-        //Now get the updated/scaled bounding box again..
-        bbox.setFromObject(txtSurface.current);
-        bbox.getCenter(cent);
-        bbox.getSize(size);
-    
-        txtSurface.current.position.x = -cent.x;
-        txtSurface.current.position.y = 0;
-        txtSurface.current.position.z = -cent.z;
+        // txtSurface.current.geometry.center()
 
 
 
@@ -104,9 +96,10 @@ const pendantModel = ({ controls }) => {
 
 
 
-const box = new THREE.BoxHelper( pendant.current, 'red' );
-console.log(box)
-// pendant.current.add( box );
+
+        // const box = new THREE.BoxHelper(instance.current, 'red');
+        // console.log(box)
+        // pendant.current.add(box);
 
     }, [text, length, font, thickness])
 
@@ -141,26 +134,37 @@ console.log(box)
         // txtSurface.current.position.set(0, 0, 0)
 
 
-        // const _matrix = new THREE.Matrix4();
+//         const _matrix = new THREE.Matrix4();
+
+// console.log(dia.position,stoneCount)
+//         _matrix.makeTranslation(dia.position.x, dia.position.y, dia.position.z);
+
+//         // _matrix.makeRotationX(Math.PI / 2) 
+  
 
 
-        // _matrix.makeTranslation(dia.position.x, dia.position.y, dia.position.z);
-
-        // _matrix.makeRotationX(Math.PI / 2) 
+//         instance.current.setMatrixAt(stoneCount, _matrix);
 
 
-        // instance.current.setMatrixAt(stoneCount, _matrix);
+//         instance.current.instanceMatrix.needsUpdate = true;
+
+//         // instance.current.position.copy(txtSurface.current.position)
 
 
-        // instance.current.instanceMatrix.needsUpdate = true;
-
-        // // instance.current.position.copy(txtSurface.current.position)
+//         stoneCount++
 
 
-        // stoneCount++
+var ballGeo = new THREE.SphereGeometry(100,35,35);
+var material = new THREE.MeshPhongMaterial({color: 0xF7FE2E}); 
+var ball = new THREE.Mesh(ballGeo);
 
+var pendulumGeo = new THREE.CylinderGeometry(1, 1, 50, 16);
+ball.updateMatrix();
+pendulumGeo.merge(ball.geometry, ball.matrix);
 
+var pendulum = new THREE.Mesh(pendulumGeo, material);
 
+stoneGroup.current.add(pendulum);
 
         // txtSurface.current.geometry = dia.geometry
         // setStones([...stones,[point.x,point.y,5]])
@@ -190,17 +194,19 @@ console.log(box)
             }
         })
         if (intersects.length === 0) targetStone = null
+
+        // txtSurface.current.rotation.y+=.005
     })
 
 
     return (
         <>
             <spotLight angle={1} penumbra={0} ref={light} intensity={.5} />
-            <perspectiveCamera ref={camera} />
+            <perspectiveCamera makeDefault ref={camera} />
 
             <group name='pendant' ref={pendant} >
                 <mesh
-                    position={[0, 0, 0]}
+                    scale={[width / 5, 1, 1]}
                     ref={txtSurface}
                     onClick={placeStone}
                     onPointerMove={handlePointerMove}
@@ -216,11 +222,11 @@ console.log(box)
                     />
                 </mesh>
             </group>
-            {/* <instancedMesh position={[-50, 0, 10]} ref={instance} args={[
+            <instancedMesh ref={instance} args={[
                 diamond.geometry,
                 diamond.material,
                 1000
-            ]}></instancedMesh> */}
+            ]}></instancedMesh>
             <group name='stoneGroup' ref={stoneGroup}>
                 <primitive scale={stoneSize / 6} ref={stone} object={diamond} color={currStoneColor} visible={false} />
             </group>

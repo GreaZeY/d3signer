@@ -8,8 +8,8 @@ import { extend, useThree } from '@react-three/fiber'
 
 extend({ TransformControls })
 
-let rotation = [3.14, 0, 0]
-let scale, tf
+let pi = Math.PI , rotation = [pi, 0, 0]
+let scale, tf 
 
 const Symbols = ({ txtSurface, controls}) => {
   const { designProps } = useSelector(state => state.designProps)
@@ -22,6 +22,7 @@ const Symbols = ({ txtSurface, controls}) => {
   const shape = useMemo(() => createShape(symbol), [symbol]);
 
   const symbolRef = useRef()
+
   const {
     camera,
     gl: { domElement }
@@ -30,49 +31,47 @@ const Symbols = ({ txtSurface, controls}) => {
 
   useEffect(() => {
     if (!symbol) return
+    rotation = [pi, 0, 0]
     switch (symbol) {
       case 'Heart':
-        rotation = [3.14, 0, 0]
         scale = length / 300
         tf = 1
         setPosition([max.x - 2, max.y - 8, max.z])
         break;
       case 'Star':
-        rotation = [3.14, 0, 3.14]
         scale = length / 150
+        rotation = [pi, 0, pi]
         setPosition([max.x - 5, max.y - 10, max.z])
         tf = 1
         break;
       case 'Infinity':
         scale = length / 950
-        rotation = [3.14, 0, 0]
         setPosition([max.x - 5, max.y-10, max.z])
         tf = 6.5
         break;
       case 'Octothorp':
         scale = length / 450
-        rotation = [3.14, 0, 0]
-        setPosition([max.x - 5, max.y, max.z - .1])
+        setPosition([max.x - 5, max.y-5, max.z - .1])
         tf = 4
         break;
       case 'Ampersand':
         scale = length / 450
-        rotation = [3.14, 0, 0]
         setPosition([max.x - 5.2, max.y - 1, max.z - .1])
         tf = 4
         break;
       case 'Crown':
         scale = length / 450
-        rotation = [3.14, 0, 0]
         setPosition([max.x - 5.2, max.y - 5, max.z - .1])
         tf =  2
         break;
 
       default:
+       
 
 
     }
-
+    // transform.current?.parent && transform.current.parent.remove(transform.current)
+    // console.log(transform.current)
   }, [symbol, length, thickness])
 
   const extrudeSettings = {
@@ -103,6 +102,10 @@ const Symbols = ({ txtSurface, controls}) => {
         scale={scale}
         position={position}
         rotation={rotation}
+        onClick={()=>{
+          transform.current.attach(symbolRef.current)
+          transform.current.attach(transform.current)
+        }}
       >
         <extrudeGeometry  attach="geometry" args={[shape, extrudeSettings]} />
         <meshStandardMaterial 
@@ -116,7 +119,9 @@ const Symbols = ({ txtSurface, controls}) => {
       <transformControls
         ref={transform}
         args={[camera, domElement]}
-        onUpdate={self => self.attach(symbolRef.current)} />
+        onUpdate={self => console.log(self)} 
+        />
+        
     </>
   )
 }
