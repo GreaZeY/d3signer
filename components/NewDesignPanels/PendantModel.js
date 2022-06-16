@@ -3,11 +3,12 @@ import { useRef, useEffect, useState, useMemo } from 'react'
 import * as THREE from 'three'
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry'
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
-import { extend, useFrame } from '@react-three/fiber'
-import {Html} from '@react-three/drei'
+import { extend, useFrame, useThree } from '@react-three/fiber'
 import { fonts } from './assets/allFonts';
 import { useSelector, useDispatch } from 'react-redux';
-
+import Bails from './Bails'
+import { useControl } from 'react-three-gui';
+import {ChangeMode} from '../ThreeGUIControls/guiContolsComponents'
 // import { MODEL_GENERATED, GENERATING_MODEL } from '../../lib/constants/designPropsConstants';
 // import { designProps as designPropsFunc } from '../../lib/actions/designAction';
 
@@ -33,7 +34,7 @@ const bevelProps = {
 extend({ TextGeometry })
 let textGeometry = new TextGeometry()
 
-const pendantModel = ({ controls}) => {
+const pendantModel = ({ controls, guiControls, zoom }) => {
 
     const { designProps } = useSelector(state => state.designProps)
     const {
@@ -48,7 +49,7 @@ const pendantModel = ({ controls}) => {
         stoneSize
     } = designProps;
 
-    const camera = useRef()
+    // const cameraRef = useRef()
 
     const [boundingBoxPoints, setBoundingBoxPoints] = useState({ max: {}, min: {} })
 
@@ -57,6 +58,7 @@ const pendantModel = ({ controls}) => {
     const light = useRef()
     const stone = useRef()
     const stoneGroup = useRef()
+    const transform = useRef()
     // const instance = useRef()
     // const dispatch = useDispatch()
 
@@ -69,7 +71,7 @@ const pendantModel = ({ controls}) => {
         textGeometry = new TextGeometry(text, {
             font,
             size: length,
-            height: thickness,
+            height: thickness*10,
             ...bevelProps
         })
 
@@ -92,6 +94,12 @@ const pendantModel = ({ controls}) => {
     useEffect(() => {
         if (stoneGroup.current) stoneGroup.current.children = []
     }, [length, font, thickness])
+
+
+    const {
+        camera,
+        gl: { domElement }
+    } = useThree()
 
 
     const handlePointerMove = e => {
@@ -167,11 +175,24 @@ const pendantModel = ({ controls}) => {
         if (intersects.length === 0) targetStone = null
     })
 
+      const closeControls = ()=>{
+        transform.current?.detach()
+        guiControls.current.style.display = 'none'
+    }
+
+     var mode = useControl('Mode1', {
+            type: 'custom',
+            value: 'translate',
+            component: ChangeMode,
+        });
+
+    useControl('Close', { type: 'button', onClick: closeControls });
+
 
     return (
         <>
             <spotLight  angle={1} penumbra={0} ref={light} intensity={.5} />
-            <perspectiveCamera ref={camera} />
+            {/* <perspectiveCamera makeDefault position-z={zoom} /> */}
 
             <group name='pendant' ref={pendant} >
                 <mesh 
@@ -198,7 +219,8 @@ const pendantModel = ({ controls}) => {
             <group name='stoneGroup' ref={stoneGroup}>
                 <primitive scale={stoneSize/6} ref={stone} object={diamond} color={currStoneColor} visible={false} />
             </group>
-            {txtSurface.current && <Symbol txtSurface={txtSurface} controls={controls}/>}
+            {txtSurface.current && <Symbol txtSurface={txtSurface} guiControls={guiControls} controls={controls} transform={transform} />}
+            <Bails txtSurface={txtSurface} controls={controls} guiControls={guiControls} transform={transform} />
 
             {/* <Html position={[-50, 0, 0]}>
                 <div style={{background:'black',color:'white',position:'fixed',top:0,right:0}} >
@@ -206,6 +228,13 @@ const pendantModel = ({ controls}) => {
                 </div>
                 
             </Html> */}
+
+            <transformControls
+                ref={transform}
+                args={[camera, domElement]}
+                mode={mode}
+                // onUpdate={self => self.attach(symbolRef.current)}
+                 />
         </>
     )
 }

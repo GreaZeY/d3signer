@@ -157,10 +157,10 @@ const LeftPanel = ({ props }) => {
               <Slider
                 aria-label="Sizes"
                 onChange={setSizes}
-                step={.1}
+                step={0.1}
                 style={{ marginRight: '1rem' }}
-                min={currSizeProp === 'Length' ? 20 : 1}
-                max={currSizeProp === 'Length' ? 30 : 10}
+                min={currSizeProp === 'Length' ? 20 : 0.4}
+                max={currSizeProp === 'Length' ? 30 : 2}
                 value={currSizeProp === 'Length' ?
                   length
                   :
@@ -171,7 +171,7 @@ const LeftPanel = ({ props }) => {
                 }
                 color="primary"
               />
-              <input onChange={e => setSizes(e, parseInt(e.target.value))} style={{ padding: '.2rem', cursor: 'text', width: '2rem' }} type='number' className={classes.symbol} step='.1' value={currSizeProp === 'Length' ?
+              <input onChange={e => setSizes(e, e.target.value)} style={{ padding: '.2rem', cursor: 'text', width: '2rem' }} type='number' className={classes.symbol} step={0.1} value={currSizeProp === 'Length' ?
                 length
                 :
                 (

@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { extend, useThree } from '@react-three/fiber'
 import { useControl } from 'react-three-gui';
 import {ChangeMode} from '../ThreeGUIControls/guiContolsComponents'
-
+import * as THREE from 'three'
 // import {GUI} from 'three/examples/jsm/libs/lil-gui.module.min.js'
 
 // const gui = new GUI()
@@ -17,28 +17,28 @@ import {ChangeMode} from '../ThreeGUIControls/guiContolsComponents'
 
 
 extend({ TransformControls })
-
-const Bails = ({ controls, guiControls }) => {
+let box = {}
+const Bails = ({ txtSurface, controls, guiControls, transform }) => {
     // guiControls.current.style.display = 'none'
 
     // const rotationX = useControl('Rotation X', { type: 'number' });
     // const rotationY = useControl('Rotation Y', { type: 'number' });
     // const rotationZ = useControl('Rotation Z', { type: 'number' });
 
+    if (txtSurface.current?.geometry){
+        box = new THREE.Box3().setFromObject(txtSurface.current);
+    }
+     const { max, min }= box
    
 
-    let mode = useControl('Mode1', {
-        type: 'custom',
-        value: 'translate',
-        component: ChangeMode,
-    });
-
-    const closeControls = ()=>{
-        transform.current?.detach()
-        guiControls.current.style.display = 'none'
-    }
+    // if(transform.current){
+    //     transform.current.mode = mode || 'translate'
+    // }
+  
     
-    useControl('Close', { type: 'button', onClick:closeControls });
+  
+    
+    
 
     const {
         camera,
@@ -47,7 +47,7 @@ const Bails = ({ controls, guiControls }) => {
 
     const { designProps } = useSelector(state => state.designProps)
     const { bails, base } = designProps
-    const transform = useRef()
+    
 
     const canvasClickListener = () => {
         if (transform.current?.children[0]?.object) {
@@ -81,34 +81,25 @@ const Bails = ({ controls, guiControls }) => {
             {bails.length > 0 &&
                 <>
                     {
-                        bails.map((bail, i) => (
+                    bails.map((bail, i) => (
                             <Bail
                                 key={i}
-                                position={[0, -10, 0]}
                                 args={{
                                     radius: bail.sizes.diameter / 10 * 2,
                                     tube: bail.sizes.width / 10,
+                                    position:[max.x-2,max.y,(max.z-min.z)/2]
                                 }}
-
                                 base={base}
                                 currBailType={bail.type}
                                 transform={transform}
-
                             />
                         ))
                     }
-
-                    {
-                        // selectedBail &&
-                        <transformControls
+                        {/* <transformControls
                             mode={mode}
                             ref={transform}
                             args={[camera, domElement]}
-                        // onUpdate={self => self.attach(selectedBail.current)} 
-                        />
-                    }
-
-                    
+                        /> */}
 
                 </>
             }

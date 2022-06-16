@@ -6,7 +6,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 
 
 export const ChangeMode = ({ value, setValue }) => (
-    <FormControl style={{ width: '100%', marginTop: '1rem' }}>
+    <FormControl style={{ width: '100%' }}>
         <InputLabel >Mode</InputLabel>
         <Select
             value={value}

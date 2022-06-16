@@ -5,13 +5,15 @@ import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader'
 import { useSelector } from 'react-redux';
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js'
 import { extend, useThree } from '@react-three/fiber'
+import { useControl } from 'react-three-gui';
+import { ChangeMode } from '../ThreeGUIControls/guiContolsComponents'
 
 extend({ TransformControls })
 
 let rotation = [3.14, 0, 0]
 let scale, tf
 
-const Symbols = ({ txtSurface, controls}) => {
+const Symbols = ({ txtSurface, controls, guiControls, transform}) => {
   const { designProps } = useSelector(state => state.designProps)
   const { symbol, base, length, thickness } = designProps
 
@@ -26,7 +28,7 @@ const Symbols = ({ txtSurface, controls}) => {
     camera,
     gl: { domElement }
   } = useThree()
-  const transform = useRef()
+  // const transform = useRef()
 
   useEffect(() => {
     if (!symbol) return
@@ -62,10 +64,10 @@ const Symbols = ({ txtSurface, controls}) => {
         tf = 4
         break;
       case 'Crown':
-        scale = length / 450
+        scale = length / 750
         rotation = [3.14, 0, 0]
         setPosition([max.x - 5.2, max.y - 5, max.z - .1])
-        tf =  2
+        tf =  4
         break;
 
       default:
@@ -76,7 +78,7 @@ const Symbols = ({ txtSurface, controls}) => {
   }, [symbol, length, thickness])
 
   const extrudeSettings = {
-    depth: thickness * 8 * tf,
+    depth: thickness * 80 * tf,
     bevelEnabled: true,
     curveSegments: 10,
     bevelSegments: 30,
@@ -85,6 +87,30 @@ const Symbols = ({ txtSurface, controls}) => {
     bevelSize: 10,
   };
 
+
+
+  const attachTransformControl = (e) => {
+    transform.current.attach(e.object)
+    transform.current.userData.attachedObject = 'symbol'
+  }
+
+  // if (transform.current) {
+  //   transform.current.mode = mode
+  // }
+
+  const closeControls = () => {
+    transform.current?.detach()
+    guiControls.current.style.display = 'none'
+  }
+
+  //  let mode = useControl('Mode1', {
+  //   type: 'custom',
+  //   value: 'translate',
+  //   component: ChangeMode,
+  //   group: 'Symbol'
+  // });
+
+  // useControl('Close', { type: 'button', onClick: closeControls,group: 'Symbol' });
 
   useEffect(() => {
     if (transform.current) {
@@ -102,8 +128,9 @@ const Symbols = ({ txtSurface, controls}) => {
         ref={symbolRef}
         scale={scale}
         position={position}
+        position-y={position[1]+4}
         rotation={rotation}
-      >
+        onClick={attachTransformControl} >
         <extrudeGeometry  attach="geometry" args={[shape, extrudeSettings]} />
         <meshStandardMaterial 
         attach='material' 
@@ -113,10 +140,7 @@ const Symbols = ({ txtSurface, controls}) => {
         />
       </mesh>
 
-      <transformControls
-        ref={transform}
-        args={[camera, domElement]}
-        onUpdate={self => self.attach(symbolRef.current)} />
+      
     </>
   )
 }

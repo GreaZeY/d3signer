@@ -28,11 +28,14 @@ import ShareIcon from '@material-ui/icons/Share'
 import ReactModal from 'react-modal';
 import Fab from '@material-ui/core/Fab';
 import SettingsIcon from '@material-ui/icons/Settings';
+import ZoomInIcon from '@material-ui/icons/ZoomIn';
+import ZoomOutIcon from '@material-ui/icons/ZoomOut';
 
 import { makeStyles } from "@material-ui/core/styles";
 import Head from 'next/head'
 import axios from "axios";
 const options = ['STL', 'OBJ', 'PNG'];
+let zoomFactor = 1
 
 function newDesign() {
   const alert = useAlert()
@@ -234,6 +237,15 @@ function newDesign() {
       right:0,
       background: 'linear-gradient(60deg, #ab47bc, #8e24aa)',
 
+    },
+
+    zoomControls:{
+      position:'absolute',
+      bottom:0,
+      right:0,
+      paddingBottom:'1rem',
+      zIndex:10,
+      width:'6rem'
     }
 
 
@@ -251,6 +263,8 @@ function newDesign() {
   const [selectedIndex, setSelectedIndex] = useState(1);
   const [exportLoading, setExportLoading] = useState(false)
   const [windowWidth, setWindowWidth] = useState(0)
+    const [zoom, setZoom] = useState(90)
+
   // const [canvasImg, setCanvasImage] = useState(' ')
 
   const { loading, designProps } = useSelector(state => state.designProps);
@@ -261,6 +275,7 @@ function newDesign() {
 
 
   }, [])
+
 
    useEffect(() => {
      if (typeof window !== 'undefined') {
@@ -287,6 +302,7 @@ function newDesign() {
     axios.post('/api/downloadcount', { time: Date.now() })
     setExportLoading(true)
     let modelClone = model.current.clone()
+    debugger
     let stoneGroup = modelClone.children.filter(kid => (kid.type === 'Group' && kid.name === "stoneGroup"))
     modelClone.remove(stoneGroup[0])
     if (selectedIndex === 0) {
@@ -413,11 +429,11 @@ function newDesign() {
       </Head>
       <div>
 
-        <GridContainer direction={windowWidth <=960?"column-reverse":''} spacing={2}>
+        <GridContainer direction={windowWidth <=960?"column-reverse":''} spacing={0}>
           <LeftPanel props={{ classes }} />
           <GridItem xs={12} sm={12} md={9}>
             <Card  >
-              <CardBody >
+              <CardBody style={{position:'relative'}} >
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <Typography>Preview</Typography>
                   <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', zIndex: `${modalShow ? '0' : '100'}` }}>
@@ -580,10 +596,21 @@ function newDesign() {
 
                   </div>
                 </div>
+<div className={classes.zoomControls+' '+classes.flexRow} style={{justifyContent:'space-between'}} >
+
+                <Fab aria-label="add" size="small" onClick={()=>setZoom(zoom-5)} >
+                  <ZoomInIcon />
+                </Fab>
+
+                <Fab aria-label="add" size="small" onClick={()=>setZoom(zoom+5)} >
+                  <ZoomOutIcon />
+                </Fab>
+         
+                </div>
 
 
 
-                <D3panel model={model} />
+                <D3panel model={model} zoom={zoom}/>
                 {
                   loading && <div className={classes.loaderContainer} >
                     <DotLoader />
@@ -597,9 +624,8 @@ function newDesign() {
         </GridContainer>
       </div>
       {
-        windowWidth <= 960 && <Fab className={classes.fabButton} color="secondary" variant="extended" onClick={() => window.scrollTo(0, document.body.scrollHeight)} >
-          <SettingsIcon sx={{ mr: 1 }} />
-          Navigate to Settings
+        windowWidth <= 960 && <Fab className={classes.fabButton} variant="extended" onClick={() => window.scrollTo(0, document.body.scrollHeight)} >
+          <SettingsIcon />
         </Fab>
       }
     </>

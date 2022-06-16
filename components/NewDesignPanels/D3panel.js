@@ -1,24 +1,23 @@
 import { Suspense, useRef } from 'react'
 import { Canvas } from '@react-three/fiber'
 import PendantModel from './PendantModel'
-import Bails from './Bails'
 import { OrbitControls,Environment } from "@react-three/drei";
 import { store } from "../../lib/store";
 import { Provider } from "react-redux";
-import { Controls, withControls,useControl } from 'react-three-gui';
+import { Controls, withControls } from 'react-three-gui';
 
 
 
 const CanvasWithControls = withControls(Canvas);
 
-const D3panel = ({ model }) => {
+const D3panel = ({ model,zoom }) => {
   const controls = useRef()
   const guiControls = useRef()
 
  
   return (
     <Controls.Provider>
-      <CanvasWithControls gl={{ preserveDrawingBuffer: true }}camera={{ position: [0, 0, 90] }} style={{ height: `78vh`, }} >
+      <CanvasWithControls gl={{ preserveDrawingBuffer: true }} camera={{ position: [0, 0, 90] }} style={{ height: `78vh`, }} >
       <OrbitControls enableDamping ref={controls} />
       {/* <ambientLight intensity={1} /> */}
       {/* <pointLight intensity={.2} position={[-50, 0, 0]} />
@@ -30,14 +29,13 @@ const D3panel = ({ model }) => {
         <Environment files={'home.hdr'} path={'/assets/hdrMap/'} />
         <group ref={model}  >
           <Provider store={store} >
-            <PendantModel controls={controls} />
-              <Bails controls={controls} guiControls={guiControls} />
+              <PendantModel controls={controls} guiControls={guiControls} zoom={zoom} />
           </Provider >
         </group>
       </Suspense>
       </CanvasWithControls>
-      <div ref={guiControls} style={{ display: 'none' }} >
-        <Controls title={'Bail Transform'} width={200}  />
+      <div ref={guiControls}  style={{ display: 'none' }} >
+        <Controls title={'Transform Controls'} width={200}  />
       </div>
       </Controls.Provider>
   )

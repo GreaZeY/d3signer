@@ -2,12 +2,11 @@ import { useMemo } from 'react'
 import { useLoader } from '@react-three/fiber'
 import { STLLoader } from 'three/examples/jsm/loaders/STLLoader'
 import { TorusGeometry } from 'three'
-// import { useControl } from 'react-three-gui';
 
 const Bail = (props) => {
 
-    const { position, base, args, transform, currBailType } = props
-    let radius = args.radius
+    const { base, args, transform, currBailType } = props
+    let { radius, position } = args
 
     const loadBail = bail => {
         if (bail === 'bail0') {
@@ -19,13 +18,21 @@ const Bail = (props) => {
 
     const bailGeometry = useMemo(() => loadBail(currBailType), [currBailType, args]);
 
+
+    const attachTransformControl= (e) => {
+        transform.current.attach(e.object)
+        transform.current.userData.attachedObject='bail'
+    }
+
     return (
         <>
-            <mesh 
-            // rotation={[rotationX,rotationY,rotationZ]} 
-            geometry={bailGeometry}
+            <mesh
+                position={position}
+                // rotation={[rotationX,rotationY,rotationZ]} 
+                geometry={bailGeometry}
                 scale={currBailType !== 'bail0' ? [radius / 4, radius / 4, radius / 4] : [1, 1, 1]}
-                style={{ cursor: 'pointer' }} onClick={(e) => transform.current.attach(e.object)} position={position} >
+                style={{ cursor: 'pointer' }}
+                onClick={attachTransformControl} >
                 <meshStandardMaterial
                     attach="material"
                     color={base}
