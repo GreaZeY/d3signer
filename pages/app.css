@@ -1,4 +1,4 @@
-*{
+* {
   scroll-behavior: smooth;
 }
 
@@ -7,47 +7,59 @@ input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
   -webkit-text-fill-color: black;
-    transition: background-color 5000s ease-in-out 0s;
+  transition: background-color 5000s ease-in-out 0s;
 }
+
 /* input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
-} */
+}
 
-/* input[type=number] {
+input[type=number] {
   -moz-appearance: textfield;
 } */
-
 
 ::-webkit-scrollbar {
   width: 8px;
   height: 6px;
 }
-::-webkit-scrollbar {
-  width: 8px;
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 50vmax;
 }
 
-  ::-webkit-scrollbar-track {
-    background: transparent; 
-    border-radius: 50vmax;
-  }
-   
-  ::-webkit-scrollbar-thumb {
-    background: linear-gradient(60deg, #ab47bc, #8e24aa); 
-    border-radius: 50vmax;
-  }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(60deg, #ab47bc, #8e24aa);
+  border-radius: 50vmax;
+}
+
+
+.left-panel::-webkit-scrollbar {
+  width: 4px;
+}
+
+.left-panel::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 50vmax;
+}
+
+.left-panel::-webkit-scrollbar-thumb {
+  background: linear-gradient(60deg, #ab47bc, #8e24aa);
+  border-radius: 50vmax;
+}
 
 
 
 .settings-head {
   color: rgba(0, 0, 0, 0.54);
-    padding: 0;
-    font-size: 12px !important;
-    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
-    font-weight: 400;
-    line-height: 1;
-    margin-bottom: 0.5rem;
+  padding: 0;
+  font-size: 12px !important;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-weight: 400;
+  line-height: 1;
+  margin-bottom: 0.5rem;
 }
 
 
@@ -175,82 +187,112 @@ input::-webkit-inner-spin-button {
 /* spinner loader  end */
 
 
-.react-confirm-alert-overlay{
-background: rgba(0, 0, 0, 0.514) !important;
-backdrop-filter: blur(5px);
+.react-confirm-alert-overlay {
+  background: rgba(0, 0, 0, 0.514) !important;
+  backdrop-filter: blur(5px);
 }
 
 
 
 /* animated tick css */
 
-	@-webkit-keyframes checkmark {
-    0% {
-        stroke-dashoffset: 100px
-    }
-    100% {
-        stroke-dashoffset: 200px
-    }
+@-webkit-keyframes checkmark {
+  0% {
+    stroke-dashoffset: 100px
+  }
+
+  100% {
+    stroke-dashoffset: 200px
+  }
 }
+
 @-ms-keyframes checkmark {
-    0% {
-        stroke-dashoffset: 100px
-    }
-    100% {
-        stroke-dashoffset: 200px
-    }
+  0% {
+    stroke-dashoffset: 100px
+  }
+
+  100% {
+    stroke-dashoffset: 200px
+  }
 }
+
 @keyframes checkmark {
-    0% {
-        stroke-dashoffset: 100px
-    }
-    100% {
-        stroke-dashoffset: 0px
-    }
+  0% {
+    stroke-dashoffset: 100px
+  }
+
+  100% {
+    stroke-dashoffset: 0px
+  }
 }
+
 @-webkit-keyframes checkmark-circle {
-    0% {
-        stroke-dashoffset: 480px
-    }
-    100% {
-        stroke-dashoffset: 960px;
-    }
+  0% {
+    stroke-dashoffset: 480px
+  }
+
+  100% {
+    stroke-dashoffset: 960px;
+  }
 }
+
 @-ms-keyframes checkmark-circle {
-    0% {
-        stroke-dashoffset: 240px
-    }
-    100% {
-        stroke-dashoffset: 480px
-    }
+  0% {
+    stroke-dashoffset: 240px
+  }
+
+  100% {
+    stroke-dashoffset: 480px
+  }
 }
+
 @keyframes checkmark-circle {
-    0% {
-        stroke-dashoffset: 480px
-    }
-    100% {
-        stroke-dashoffset: 960px
-    }
+  0% {
+    stroke-dashoffset: 480px
+  }
+
+  100% {
+    stroke-dashoffset: 960px
+  }
 }
+
 @keyframes colored-circle {
-    0% {
-        opacity:0
-    }
-    100% {
-        opacity:100
-    }
+  0% {
+    opacity: 0
+  }
+
+  100% {
+    opacity: 100
+  }
 }
 
- .tick polyline {
-    -webkit-animation: checkmark 0.25s ease-in-out 0.7s backwards;
-    animation: checkmark 0.25s ease-in-out 0.7s backwards
-}
- .tick circle {
-    -webkit-animation: checkmark-circle 0.6s ease-in-out backwards;
-    animation: checkmark-circle 0.6s ease-in-out backwards;
-}
- .tick circle#colored {
-    -webkit-animation: colored-circle 0.6s ease-in-out 0.7s backwards;
-    animation: colored-circle 0.6s ease-in-out 0.7s backwards;
+.tick polyline {
+  -webkit-animation: checkmark 0.25s ease-in-out 0.7s backwards;
+  animation: checkmark 0.25s ease-in-out 0.7s backwards
 }
 
+.tick circle {
+  -webkit-animation: checkmark-circle 0.6s ease-in-out backwards;
+  animation: checkmark-circle 0.6s ease-in-out backwards;
+}
+
+.tick circle#colored {
+  -webkit-animation: colored-circle 0.6s ease-in-out 0.7s backwards;
+  animation: colored-circle 0.6s ease-in-out 0.7s backwards;
+}
+
+
+
+/* media queries */
+
+@media screen and (max-width:960px) {
+  ::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+  }
+
+  .left-panel::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+  }
+}

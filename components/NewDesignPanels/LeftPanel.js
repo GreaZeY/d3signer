@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import AddIcon from '@material-ui/icons/Add';
-
-import Bail from "components/Bails/Bail";
+import Bail from "components/LeftPanelComponents/Bail";
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -19,18 +18,20 @@ import { Typography } from "@material-ui/core";
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from "@material-ui/core/Button";
 import useCollapse from 'react-collapsed'
-import { stoneShapes, stoneColor, colors, bailType } from "./panelData";
-const shapeDir = '/assets/crimps/stoneShapes'
+import { stoneShapes, stoneColor, colors, bailType } from "components/LeftPanelComponents/panelData";
+
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 
-import Brilliant from "./StoneComponents/Brilliant";
-import Trilliant from "./StoneComponents/Trilliant";
-import Eight from "./StoneComponents/Eight"
-import Pear from "./StoneComponents/Pear";
-import StepCut from "./StoneComponents/StepCut"
+// importing shape components
+// import Brilliant from "./StoneComponents/Brilliant";
+// import Trilliant from "./StoneComponents/Trilliant";
+// import Eight from "./StoneComponents/Eight"
+// import Pear from "./StoneComponents/Pear";
+// import StepCut from "./StoneComponents/StepCut"
 
+import DiamondMenu from '../LeftPanelComponents/DiamondMenu'
 
-
+const shapeDir = '/assets/crimps/stoneShapes'
 
 
 const LeftPanel = ({ props }) => {
@@ -42,7 +43,7 @@ const LeftPanel = ({ props }) => {
   const [currSizeProp, setCurrSizeProp] = useState('Length');
   const [bails, bailsCount] = useState([]);
   const [currBailType, setCurrBailType] = useState('bail0');
-  
+
   const { designProps: currDesign } = useSelector(state => state.designProps)
   const {
     text,
@@ -51,6 +52,7 @@ const LeftPanel = ({ props }) => {
     thickness,
     font,
     currStoneShape,
+    currStoneColor,
     stoneSize,
   } = currDesign;
 
@@ -92,10 +94,15 @@ const LeftPanel = ({ props }) => {
     }))
   }, [bails])
 
-  const setStoneColor = e => {
-    if (e.target.tagName !== 'svg' || e.target.tagName !== 'path')
-      dispatch(designProps({ ...currDesign, currStoneColor: e.target.getAttribute('fill') }))
+  // const setStoneColor = e => {
+  //   if (e.target.tagName !== 'svg' || e.target.tagName !== 'path')
+  //     dispatch(designProps({ ...currDesign, currStoneColor: e.target.getAttribute('fill') }))
 
+  // }
+
+  const setStoneShape = e => {
+    console.log(e.target)
+    dispatch(designProps({ ...currDesign, currStoneShape: e.target.alt }))
   }
 
 
@@ -105,7 +112,7 @@ const LeftPanel = ({ props }) => {
   return (
     <GridItem xs={12} sm={12} md={3}>
       <Card >
-        <CardBody>
+        <CardBody className='left-panel' style={{ height: '75vh', overflowY: 'scroll' }} >
 
           <Typography>Settings</Typography>
           <CustomInput
@@ -205,7 +212,7 @@ const LeftPanel = ({ props }) => {
             </div>
           </div>
 
-          <fieldset style={{ position: 'relative', marginTop: '1rem', border: '1px solid rgb(185 183 183)' }}>
+          <fieldset style={{ position: 'relative', marginTop: '1rem', border: '1px solid rgb(185 183 183)', width: 'max-content' }}>
             <legend className={classes.flexRow + " settings-head"}>Diamonds & Stones <InfoOutlinedIcon onMouseEnter={() => setShowTip(true)} onMouseLeave={() => setShowTip(false)} title='Tip' style={{ fontSize: '1rem', color: 'black', cursor: 'pointer', marginLeft: '.3rem' }} /> </legend>
             {
               showTip &&
@@ -214,9 +221,9 @@ const LeftPanel = ({ props }) => {
                 and Right Click to remove the placed stone.
               </div>
             }
-            <div onClick={(e) => dispatch(designProps({ ...currDesign, currStoneShape: e.target.alt }))}  >
+            <div   >
               <InputLabel className="settings-head">Shape</InputLabel>
-              <div className={classes.flexRow} style={{ flexWrap: 'wrap' }} >
+              <div onClick={setStoneShape} className={classes.flexRow} style={{ flexWrap: 'wrap' }} >
                 {
                   stoneShapes.map(shape => (
                     <div style={{ border: currStoneShape === shape && '2px solid #8e24aa' }} className={classes.stoneShape + ' ' + classes.flexRow}>
@@ -235,7 +242,10 @@ const LeftPanel = ({ props }) => {
               } */}
             <div style={{ marginTop: '.5rem' }}  >
               <InputLabel className="settings-head">Color</InputLabel>
-              <div className={classes.flexRow} onClick={setStoneColor} style={{ flexWrap: 'wrap' }} >
+              <div className={classes.flexRow}
+                // onClick={setStoneColor} 
+                style={{ flexWrap: 'wrap', height: '2rem', width: '100%' }} >
+                <DiamondMenu color={currStoneColor} model={currStoneShape} />
                 {
                   //   stoneColor.map(color => (
                   //     // <div style={{ border: currStoneColor === color && '2px solid #8e24aa', background: color }} className={classes.stoneShape + ' ' + classes.flexRow}>
@@ -245,30 +255,29 @@ const LeftPanel = ({ props }) => {
 
                   // ))
 
-                  currStoneShape === 'brilliant' ?
-                    stoneColor.map(color => (
-                      <Brilliant width='1rem' color={color} />
-                    ))
-                    :
-                    currStoneShape === 'trilliant' ?
-                      stoneColor.map(color => (
-                        <Trilliant width='1rem' color={color} />
-                      ))
-                      :
-                      currStoneShape === 'eight' ?
-                        stoneColor.map(color => (
-                          <Eight width='1rem' color={color} />
-                        ))
-                        :
-                        currStoneShape === 'pear' ?
-                          stoneColor.map(color => (
-                            <Pear width='1rem' color={color} />
-                          ))
-                          : stoneColor.map(color => (
-                            <StepCut width='1rem' color={color} />
-                          ))
+                  // currStoneShape === 'brilliant' ?
+                  //   stoneColor.map(color => (
+                  //     <Brilliant width='1rem' color={color} />
+                  //   ))
+                  //   :
+                  //   currStoneShape === 'trilliant' ?
+                  //     stoneColor.map(color => (
+                  //       <Trilliant width='1rem' color={color} />
+                  //     ))
+                  //     :
+                  //     currStoneShape === 'eight' ?
+                  //       stoneColor.map(color => (
+                  //         <Eight width='1rem' color={color} />
+                  //       ))
+                  //       :
+                  //       currStoneShape === 'pear' ?
+                  //         stoneColor.map(color => (
+                  //           <Pear width='1rem' color={color} />
+                  //         ))
+                  //         : stoneColor.map(color => (
+                  //           <StepCut width='1rem' color={color} />
+                  //         ))
                 }
-
               </div>
             </div>
             <div style={{ marginTop: '.5rem' }}  >
@@ -291,7 +300,7 @@ const LeftPanel = ({ props }) => {
           </fieldset>
           <div style={{ marginTop: '1rem' }} >
             <div style={{ width: '100%', marginTop: '1rem', justifyContent: 'space-between' }} className={classes.flexRow}>
-              
+
               <Button disabled={true} {...getToggleProps()} size="small" >
                 {(isExpanded ? <><KeyboardArrowUpIcon /></> : <><KeyboardArrowDownIcon /></>)} Bails {`(${bails.length})`}
               </Button>
@@ -299,11 +308,11 @@ const LeftPanel = ({ props }) => {
             </div>
             <section {...getCollapseProps()}>
               <InputLabel style={{ marginLeft: '1rem' }} className="settings-head">Bails</InputLabel>
-              <div className={classes.flexRow} style={{ flexWrap: 'wrap',marginLeft:'1rem' }} >
+              <div className={classes.flexRow} style={{ flexWrap: 'wrap', marginLeft: '1rem' }} >
                 {
                   bailType.map(bail => (
                     <div
-                      onClick={(e) => setCurrBailType(e.target.alt )}
+                      onClick={(e) => setCurrBailType(e.target.alt)}
                       key={bail}
                       style={{ border: currBailType === bail && '3px solid #8e24aa' }}
                       className={classes.bailType + ' ' + classes.flexRow}>

@@ -1,19 +1,19 @@
 
 import { useRef, useEffect, useState, useMemo } from 'react'
 import * as THREE from 'three'
+import { useFBX } from '@react-three/drei';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry'
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
 import { extend, useFrame, useThree } from '@react-three/fiber'
 import { fonts } from './assets/allFonts';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import Bails from './Bails'
 import { useControl } from 'react-three-gui';
-import {ChangeMode} from '../ThreeGUIControls/guiContolsComponents'
+import { ChangeMode } from '../ThreeGUIControls/guiContolsComponents'
 // import { MODEL_GENERATED, GENERATING_MODEL } from '../../lib/constants/designPropsConstants';
 // import { designProps as designPropsFunc } from '../../lib/actions/designAction';
 
 import Symbol from './Symbols.js'
-import { useFBX } from '@react-three/drei';
 import { ThreeBSP } from './three-csg'
 
 // import Diamond from './Diamond'
@@ -21,7 +21,7 @@ import { ThreeBSP } from './three-csg'
 // const stoneModels = importAll(require.context('public/assets/crimps/fbx', false, /\.(fbx)$/));
 
 
-let targetStone = null
+let targetStone = null, clickAway=false
 const bevelProps = {
     // bevelEnabled: true,
     // bevelThickness: 1.5,
@@ -49,8 +49,6 @@ const pendantModel = ({ controls, guiControls, zoom }) => {
         stoneSize
     } = designProps;
 
-    // const cameraRef = useRef()
-
     const [boundingBoxPoints, setBoundingBoxPoints] = useState({ max: {}, min: {} })
 
     const txtSurface = useRef()
@@ -64,25 +62,25 @@ const pendantModel = ({ controls, guiControls, zoom }) => {
 
     const font = useMemo(() => getFont(currFont), [currFont]);
 
-    const diamond = useMemo(() => loadStone(currStoneShape, currStoneColor, stoneGroup), [currStoneShape, currStoneColor]);
+    const diamond = useMemo(() => loadStone(currStoneShape, currStoneColor), [currStoneShape, currStoneColor]);
 
     useEffect(() => {
         setBoundingBoxPoints(null)
         textGeometry = new TextGeometry(text, {
             font,
             size: length,
-            height: thickness*10,
+            height: thickness * 10,
             ...bevelProps
         })
 
-      
+
         // new THREE.Box3().setFromObject(txtSurface.current).getCenter(txtSurface.current.position).multiplyScalar(-1)
 
-    //         let box3 = new THREE.Box3().setFromObject(txtSurface.current);
-    //     console.log(box3)
-    //     txtSurface.current.position.x = (box3.max.x - box3.min.x) / 2;
-    //     txtSurface.current.position.y = (box3.max.y - box3.min.y) / 2;
-    // },5000)
+        //         let box3 = new THREE.Box3().setFromObject(txtSurface.current);
+        //     console.log(box3)
+        //     txtSurface.current.position.x = (box3.max.x - box3.min.x) / 2;
+        //     txtSurface.current.position.y = (box3.max.y - box3.min.y) / 2;
+        // },5000)
 
 
     }, [text, length, font, thickness, base])
@@ -102,39 +100,46 @@ const pendantModel = ({ controls, guiControls, zoom }) => {
     } = useThree()
 
 
-    const handlePointerMove = e => {
+    // will show a stone over mesh and follows the pointer
+    const showStoneOnPendant = e => {
         if (!currStoneColor && !currStoneShape) return
         const point = e.point
         let helper = new THREE.Box3().setFromObject(txtSurface.current);
-        stone.current.position.set(point.x, point.y, helper.max.z-(stoneSize/9.8))
+        stone.current.position.set(point.x, point.y, helper.max.z - (stoneSize / 9.8))
         // stone.current.material.transparent = true
         // stone.current.material.opacity = .5
     }
-    const placeStone = async () => {
+    // will drop a stone on pendant mesh
+    const placeStone = async (e) => {
         if (!currStoneColor && !currStoneShape) return
+        const point = e.point
         // await dispatch({ type: GENERATING_MODEL })
         const dia = diamond.clone()
         dia.name = 'stone'
         dia.material.transparent = false
         dia.material.opacity = 1
+        let helper = new THREE.Box3().setFromObject(txtSurface.current);
+        dia.position.set(point.x, point.y, helper.max.z - (stoneSize / 9.8))
         stoneGroup.current.add(dia)
 
+        // let cloneTxt = txtSurface.current.clone()
+        // cloneTxt.scale.set(1)
         textGeometry = subtractGeometry(txtSurface.current, dia)
         txtSurface.current.geometry = textGeometry
-        txtSurface.current.position.set(0, 0, 0)
+        // txtSurface.current.position.set(0, 0, 0)
 
 
         // const _matrix = new THREE.Matrix4();
 
-        
+
         // _matrix.makeTranslation(dia.position.x, dia.position.y, dia.position.z);
 
         // _matrix.makeRotationX(Math.PI / 2) 
 
 
         // instance.current.setMatrixAt(stoneCount, _matrix);
-        
-        
+
+
         // instance.current.instanceMatrix.needsUpdate = true;
 
         // // instance.current.position.copy(txtSurface.current.position)
@@ -151,20 +156,61 @@ const pendantModel = ({ controls, guiControls, zoom }) => {
         // dispatch({ type: MODEL_GENERATED })
     }
 
-
-    // const [stones,setStones] = useState([])
     useEffect(() => {
-        // dispatch(designPropsFunc({...designProps,stones}))
-        window.addEventListener('mousedown', (e) => onPointerDown(e, stoneGroup))
-        return () => {
-            window.removeEventListener('mousedown', (e) => onPointerDown(e, stoneGroup))
+        if (transform.current) {
+            // disabling Orbit Controls when transform controls are enabled
+            const tControls = transform.current
+            const callback = (event) => (controls.current.enabled = !event.value)
+            tControls.addEventListener('dragging-changed', callback)
+            window.addEventListener('pointerdown', (e) => onPointerDown(e, stoneGroup))
+            domElement.addEventListener('click', canvasClickListener)
+
+            return () => {
+                tControls.removeEventListener('dragging-changed', callback)
+                domElement.removeEventListener('click', canvasClickListener)
+                window.removeEventListener('pointerdown', (e) => onPointerDown(e, stoneGroup))
+            }
         }
-    }, [])
+    })
 
 
+    const closeControls = () => {
+        transform.current?.detach()
+        guiControls.current.style.display = 'none'
+    }
+
+    let mode = useControl('Mode', {
+        type: 'custom',
+        value: 'translate',
+        component: ChangeMode,
+    });
+
+    useControl('Close', { type: 'button', onClick: closeControls });
+
+
+    const canvasClickListener = (e) => {
+
+        if (clickAway) {
+            // transform.current?.detach()
+            // guiControls.current.style.display = 'none'
+            // clickAway = false
+        }
+    }
+
+
+    // three render loop
     useFrame((state) => {
         const { x, y, z } = state.camera.position
         light.current.position.set(x, y, z + 10);
+        if (zoom.isZooming) {
+            if (zoom.mode === '-') {
+                if (z > 150) return
+                state.camera.position.z += 1
+            } else {
+                if (z < 10) return
+                state.camera.position.z -= 1
+            }
+        }
 
         let intersects = state.raycaster.intersectObjects(stoneGroup.current.children);
         intersects.forEach(obj => {
@@ -172,37 +218,29 @@ const pendantModel = ({ controls, guiControls, zoom }) => {
                 targetStone = obj.object
             }
         })
+
         if (intersects.length === 0) targetStone = null
+
+        // click away listener for transform controls 
+        let intersectsTrans = state.raycaster.intersectObjects(pendant.current.parent.children);
+        if (intersectsTrans.length === 1) clickAway = true
+
     })
-
-      const closeControls = ()=>{
-        transform.current?.detach()
-        guiControls.current.style.display = 'none'
-    }
-
-     var mode = useControl('Mode1', {
-            type: 'custom',
-            value: 'translate',
-            component: ChangeMode,
-        });
-
-    useControl('Close', { type: 'button', onClick: closeControls });
 
 
     return (
         <>
-            <spotLight  angle={1} penumbra={0} ref={light} intensity={.5} />
-            {/* <perspectiveCamera makeDefault position-z={zoom} /> */}
-
+            <spotLight angle={1} penumbra={0} ref={light} intensity={.5} />
             <group name='pendant' ref={pendant} >
-                <mesh 
-                geometry={textGeometry} 
-                ref={txtSurface} 
-                onClick={placeStone} 
-                onPointerMove={handlePointerMove} 
-                onPointerEnter={() => diamond.visible = true} 
-                onPointerLeave={() => diamond.visible = false}>
-                    
+                <mesh
+                    geometry={textGeometry}
+                    ref={txtSurface}
+                    scale-x={width}
+                    onClick={placeStone}
+                    onPointerMove={showStoneOnPendant}
+                    onPointerEnter={() => diamond.visible = true}
+                    onPointerLeave={() => diamond.visible = false}>
+
                     <meshStandardMaterial
                         attach='material'
                         color={base}
@@ -217,7 +255,7 @@ const pendantModel = ({ controls, guiControls, zoom }) => {
                 1000
             ]}></instancedMesh> */}
             <group name='stoneGroup' ref={stoneGroup}>
-                <primitive scale={stoneSize/6} ref={stone} object={diamond} color={currStoneColor} visible={false} />
+                <primitive scale={stoneSize / 6} ref={stone} object={diamond} color={currStoneColor} visible={false} />
             </group>
             {txtSurface.current && <Symbol txtSurface={txtSurface} guiControls={guiControls} controls={controls} transform={transform} />}
             <Bails txtSurface={txtSurface} controls={controls} guiControls={guiControls} transform={transform} />
@@ -233,24 +271,23 @@ const pendantModel = ({ controls, guiControls, zoom }) => {
                 ref={transform}
                 args={[camera, domElement]}
                 mode={mode}
-                // onUpdate={self => self.attach(symbolRef.current)}
-                 />
+            // onUpdate={self => self.attach(symbolRef.current)}
+            />
         </>
     )
 }
-
-
 
 
 export default pendantModel;
 
 //loading font
 const getFont = (currFont) => {
-    return new FontLoader().parse(fonts.filter(font => font.original_font_information.fullName === currFont)[0])
+    let font = fonts.filter(font => font.original_font_information.fullName === currFont)[0]
+    return new FontLoader().parse(font)
 }
 
 // loading FBX Stone Model 
-const loadStone = (shape, color) => {
+export const loadStone = (shape, color) => {
     if (!shape) return new THREE.Group()
     let path = `/assets/crimps/fbx/${shape}.fbx`
     let dia = useFBX(path)?.children[0].clone()
@@ -266,9 +303,12 @@ const onPointerDown = (e, grp) => {
 
 }
 
-const subtractGeometry = (subtractFrom, subtrahendMesh)=>{
+const subtractGeometry = (subtractFrom, subtrahendMesh) => {
     const subtrahendBSP = new ThreeBSP(subtrahendMesh);
     const subtractFromBSP = new ThreeBSP(subtractFrom);
     const sub = subtractFromBSP.subtract(subtrahendBSP);
     return sub.toBufferGeometry();
 }
+
+
+

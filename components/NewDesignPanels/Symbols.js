@@ -1,34 +1,25 @@
-import { useRef, useEffect, useState, useMemo } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import * as THREE from 'three'
 import { useLoader } from '@react-three/fiber'
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader'
 import { useSelector } from 'react-redux';
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js'
-import { extend, useThree } from '@react-three/fiber'
-import { useControl } from 'react-three-gui';
-import { ChangeMode } from '../ThreeGUIControls/guiContolsComponents'
+import { extend } from '@react-three/fiber'
 
 extend({ TransformControls })
 
 let rotation = [3.14, 0, 0]
 let scale, tf
 
-const Symbols = ({ txtSurface, controls, guiControls, transform}) => {
+const Symbols = ({ txtSurface, guiControls, transform}) => {
   const { designProps } = useSelector(state => state.designProps)
   const { symbol, base, length, thickness } = designProps
-
   const { max } = new THREE.Box3().setFromObject(txtSurface.current);
-
   const [position, setPosition] = useState([max.x, 0, max.z])
-
   const shape = useMemo(() => createShape(symbol), [symbol]);
 
-  const symbolRef = useRef()
-  const {
-    camera,
-    gl: { domElement }
-  } = useThree()
-  // const transform = useRef()
+  // transform.current?.detach()
+  //  if(guiControls.current?.style?.display) guiControls.current.style.display = 'none'
 
   useEffect(() => {
     if (!symbol) return
@@ -91,53 +82,29 @@ const Symbols = ({ txtSurface, controls, guiControls, transform}) => {
 
   const attachTransformControl = (e) => {
     transform.current.attach(e.object)
+     guiControls.current.style.display = 'block'
     transform.current.userData.attachedObject = 'symbol'
   }
 
-  // if (transform.current) {
-  //   transform.current.mode = mode
-  // }
-
-  const closeControls = () => {
-    transform.current?.detach()
-    guiControls.current.style.display = 'none'
-  }
-
-  //  let mode = useControl('Mode1', {
-  //   type: 'custom',
-  //   value: 'translate',
-  //   component: ChangeMode,
-  //   group: 'Symbol'
-  // });
-
-  // useControl('Close', { type: 'button', onClick: closeControls,group: 'Symbol' });
-
-  useEffect(() => {
-    if (transform.current) {
-      const tControls = transform.current
-      const callback = (event) => (controls.current.enabled = !event.value)
-      tControls.addEventListener('dragging-changed', callback)
-      return () => tControls.removeEventListener('dragging-changed', callback)
-    }
-  })
 
   if (!symbol) return<></>
   return (
     <>
       <mesh
-        ref={symbolRef}
+        name='symbol'
         scale={scale}
         position={position}
         position-y={position[1]+4}
         rotation={rotation}
-        onClick={attachTransformControl} >
-        <extrudeGeometry  attach="geometry" args={[shape, extrudeSettings]} />
-        <meshStandardMaterial 
-        attach='material' 
-        color={base} 
-        metalness={1}
-        roughness={.2} 
-        />
+        onClick={attachTransformControl} 
+        >
+          <extrudeGeometry  attach="geometry" args={[shape, extrudeSettings]} />
+          <meshStandardMaterial 
+            attach='material' 
+            color={base} 
+            metalness={1}
+            roughness={.2} 
+          />
       </mesh>
 
       
