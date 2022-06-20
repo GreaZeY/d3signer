@@ -6,25 +6,16 @@ import { store } from "../../lib/store";
 import { Provider } from "react-redux";
 import { Controls, withControls } from 'react-three-gui';
 
-
-
 const CanvasWithControls = withControls(Canvas);
 
-const D3panel = ({ model,zoom }) => {
+const D3panel = ({ model, zoom }) => {
   const controls = useRef()
   const guiControls = useRef()
 
- 
   return (
     <Controls.Provider>
-      <CanvasWithControls gl={{ preserveDrawingBuffer: true }} camera={{ position: [0, 0, 90] }} style={{ height: `78vh`, }} >
+      <CanvasWithControls gl={{ preserveDrawingBuffer: true }} camera={{ position: [0, 0, 90] }}>
       <OrbitControls enableDamping ref={controls} />
-      {/* <ambientLight intensity={1} /> */}
-      {/* <pointLight intensity={.2} position={[-50, 0, 0]} />
-      <pointLight intensity={.5} position={[-1050, 0, 1000]} />
-      <spotLight intensity={.5} position={[0, 10, 0]} angle={-22 / 7} />
-      <pointLight position={[-1, -1, -10]} /> */}
-      
       <Suspense fallback={"Loading"}>
         <Environment files={'home.hdr'} path={'/assets/hdrMap/'} />
         <group ref={model}  >

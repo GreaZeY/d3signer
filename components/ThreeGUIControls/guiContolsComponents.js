@@ -14,9 +14,9 @@ export const ChangeMode = ({ value, setValue }) => (
             onChange={(e) => setValue(e.target.value )}
         >
 
-            <MenuItem value={'translate'}>translate</MenuItem>
-            <MenuItem value={'rotate'}>rotate</MenuItem>
-            <MenuItem value={'scale'}>scale</MenuItem>
+            <MenuItem value={'translate'}>Translate</MenuItem>
+            <MenuItem value={'rotate'}>Rotate</MenuItem>
+            <MenuItem value={'scale'}>Scale</MenuItem>
         </Select>
     </FormControl>
 );

@@ -5,7 +5,7 @@ import { TorusGeometry } from 'three'
 
 const Bail = (props) => {
 
-    const { base, args, transform, currBailType } = props
+    const { base, args, transform, currBailType, guiControls } = props
     let { radius, position } = args
 
     const loadBail = bail => {
@@ -22,17 +22,19 @@ const Bail = (props) => {
     const attachTransformControl= (e) => {
         transform.current.attach(e.object)
         transform.current.userData.attachedObject='bail'
+        guiControls.current.style.display = 'block'
     }
 
     return (
         <>
             <mesh
+                name='bail'
                 position={position}
-                // rotation={[rotationX,rotationY,rotationZ]} 
                 geometry={bailGeometry}
                 scale={currBailType !== 'bail0' ? [radius / 4, radius / 4, radius / 4] : [1, 1, 1]}
                 style={{ cursor: 'pointer' }}
-                onClick={attachTransformControl} >
+                onClick={attachTransformControl} 
+                >
                 <meshStandardMaterial
                     attach="material"
                     color={base}

@@ -72,7 +72,7 @@ function Dashboard() {
     });
 
   }
-
+console.log(designs[0])
   return (
     <>
       <div>
@@ -83,7 +83,7 @@ function Dashboard() {
               <Card chart>
                 <CardHeader color="primary" style={{ padding: 0 }}>
 
-                  <img style={{ background: 'white', width: '100%', height: '250px', objectFit: 'cover' }} className="ct-chart" src={design.url} />
+                  <img style={{ background: 'white', width: '100%',height:'20rem', objectFit: 'cover' }} className="ct-chart" src={design.url} />
                 </CardHeader>
                 <CardBody>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>

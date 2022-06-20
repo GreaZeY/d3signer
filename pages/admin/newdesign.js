@@ -166,7 +166,6 @@ function newDesign() {
       position: 'fixed',
       height: '100vh',
       width: '100vw',
-
       background: 'rgba(0, 0, 0, 0.514)',
       display: 'flex',
       justifyContent: 'center',
@@ -183,7 +182,6 @@ function newDesign() {
       borderRadius: '8px',
       boxSizing: 'border-box',
       flexDirection: 'column',
-
       background: 'white',
       zIndex: 1000
 
@@ -231,21 +229,29 @@ function newDesign() {
       alignItems: 'center',
 
     },
-    fabButton:{
-      position:'fixed',
-      bottom:0,
-      right:0,
+    fabButton: {
+      position: 'fixed',
+      bottom: 0,
+      right: 0,
       background: 'linear-gradient(60deg, #ab47bc, #8e24aa)',
 
     },
 
-    zoomControls:{
-      position:'absolute',
-      bottom:0,
-      right:0,
-      paddingBottom:'1rem',
-      zIndex:10,
-      width:'6rem'
+    zoomControls: {
+      position: 'absolute',
+      bottom: 0,
+      right: 0,
+      padding: '1rem .5rem',
+      zIndex: 10,
+      width: '6rem'
+    },
+    preview:{ 
+      position: 'relative',
+      height:'75vh',
+       "@media screen and (max-width: 960px)": {
+        height:'40vh',
+
+      } 
     }
 
 
@@ -263,7 +269,7 @@ function newDesign() {
   const [selectedIndex, setSelectedIndex] = useState(1);
   const [exportLoading, setExportLoading] = useState(false)
   const [windowWidth, setWindowWidth] = useState(0)
-    const [zoom, setZoom] = useState(90)
+  const [zoom, setZoom] = useState({ isZooming: false })
 
   // const [canvasImg, setCanvasImage] = useState(' ')
 
@@ -277,50 +283,64 @@ function newDesign() {
   }, [])
 
 
-   useEffect(() => {
-     if (typeof window !== 'undefined') {
-       // Handler to call on window resize
-       function handleResize() {
-         // Set window width/height to state
-         setWindowWidth(window.innerWidth)
-       }
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      // Handler to call on window resize
+      function handleResize() {
+        // Set window width/height to state
+        setWindowWidth(window.innerWidth)
+      }
 
-       // Add event listener
-       window.addEventListener("resize", handleResize);
+      // Add event listener
+      window.addEventListener("resize", handleResize);
 
-       // Call handler right away so state gets updated with initial window size
-       handleResize();
+      // Call handler right away so state gets updated with initial window size
+      handleResize();
 
-       // Remove event listener on cleanup
-       return () => window.removeEventListener("resize", handleResize);
-     }
+      // Remove event listener on cleanup
+      return () => window.removeEventListener("resize", handleResize);
+    }
   }, [])
 
-  console.log(windowWidth)
 
-  const handleClick = async () => {
-    axios.post('/api/downloadcount', { time: Date.now() })
-    setExportLoading(true)
-    let modelClone = model.current.clone()
-    debugger
-    let stoneGroup = modelClone.children.filter(kid => (kid.type === 'Group' && kid.name === "stoneGroup"))
-    modelClone.remove(stoneGroup[0])
-    if (selectedIndex === 0) {
-      await stlExporter(modelClone)
-      setExportLoading(false)
-      return
-    }
-    if (selectedIndex === 1) {
-      await objExporter(modelClone)
-      setExportLoading(false)
-      return
-    }
-    await savePng()
+  const exportFile = async (index) => {
+    try{
+      if(index === 2) {
+         await savePng()
+        }else{
+
+          axios.post('/api/downloadcount', { time: Date.now() })
+          setExportLoading(true)
+          
+          model.current.children[3].dispose()
+          debugger
+          let modelClone = model.current.clone()
+          
+          let stoneGroup = modelClone.children.filter(kid => (kid.type === 'Group' && kid.name === "stoneGroup"))
+          modelClone.remove(stoneGroup[0])
+
+           if (index === 0) {
+          await stlExporter(modelClone)
+          setExportLoading(false)
+          return
+        }
+      if (index === 1) {
+          await objExporter(modelClone)
+          setExportLoading(false)
+          return
+       }
+        }
     setExportLoading(false)
+  }catch(e){
+    console.log(e)
+    alert.error(e.message)
+    setExportLoading(false)
+  }
   }
 
   const handleMenuItemClick = (event, index) => {
     setSelectedIndex(index);
+    exportFile(index)
     setOpen(false);
   };
 
@@ -336,7 +356,7 @@ function newDesign() {
   };
 
   const handleSavePost = async () => {
-    const url = getCanvasImgData()
+    const url = await getCanvasImgData()
     const today = new Date();
     const yyyy = today.getFullYear();
     let mm = today.getMonth() + 1; // Months start at 0!
@@ -367,7 +387,6 @@ function newDesign() {
     import('three/examples/jsm/exporters/STLExporter')
       .then(module => {
         const exporter = new module.STLExporter();
-        // let newScene= {...scene}
         let str = exporter.parse(model, { binary: true }); // Export the scene
         let blob = new Blob([str], { type: 'text/plain' }); // Generate Blob from the string
         saveAs(blob, 'export.stl');
@@ -387,7 +406,6 @@ function newDesign() {
   const savePng = async () => {
     const dataURL = await getCanvasImgData()
     const blob = await fetch(dataURL).then(r => r.blob());
-    console.log(dataURL, blob)
     saveAs(blob, 'export.png');
   }
 
@@ -416,6 +434,7 @@ function newDesign() {
     // document.body.appendChild(canvas2d)
     if (isDrawn) return canvas2d.toDataURL('image/png');
 
+    canvas2d.remove();
     alert.error('An Error Occurred!')
   }
 
@@ -429,16 +448,16 @@ function newDesign() {
       </Head>
       <div>
 
-        <GridContainer direction={windowWidth <=960?"column-reverse":''} spacing={0}>
+        <GridContainer direction={windowWidth <= 960 ? "column-reverse" : ''}   >
           <LeftPanel props={{ classes }} />
-          <GridItem xs={12} sm={12} md={9}>
+          <GridItem xs={12} sm={12} md={9} style={{padding:0}}  >
             <Card  >
-              <CardBody style={{position:'relative'}} >
+              <CardBody className={classes.preview} >
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <Typography>Preview</Typography>
                   <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', zIndex: `${modalShow ? '0' : '100'}` }}>
                     <ButtonGroup variant="text" ref={anchorRef} aria-label="split button">
-                      <Button disabled={exportLoading} size="small" style={{ background: 'white', border: '1px solid #ECEBEB ' }} onClick={handleClick}>
+                      <Button disabled={exportLoading} size="small" style={{ background: 'white', border: '1px solid #ECEBEB ' }} onClick={()=>exportFile(selectedIndex)}>
                         {
                           exportLoading ?
                             <Spinner style={{ width: '.7rem', height: '.7rem', marginRight: '.5rem' }} />
@@ -585,32 +604,27 @@ function newDesign() {
                             </span>
                           </div>
                         </div>
-
-
                       </div>
-
-
                     </ReactModal>
-
-
-
                   </div>
                 </div>
-<div className={classes.zoomControls+' '+classes.flexRow} style={{justifyContent:'space-between'}} >
 
-                <Fab aria-label="add" size="small" onClick={()=>setZoom(zoom-5)} >
-                  <ZoomInIcon />
-                </Fab>
-
-                <Fab aria-label="add" size="small" onClick={()=>setZoom(zoom+5)} >
-                  <ZoomOutIcon />
-                </Fab>
-         
+                <div className={classes.zoomControls + ' ' + classes.flexRow} style={{ justifyContent: 'space-between' }} >
+                  <Fab aria-label="add" size="small"
+                    onPointerDown={() => setZoom({ isZooming: true, mode: '+' })}
+                    onPointerUp={() => setZoom({ ...zoom, isZooming: false })}
+                  >
+                    <ZoomInIcon />
+                  </Fab>
+                  <Fab aria-label="add" size="small"
+                    onPointerDown={() => setZoom({ isZooming: true, mode: '-' })}
+                    onPointerUp={() => setZoom({ ...zoom, isZooming: false })}
+                  >
+                    <ZoomOutIcon />
+                  </Fab>
                 </div>
 
-
-
-                <D3panel model={model} zoom={zoom}/>
+                <D3panel model={model} zoom={zoom} />
                 {
                   loading && <div className={classes.loaderContainer} >
                     <DotLoader />
@@ -623,11 +637,13 @@ function newDesign() {
 
         </GridContainer>
       </div>
-      {
-        windowWidth <= 960 && <Fab className={classes.fabButton} variant="extended" onClick={() => window.scrollTo(0, document.body.scrollHeight)} >
+      {/* {
+        windowWidth <= 960 && <Fab className={classes.fabButton} 
+        variant="extended" 
+        onClick={() => window.scrollTo(0, document.body.scrollHeight)} >
           <SettingsIcon />
         </Fab>
-      }
+      } */}
     </>
   );
 }
