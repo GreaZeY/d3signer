@@ -11,7 +11,6 @@ specifiers:
   classnames: 2.2.6
   eslint: ^8.14.0
   file-saver: ^2.0.5
-  font-picker-react: ^3.5.2
   history: 5.0.0
   list-react-files: ^0.2.0
   mongo: ^0.1.0
@@ -22,7 +21,6 @@ specifiers:
   next-images: ^1.8.4
   next-redux-wrapper: ^7.0.5
   node-sass: ^7.0.1
-  npm: ^8.7.0
   path: 0.12.7
   perfect-scrollbar: 1.5.0
   prop-types: 15.7.2
@@ -54,7 +52,6 @@ dependencies:
   chartist: 0.10.1
   classnames: 2.2.6
   file-saver: 2.0.5
-  font-picker-react: 3.5.2_react@17.0.1
   history: 5.0.0
   list-react-files: 0.2.0
   mongo: 0.1.0
@@ -64,7 +61,6 @@ dependencies:
   next-compose-plugins: 2.2.1
   next-images: 1.8.4
   next-redux-wrapper: 7.0.5_cdfeb6aeb600d78baeb0b63ab82bf60b
-  npm: 8.7.0
   path: 0.12.7
   perfect-scrollbar: 1.5.0
   prop-types: 15.7.2
@@ -764,12 +760,6 @@ packages:
       use-asset: 1.0.4_react@17.0.1
       utility-types: 3.10.0
       zustand: 3.7.2_react@17.0.1
-    dev: false
-
-  /@samuelmeuli/font-manager/1.4.0:
-    resolution: {integrity: sha512-TaPoX4qA6ABrACiSI18lQOOKjvbLNrT+84UWfzwcguWQ4nT+sprOSRyt/RVXnt9fQp/wFQVC2NcHbzd+AkXffg==}
-    dependencies:
-      '@babel/runtime': 7.17.9
     dev: false
 
   /@tootallnate/once/1.1.2:
@@ -1723,16 +1713,6 @@ packages:
     peerDependenciesMeta:
       debug:
         optional: true
-    dev: false
-
-  /font-picker-react/3.5.2_react@17.0.1:
-    resolution: {integrity: sha512-0JkWIDf2hi6JwnvjIiacLDhO+Sl38RQ4mUGhCWN+Hvj95XalVZ0Aq5zJs/Ybend4uk2yI9rd1QhRRF9RnfHqIQ==}
-    peerDependencies:
-      '@types/react': ^16.0.0
-      react: ^16.0.0
-    dependencies:
-      '@samuelmeuli/font-manager': 1.4.0
-      react: 17.0.1
     dev: false
 
   /forever-agent/0.6.1:
@@ -2804,83 +2784,6 @@ packages:
       validate-npm-package-license: 3.0.4
     dev: false
     optional: true
-
-  /npm/8.7.0:
-    resolution: {integrity: sha512-fOSunmSa1K3dBv4YFoX54wew3PC6aYYDMGWBAonWRO4Yc7smYtk3nLrCda6+dtkTJwA8D4Tv/0wmnpYNgf5VFw==}
-    engines: {node: ^12.13.0 || ^14.15.0 || >=16}
-    hasBin: true
-    dev: false
-    bundledDependencies:
-      - '@isaacs/string-locale-compare'
-      - '@npmcli/arborist'
-      - '@npmcli/ci-detect'
-      - '@npmcli/config'
-      - '@npmcli/fs'
-      - '@npmcli/map-workspaces'
-      - '@npmcli/package-json'
-      - '@npmcli/run-script'
-      - abbrev
-      - archy
-      - cacache
-      - chalk
-      - chownr
-      - cli-columns
-      - cli-table3
-      - columnify
-      - fastest-levenshtein
-      - glob
-      - graceful-fs
-      - hosted-git-info
-      - ini
-      - init-package-json
-      - is-cidr
-      - json-parse-even-better-errors
-      - libnpmaccess
-      - libnpmdiff
-      - libnpmexec
-      - libnpmfund
-      - libnpmhook
-      - libnpmorg
-      - libnpmpack
-      - libnpmpublish
-      - libnpmsearch
-      - libnpmteam
-      - libnpmversion
-      - make-fetch-happen
-      - minipass
-      - minipass-pipeline
-      - mkdirp
-      - mkdirp-infer-owner
-      - ms
-      - node-gyp
-      - nopt
-      - npm-audit-report
-      - npm-install-checks
-      - npm-package-arg
-      - npm-pick-manifest
-      - npm-profile
-      - npm-registry-fetch
-      - npm-user-validate
-      - npmlog
-      - opener
-      - pacote
-      - parse-conflict-json
-      - proc-log
-      - qrcode-terminal
-      - read
-      - read-package-json
-      - read-package-json-fast
-      - readdir-scoped-modules
-      - rimraf
-      - semver
-      - ssri
-      - tar
-      - text-table
-      - tiny-relative-date
-      - treeverse
-      - validate-npm-package-name
-      - which
-      - write-file-atomic
 
   /npmlog/4.1.2:
     resolution: {integrity: sha512-2uUqazuKlTaSI/dC8AzicUck7+IrEaOnN/e0jd3Xtt1KcGpwx30v50mL7oPyr/h9bL3E4aZccVwpwP+5W9Vjkg==}
