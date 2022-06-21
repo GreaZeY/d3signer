@@ -19,7 +19,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Button from "@material-ui/core/Button";
 import useCollapse from 'react-collapsed'
 import { stoneShapes, stoneColor, colors, bailType } from "components/LeftPanelComponents/panelData";
-
+import Image from "next/image";
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 
 // importing shape components
@@ -227,7 +227,7 @@ const LeftPanel = ({ props }) => {
                 {
                   stoneShapes.map(shape => (
                     <div style={{ border: currStoneShape === shape && '2px solid #8e24aa' }} className={classes.stoneShape + ' ' + classes.flexRow}>
-                      <img className={classes.img} src={`${shapeDir}/${shape}.svg`} alt={shape} />
+                      <Image width={50} height={50}  src={`${shapeDir}/${shape}.svg`} alt={shape} />
 
                     </div>
                   ))

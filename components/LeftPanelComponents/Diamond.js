@@ -3,7 +3,7 @@ import { loadStone } from '../NewDesignPanels/PendantModel'
 import { stoneColor } from './panelData.js'
 import { useDispatch,useSelector } from 'react-redux';
 import { designProps } from '../../lib/actions/designAction';
-
+let anglesZ = [-.9, 0, 0, 0, 0]
 let x = [-15, -10, -5, -0, 5]
 const Diamond = ({ model }) => {
 
@@ -19,7 +19,7 @@ const Diamond = ({ model }) => {
                     position-x={x[i]} 
                     geometry={diamond.geometry} 
                     scale={3} 
-                    rotation={[Math.PI / 2, Math.PI, 0]}
+                    rotation={[Math.PI / 2,0, 0]}
                         onClick={() => dispatch(designProps({ ...currDesign, currStoneColor: color }))}
                     >
                      <meshStandardMaterial

@@ -12,7 +12,7 @@ import MenuAppBar from "./menubar.js"
 import styles from "assets/jss/nextjs-material-dashboard/layouts/adminStyle.js";
 
 
-let ps;
+// let ps;
 
 export default function Admin({ children, ...rest }) {
   // used for checking current route

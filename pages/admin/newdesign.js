@@ -27,15 +27,17 @@ import { useAlert } from 'react-alert';
 import ShareIcon from '@material-ui/icons/Share'
 import ReactModal from 'react-modal';
 import Fab from '@material-ui/core/Fab';
-import SettingsIcon from '@material-ui/icons/Settings';
 import ZoomInIcon from '@material-ui/icons/ZoomIn';
 import ZoomOutIcon from '@material-ui/icons/ZoomOut';
 
 import { makeStyles } from "@material-ui/core/styles";
 import Head from 'next/head'
 import axios from "axios";
+import { subtractGeometry } from '../../components/NewDesignPanels/PendantModel';
+
+
+
 const options = ['STL', 'OBJ', 'PNG'];
-let zoomFactor = 1
 
 function newDesign() {
   const alert = useAlert()
@@ -245,13 +247,13 @@ function newDesign() {
       zIndex: 10,
       width: '6rem'
     },
-    preview:{ 
+    preview: {
       position: 'relative',
-      height:'75vh',
-       "@media screen and (max-width: 960px)": {
-        height:'40vh',
+      height: '75vh',
+      "@media screen and (max-width: 960px)": {
+        height: '40vh',
 
-      } 
+      }
     }
 
 
@@ -304,38 +306,41 @@ function newDesign() {
 
 
   const exportFile = async (index) => {
-    try{
-      if(index === 2) {
-         await savePng()
-        }else{
+    try {
+      if (index === 2) {
+        await savePng()
+      } else {
+        axios.post('/api/downloadcount', { time: Date.now() })
+        setExportLoading(true)
 
-          axios.post('/api/downloadcount', { time: Date.now() })
-          setExportLoading(true)
-          
-          model.current.children[3].dispose()
-          debugger
-          let modelClone = model.current.clone()
-          
-          let stoneGroup = modelClone.children.filter(kid => (kid.type === 'Group' && kid.name === "stoneGroup"))
-          modelClone.remove(stoneGroup[0])
+        
+        let modelClone = model.current.clone()
 
-           if (index === 0) {
+        let stoneGroup = modelClone.children.filter(kid => (kid.type === 'Group' && kid.name === "stoneGroup"))
+        modelClone.remove(stoneGroup[0])
+
+        let minuendMesh = modelClone.children[0].children[0], subtrahendMesh = stoneGroup[0].children[0];
+        debugger
+          let subtractedGeometry = subtractGeometry(minuendMesh, subtrahendMesh)
+        minuendMesh.geometry = subtractedGeometry
+
+        if (index === 0) {
           await stlExporter(modelClone)
           setExportLoading(false)
           return
         }
-      if (index === 1) {
+        if (index === 1) {
           await objExporter(modelClone)
           setExportLoading(false)
           return
-       }
         }
-    setExportLoading(false)
-  }catch(e){
-    console.log(e)
-    alert.error(e.message)
-    setExportLoading(false)
-  }
+      }
+      setExportLoading(false)
+    } catch (e) {
+      console.log(e)
+      alert.error(e.message)
+      setExportLoading(false)
+    }
   }
 
   const handleMenuItemClick = (event, index) => {
@@ -395,7 +400,7 @@ function newDesign() {
 
   const objExporter = (model) => {
     import('three/examples/jsm/exporters/OBJExporter')
-      .then(module => {
+  .then(module => {
         const exporter = new module.OBJExporter();
         let str = exporter.parse(model, { binary: true }); // Export the scene
         let blob = new Blob([str], { type: 'text/plain' }); // Generate Blob from the string
@@ -450,14 +455,14 @@ function newDesign() {
 
         <GridContainer direction={windowWidth <= 960 ? "column-reverse" : ''}   >
           <LeftPanel props={{ classes }} />
-          <GridItem xs={12} sm={12} md={9} style={{padding:0}}  >
+          <GridItem xs={12} sm={12} md={9} style={{ padding: 0 }}  >
             <Card  >
               <CardBody className={classes.preview} >
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <Typography>Preview</Typography>
                   <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', zIndex: `${modalShow ? '0' : '100'}` }}>
                     <ButtonGroup variant="text" ref={anchorRef} aria-label="split button">
-                      <Button disabled={exportLoading} size="small" style={{ background: 'white', border: '1px solid #ECEBEB ' }} onClick={()=>exportFile(selectedIndex)}>
+                      <Button disabled={exportLoading} size="small" style={{ background: 'white', border: '1px solid #ECEBEB ' }} onClick={() => exportFile(selectedIndex)}>
                         {
                           exportLoading ?
                             <Spinner style={{ width: '.7rem', height: '.7rem', marginRight: '.5rem' }} />

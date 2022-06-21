@@ -18,11 +18,9 @@ const D3panel = ({ model, zoom }) => {
       <OrbitControls enableDamping ref={controls} />
       <Suspense fallback={"Loading"}>
         <Environment files={'home.hdr'} path={'/assets/hdrMap/'} />
-        <group ref={model}  >
           <Provider store={store} >
-              <PendantModel controls={controls} guiControls={guiControls} zoom={zoom} />
+              <PendantModel controls={controls} guiControls={guiControls} zoom={zoom} model={model} />
           </Provider >
-        </group>
       </Suspense>
       </CanvasWithControls>
       <div ref={guiControls}  style={{ display: 'none' }} >

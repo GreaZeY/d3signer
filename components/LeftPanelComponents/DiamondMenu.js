@@ -11,7 +11,7 @@ const DiamondMenu = ({ color, model }) => {
             <ambientLight intensity={1} />
             <Provider store={store} >
             <Suspense fallback={"Loading"}>
-                 <Environment files={'studio.hdr'} path={'/assets/hdrMap/'} />
+                 <Environment files={'workshop.hdr'} path={'/assets/hdrMap/'} />
                 <Diamond color={color} model={model} />
             </Suspense>
             </Provider>
