@@ -34,7 +34,7 @@ const bevelProps = {
 extend({ TextGeometry })
 let textGeometry = new TextGeometry()
 
-const pendantModel = ({ controls, guiControls, zoom }) => {
+const pendantModel = ({ controls, guiControls, zoom, model }) => {
 
     const { designProps } = useSelector(state => state.designProps)
     const {
@@ -231,6 +231,7 @@ const pendantModel = ({ controls, guiControls, zoom }) => {
     return (
         <>
             <spotLight angle={1} penumbra={0} ref={light} intensity={.5} />
+            <group ref={model}  >
             <group name='pendant' ref={pendant} >
                 <mesh
                     geometry={textGeometry}
@@ -266,13 +267,15 @@ const pendantModel = ({ controls, guiControls, zoom }) => {
                 </div>
                 
             </Html> */}
-
+            </group>
+            <group>
             <transformControls
                 ref={transform}
                 args={[camera, domElement]}
                 mode={mode}
             // onUpdate={self => self.attach(symbolRef.current)}
             />
+            </group>
         </>
     )
 }

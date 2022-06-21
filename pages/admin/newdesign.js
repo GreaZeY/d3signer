@@ -35,7 +35,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import Head from 'next/head'
 import axios from "axios";
 const options = ['STL', 'OBJ', 'PNG'];
-let zoomFactor = 1
 
 function newDesign() {
   const alert = useAlert()
@@ -311,9 +310,6 @@ function newDesign() {
 
           axios.post('/api/downloadcount', { time: Date.now() })
           setExportLoading(true)
-          
-          model.current.children[3].dispose()
-          debugger
           let modelClone = model.current.clone()
           
           let stoneGroup = modelClone.children.filter(kid => (kid.type === 'Group' && kid.name === "stoneGroup"))
@@ -410,7 +406,7 @@ function newDesign() {
   }
 
   const getCanvasImgData = async () => {
-    let canvas = document.getElementsByTagName('canvas')[0];
+    let canvas = document.getElementsByTagName('canvas')[1];
     const canvas2d = document.createElement('canvas')
     var context = canvas2d.getContext("2d");
     canvas2d.width = "700"
