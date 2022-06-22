@@ -125,7 +125,11 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
         // let cloneTxt = txtSurface.current.clone()
         // cloneTxt.scale.set(1)
         textGeometry = subtractGeometry(txtSurface.current, dia)
+        // let deletedGeom = subtractGeometry(dia,txtSurface.current)
         txtSurface.current.geometry = textGeometry
+        // let deletedMesh = new THREE.Mesh(deletedGeom, txtSurface.current.material)
+        // deletedMesh.position.set(0, 0, 1)
+        // stoneGroup.current.add(deletedMesh)
         // txtSurface.current.position.set(0, 0, 0)
 
 
@@ -156,19 +160,30 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
         // dispatch({ type: MODEL_GENERATED })
     }
 
+    const removeStone = (e, grp) => {
+        if (e.button === 2 && targetStone) {
+            // targetStone.geometry = new THREE.BoxGeometry(2, 2, 0);
+            // targetStone.material = txtSurface.current.material
+            // targetStone.rotation.x = -Math.PI
+            // targetStone.position.z = 4
+            grp.current.remove(targetStone)
+        }
+
+    }
+
     useEffect(() => {
         if (transform.current) {
             // disabling Orbit Controls when transform controls are enabled
             const tControls = transform.current
             const callback = (event) => (controls.current.enabled = !event.value)
             tControls.addEventListener('dragging-changed', callback)
-            window.addEventListener('pointerdown', (e) => onPointerDown(e, stoneGroup))
+            window.addEventListener('pointerdown', (e) => removeStone(e, stoneGroup))
             domElement.addEventListener('click', canvasClickListener)
 
             return () => {
                 tControls.removeEventListener('dragging-changed', callback)
                 domElement.removeEventListener('click', canvasClickListener)
-                window.removeEventListener('pointerdown', (e) => onPointerDown(e, stoneGroup))
+                window.removeEventListener('pointerdown', (e) => removeStone(e, stoneGroup))
             }
         }
     })
@@ -299,17 +314,19 @@ export const loadStone = (shape, color) => {
     return dia
 }
 
-const onPointerDown = (e, grp) => {
-    if (e.button === 2 && targetStone) {
-        grp.current.remove(targetStone)
-    }
 
+
+const subtractGeometry = (minuendMesh, subtrahendMesh) => {
+    const subtrahendBSP = new ThreeBSP(subtrahendMesh);
+    const minuendBSP = new ThreeBSP(minuendMesh);
+    const sub = minuendBSP.subtract(subtrahendBSP);
+    return sub.toBufferGeometry();
 }
 
-const subtractGeometry = (subtractFrom, subtrahendMesh) => {
+const union = (minuendMesh, subtrahendMesh) => {
     const subtrahendBSP = new ThreeBSP(subtrahendMesh);
-    const subtractFromBSP = new ThreeBSP(subtractFrom);
-    const sub = subtractFromBSP.subtract(subtrahendBSP);
+    const minuendBSP = new ThreeBSP(minuendMesh);
+    const sub = minuendBSP.union(subtrahendBSP);
     return sub.toBufferGeometry();
 }
 
