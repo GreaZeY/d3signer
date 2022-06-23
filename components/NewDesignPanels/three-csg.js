@@ -1,4 +1,3 @@
-
 import * as THREE from 'three'
 export const ThreeBSP = (function() {
 
@@ -146,9 +145,9 @@ export const ThreeBSP = (function() {
                 indices.push( vertex_idx_a, vertex_idx_b, vertex_idx_c );
             }
         }
-        geometry.addAttribute('uv', new THREE.BufferAttribute(new Float32Array(uvs), 2));
-        geometry.addAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
-        geometry.addAttribute('normal', new THREE.BufferAttribute(new Float32Array(normals), 3));
+        geometry.setAttribute('uv', new THREE.BufferAttribute(new Float32Array(uvs), 2));
+        geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
+        geometry.setAttribute('normal', new THREE.BufferAttribute(new Float32Array(normals), 3));
         //geometry.addAttribute('color', new THREE.BufferAttribute(new Float32Array(colors), 3));
         geometry.setIndex( new THREE.BufferAttribute( new Uint32Array( indices ), 1 ) );
 

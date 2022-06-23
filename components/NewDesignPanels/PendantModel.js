@@ -21,7 +21,7 @@ import { ThreeBSP } from './three-csg'
 // const stoneModels = importAll(require.context('public/assets/crimps/fbx', false, /\.(fbx)$/));
 
 
-let targetStone = null, clickAway=false
+let targetStone = null, clickAway = false, geometryWithoutHoles
 const bevelProps = {
     // bevelEnabled: true,
     // bevelThickness: 1.5,
@@ -72,8 +72,8 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
             height: thickness * 10,
             ...bevelProps
         })
-
-
+        textGeometry.center()
+        geometryWithoutHoles = textGeometry
         // new THREE.Box3().setFromObject(txtSurface.current).getCenter(txtSurface.current.position).multiplyScalar(-1)
 
         //         let box3 = new THREE.Box3().setFromObject(txtSurface.current);
@@ -125,12 +125,14 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
         // let cloneTxt = txtSurface.current.clone()
         // cloneTxt.scale.set(1)
         textGeometry = subtractGeometry(txtSurface.current, dia)
-        // let deletedGeom = subtractGeometry(dia,txtSurface.current)
+
         txtSurface.current.geometry = textGeometry
-        // let deletedMesh = new THREE.Mesh(deletedGeom, txtSurface.current.material)
-        // deletedMesh.position.set(0, 0, 1)
-        // stoneGroup.current.add(deletedMesh)
-        // txtSurface.current.position.set(0, 0, 0)
+
+
+       
+
+
+
 
 
         // const _matrix = new THREE.Matrix4();
@@ -166,6 +168,13 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
             // targetStone.material = txtSurface.current.material
             // targetStone.rotation.x = -Math.PI
             // targetStone.position.z = 4
+            
+            let mesh = new THREE.Mesh(geometryWithoutHoles)
+            let deletedGeom = union(targetStone, mesh)
+             let deletedMesh = new THREE.Mesh(deletedGeom, txtSurface.current.material)
+        
+            pendant.current.add(deletedMesh)
+
             grp.current.remove(targetStone)
         }
 
@@ -186,7 +195,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
                 window.removeEventListener('pointerdown', (e) => removeStone(e, stoneGroup))
             }
         }
-    })
+    },[])
 
 
     const closeControls = () => {
@@ -326,7 +335,7 @@ const subtractGeometry = (minuendMesh, subtrahendMesh) => {
 const union = (minuendMesh, subtrahendMesh) => {
     const subtrahendBSP = new ThreeBSP(subtrahendMesh);
     const minuendBSP = new ThreeBSP(minuendMesh);
-    const sub = minuendBSP.union(subtrahendBSP);
+    const sub = minuendBSP.intersect(subtrahendBSP);
     return sub.toBufferGeometry();
 }
 
