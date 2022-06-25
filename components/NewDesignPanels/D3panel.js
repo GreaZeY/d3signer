@@ -24,7 +24,7 @@ const D3panel = ({ model, zoom }) => {
       </Suspense>
       </CanvasWithControls>
       <div ref={guiControls}  style={{ display: 'none' }} >
-        <Controls title={'Transform Controls'} width={200}  />
+        <Controls title={'Transform Controls'} width={200} collapsed={true} anchor={'top_right'} style={{zIndex:100}}/>
       </div>
       </Controls.Provider>
   )

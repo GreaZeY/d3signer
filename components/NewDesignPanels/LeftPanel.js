@@ -48,7 +48,6 @@ const LeftPanel = ({ props }) => {
   const {
     text,
     length,
-    width,
     thickness,
     font,
     currStoneShape,
@@ -62,12 +61,8 @@ const LeftPanel = ({ props }) => {
     currSizeProp === 'Length' ?
       dispatch(designProps({ ...currDesign, length: val }))
       :
-      (
-        currSizeProp === 'Width' ?
-          dispatch(designProps({ ...currDesign, width: val }))
-          :
-          dispatch(designProps({ ...currDesign, thickness: val }))
-      )
+      dispatch(designProps({ ...currDesign, thickness: val }))
+
   }
 
   const setBailNumber = () => {
@@ -101,7 +96,7 @@ const LeftPanel = ({ props }) => {
   // }
 
   const setStoneShape = e => {
-    if(e.target.tagName!=='IMG') return
+    if (e.target.tagName !== 'IMG') return
     dispatch(designProps({ ...currDesign, currStoneShape: e.target.alt }))
   }
 
@@ -153,8 +148,7 @@ const LeftPanel = ({ props }) => {
                   label="Size"
                   onChange={(e => setCurrSizeProp(e.target.value))}
                 >
-                  <MenuItem value={'Length'}>Length</MenuItem>
-                  <MenuItem value={'Width'}>Width</MenuItem>
+                  <MenuItem value={'Length'}>Width</MenuItem>
                   <MenuItem value={'Thickness'}>Thickness</MenuItem>
                 </Select>
               </FormControl>
@@ -168,23 +162,17 @@ const LeftPanel = ({ props }) => {
                 style={{ marginRight: '1rem' }}
                 min={currSizeProp === 'Length' ? 20 : 0.4}
                 max={currSizeProp === 'Length' ? 30 : 2}
-                value={currSizeProp === 'Length' ?
-                  length
-                  :
-                  (
-                    currSizeProp === 'Width' ?
-                      width : thickness
-                  )
-                }
+                value={currSizeProp === 'Length' ? length : thickness}
                 color="primary"
               />
-              <input onChange={e => setSizes(e, e.target.value)} style={{ padding: '.2rem', cursor: 'text', width: '2rem' }} type='number' className={classes.symbol} step={0.1} value={currSizeProp === 'Length' ?
-                length
-                :
-                (
-                  currSizeProp === 'Width' ?
-                    width : thickness
-                )} />
+              <input 
+              className={classes.symbol} 
+              style={{ padding: '.2rem', cursor: 'text', width: '2rem' }}
+              onChange={e => setSizes(e, e.target.value)} 
+              type='number' 
+              step={0.1} 
+              value={currSizeProp === 'Length' ? length : thickness} 
+                />
             </div>
           </div>
 

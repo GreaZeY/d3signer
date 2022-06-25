@@ -27,7 +27,7 @@ const bevelProps = {
     // bevelThickness: 1.5,
     // bevelSize: 1.5,
     // bevelSegments: 10,
-    curveSegments: 50,
+    // curveSegments: 50,
 }
 
 // let stoneCount = 0
@@ -41,7 +41,6 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
         text,
         base,
         length,
-        width,
         thickness,
         font: currFont,
         currStoneColor,
@@ -65,7 +64,6 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     const diamond = useMemo(() => loadStone(currStoneShape, currStoneColor), [currStoneShape, currStoneColor]);
 
     useEffect(() => {
-        setBoundingBoxPoints(null)
         textGeometry = new TextGeometry(text, {
             font,
             size: length,
@@ -74,25 +72,18 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
         })
         textGeometry.center()
         geometryWithoutHoles = textGeometry
-        // new THREE.Box3().setFromObject(txtSurface.current).getCenter(txtSurface.current.position).multiplyScalar(-1)
 
-        //         let box3 = new THREE.Box3().setFromObject(txtSurface.current);
-        //     console.log(box3)
-        //     txtSurface.current.position.x = (box3.max.x - box3.min.x) / 2;
-        //     txtSurface.current.position.y = (box3.max.y - box3.min.y) / 2;
-        // },5000)
+        textGeometry.computeBoundingBox()
+        console.log(textGeometry)       
+        setBoundingBoxPoints(textGeometry.computeBounding)
 
 
     }, [text, length, font, thickness, base])
 
-    // useEffect(() => {
-    //     stone.current?.material?.color.set(currStoneColor)
-    // }, [currStoneColor])
 
     useEffect(() => {
         if (stoneGroup.current) stoneGroup.current.children = []
-    }, [length, font, thickness])
-
+    }, [length, font, thickness, ])
 
     const {
         camera,
@@ -109,6 +100,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
         // stone.current.material.transparent = true
         // stone.current.material.opacity = .5
     }
+
     // will drop a stone on pendant mesh
     const placeStone = async (e) => {
         if (!currStoneColor && !currStoneShape) return
@@ -122,73 +114,37 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
         dia.position.set(point.x, point.y, helper.max.z - (stoneSize / 9.8))
         stoneGroup.current.add(dia)
 
-        // let cloneTxt = txtSurface.current.clone()
-        // cloneTxt.scale.set(1)
         textGeometry = subtractGeometry(txtSurface.current, dia)
-
         txtSurface.current.geometry = textGeometry
-
-
-       
-
-
-
-
-
-        // const _matrix = new THREE.Matrix4();
-
-
-        // _matrix.makeTranslation(dia.position.x, dia.position.y, dia.position.z);
-
-        // _matrix.makeRotationX(Math.PI / 2) 
-
-
-        // instance.current.setMatrixAt(stoneCount, _matrix);
-
-
-        // instance.current.instanceMatrix.needsUpdate = true;
-
-        // // instance.current.position.copy(txtSurface.current.position)
-
-
-        // stoneCount++
-
-
-
-
-        // txtSurface.current.geometry = dia.geometry
-        // setStones([...stones,[point.x,point.y,5]])
-
         // dispatch({ type: MODEL_GENERATED })
     }
 
+    // removing stone from group
     const removeStone = (e, grp) => {
         if (e.button === 2 && targetStone) {
-            // targetStone.geometry = new THREE.BoxGeometry(2, 2, 0);
-            // targetStone.material = txtSurface.current.material
-            // targetStone.rotation.x = -Math.PI
-            // targetStone.position.z = 4
-            
             let mesh = new THREE.Mesh(geometryWithoutHoles)
-            let deletedGeom = union(targetStone, mesh)
+            let deletedGeom = intersect(targetStone, mesh)
              let deletedMesh = new THREE.Mesh(deletedGeom, txtSurface.current.material)
-        
-            pendant.current.add(deletedMesh)
-
+            // pendant.current.add(deletedMesh)
+            textGeometry = union(deletedMesh, txtSurface.current)
+            txtSurface.current.geometry = textGeometry
             grp.current.remove(targetStone)
         }
 
     }
 
     useEffect(() => {
+        // listeners
         if (transform.current) {
             // disabling Orbit Controls when transform controls are enabled
             const tControls = transform.current
             const callback = (event) => (controls.current.enabled = !event.value)
             tControls.addEventListener('dragging-changed', callback)
+            // remove stone listener
             window.addEventListener('pointerdown', (e) => removeStone(e, stoneGroup))
             domElement.addEventListener('click', canvasClickListener)
 
+            // cleanup for listeners
             return () => {
                 tControls.removeEventListener('dragging-changed', callback)
                 domElement.removeEventListener('click', canvasClickListener)
@@ -197,7 +153,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
         }
     },[])
 
-
+// gui controls to change transform mode 
     const closeControls = () => {
         transform.current?.detach()
         guiControls.current.style.display = 'none'
@@ -211,13 +167,14 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
 
     useControl('Close', { type: 'button', onClick: closeControls });
 
-
+    // click away listener for transform controls 
     const canvasClickListener = (e) => {
-
+        console.log(clickAway)
         if (clickAway) {
-            // transform.current?.detach()
-            // guiControls.current.style.display = 'none'
-            // clickAway = false
+            
+            transform.current?.detach()
+            guiControls.current.style.display = 'none'
+            clickAway = !clickAway
         }
     }
 
@@ -226,6 +183,8 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     useFrame((state) => {
         const { x, y, z } = state.camera.position
         light.current.position.set(x, y, z + 10);
+
+        // zoom controls
         if (zoom.isZooming) {
             if (zoom.mode === '-') {
                 if (z > 150) return
@@ -236,18 +195,22 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
             }
         }
 
+        // get clicked stone for deletion 
         let intersects = state.raycaster.intersectObjects(stoneGroup.current.children);
         intersects.forEach(obj => {
             if (obj.object.name === 'stone') {
                 targetStone = obj.object
             }
         })
-
         if (intersects.length === 0) targetStone = null
 
         // click away listener for transform controls 
         let intersectsTrans = state.raycaster.intersectObjects(pendant.current.parent.children);
-        if (intersectsTrans.length === 1) clickAway = true
+        if (intersectsTrans.length >0) {
+            clickAway = false
+        }else{
+            clickAway = true
+        }
 
     })
 
@@ -260,7 +223,6 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
                 <mesh
                     geometry={textGeometry}
                     ref={txtSurface}
-                    scale-x={width}
                     onClick={placeStone}
                     onPointerMove={showStoneOnPendant}
                     onPointerEnter={() => diamond.visible = true}
@@ -324,7 +286,7 @@ export const loadStone = (shape, color) => {
 }
 
 
-
+// return subtracted minuend from subtrahend mesh
 const subtractGeometry = (minuendMesh, subtrahendMesh) => {
     const subtrahendBSP = new ThreeBSP(subtrahendMesh);
     const minuendBSP = new ThreeBSP(minuendMesh);
@@ -332,10 +294,19 @@ const subtractGeometry = (minuendMesh, subtrahendMesh) => {
     return sub.toBufferGeometry();
 }
 
-const union = (minuendMesh, subtrahendMesh) => {
-    const subtrahendBSP = new ThreeBSP(subtrahendMesh);
-    const minuendBSP = new ThreeBSP(minuendMesh);
-    const sub = minuendBSP.intersect(subtrahendBSP);
+// return intersected geometry of two mesh
+const intersect = (mesh1, mesh2) => {
+    const mesh2BSP = new ThreeBSP(mesh2);
+    const mesh1BSP = new ThreeBSP(mesh1);
+    const sub = mesh1BSP.intersect(mesh2BSP);
+    return sub.toBufferGeometry();
+}
+
+// return union geometry of two mesh
+const union = (mesh1, mesh2) => {
+    const mesh2BSP = new ThreeBSP(mesh2);
+    const mesh1BSP = new ThreeBSP(mesh1);
+    const sub = mesh1BSP.union(mesh2BSP);
     return sub.toBufferGeometry();
 }
 

@@ -21,7 +21,6 @@ const Bail = (props) => {
 
     const attachTransformControl= (e) => {
         transform.current.attach(e.object)
-        transform.current.userData.attachedObject='bail'
         guiControls.current.style.display = 'block'
     }
 
@@ -29,6 +28,7 @@ const Bail = (props) => {
         <>
             <mesh
                 name='bail'
+                scale-z={args.tube}
                 position={position}
                 geometry={bailGeometry}
                 scale={currBailType !== 'bail0' ? [radius / 4, radius / 4, radius / 4] : [1, 1, 1]}

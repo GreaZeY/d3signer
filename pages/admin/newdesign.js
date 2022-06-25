@@ -39,7 +39,6 @@ const options = ['STL', 'OBJ', 'PNG'];
 function newDesign() {
   const alert = useAlert()
   const dispatch = useDispatch();
-  console.log()
 
   const useStyles = makeStyles({
     infoTip: {

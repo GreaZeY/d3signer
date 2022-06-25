@@ -83,7 +83,6 @@ const Symbols = ({ txtSurface, guiControls, transform}) => {
   const attachTransformControl = (e) => {
     transform.current.attach(e.object)
      guiControls.current.style.display = 'block'
-    transform.current.userData.attachedObject = 'symbol'
   }
 
 
