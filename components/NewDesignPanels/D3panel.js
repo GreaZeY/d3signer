@@ -14,7 +14,7 @@ const D3panel = ({ model, zoom }) => {
 
   return (
     <Controls.Provider>
-      <CanvasWithControls gl={{ preserveDrawingBuffer: true }} camera={{ position: [0, 0, 90] }}>
+      <CanvasWithControls gl={{ preserveDrawingBuffer: true }} camera={{ position: [0, 0, 10] }}>
       <OrbitControls enableDamping ref={controls} />
       <Suspense fallback={"Loading"}>
         <Environment files={'home.hdr'} path={'/assets/hdrMap/'} />

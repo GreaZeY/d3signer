@@ -56,12 +56,18 @@ const LeftPanel = ({ props }) => {
   } = currDesign;
 
   const dispatch = useDispatch()
+  const compareVal = (val, min, max, currSizeProp = 'StoneSize') => {
+    if (val >= min && val <= max) return val
+    if( currSizeProp === 'Length') return length 
+    if (currSizeProp === 'Thickness') return thickness 
+    if (currSizeProp === 'StoneSize') return stoneSize
+  }
 
   const setSizes = (e, val) => {
     currSizeProp === 'Length' ?
-      dispatch(designProps({ ...currDesign, length: val }))
+      dispatch(designProps({ ...currDesign, length: val ? compareVal(val, 5, 50, currSizeProp):val }))
       :
-      dispatch(designProps({ ...currDesign, thickness: val }))
+      dispatch(designProps({ ...currDesign, thickness: val ? compareVal(val, .4, 2, currSizeProp) : val }))
 
   }
 
@@ -160,28 +166,30 @@ const LeftPanel = ({ props }) => {
                 onChange={setSizes}
                 step={0.1}
                 style={{ marginRight: '1rem' }}
-                min={currSizeProp === 'Length' ? 20 : 0.4}
-                max={currSizeProp === 'Length' ? 30 : 2}
+                min={currSizeProp === 'Length' ? 5 : 0.4}
+                max={currSizeProp === 'Length' ? 50 : 2}
                 value={currSizeProp === 'Length' ? length : thickness}
                 color="primary"
               />
-              <input 
-              className={classes.symbol} 
-              style={{ padding: '.2rem', cursor: 'text', width: '2rem' }}
-              onChange={e => setSizes(e, e.target.value)} 
-              type='number' 
-              step={0.1} 
-              value={currSizeProp === 'Length' ? length : thickness} 
-                />
+              <input
+                className={classes.symbol}
+                style={{ padding: '.2rem', cursor: 'text', width: '2rem' }}
+                onChange={e => setSizes(e, e.target.value)}
+                type='number'
+                min={currSizeProp === 'Length' ? 5 : 0.4}
+                max={currSizeProp === 'Length' ? 50 : 2}
+                step={0.1}
+                value={currSizeProp === 'Length' ? length : thickness}
+              />
             </div>
           </div>
 
           <div style={{ marginTop: '1rem' }}  >
-            <InputLabel className="settings-head">Your Base</InputLabel>
-            <div onClick={(e) => dispatch(designProps({ ...currDesign, base: e.target.style.background }))} className={classes.flexRow}>
+            <InputLabel className="settings-head">Base Material</InputLabel>
+            <div onClick={(e) => dispatch(designProps({ ...currDesign, base: e.target.style.color }))} className={classes.flexRow}>
               {
                 colors.map(item => (
-                  <div className={classes.base} title={item.name} style={{ background: item.color }} ></div>
+                  <div className={classes.base} title={item.name} style={{ color: item.color, background: `url('/assets/img/bases/${item.name}.png')` }} ></div>
                 ))
               }
             </div>
@@ -271,7 +279,7 @@ const LeftPanel = ({ props }) => {
             <div style={{ marginTop: '.5rem' }}  >
               <InputLabel className="settings-head">Stone Size</InputLabel>
               <input
-                onChange={(e) => dispatch(designProps({ ...currDesign, stoneSize: e.target.value }))}
+                onChange={(e) => dispatch(designProps({ ...currDesign, stoneSize: e.target.value ? compareVal(e.target.value, .5, 5) :e.target.value }))}
                 value={stoneSize}
                 type='number'
                 step='.1'

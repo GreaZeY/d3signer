@@ -6,7 +6,8 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Slider from '@material-ui/core/Slider';
 import { useSelector } from 'react-redux';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-const sizes =  { diameter: 13, thickness: 1, width: 10 } 
+const minDiameter = .5, maxDiameter = 1, minThickness = 1, maxThickness = 10
+const sizes = { diameter: minDiameter, thickness: minThickness } 
 const Bail = (props) => {
 
 
@@ -15,28 +16,25 @@ const Bail = (props) => {
     
     const [bailDiameter, setBailDiameter] = useState(sizes.diameter);
     const [bailThickness, setBailThickness] = useState(sizes.thickness);
-    const [bailWidth, setBailWidth] = useState(sizes.width);
     const [currBailProp, setCurrBailProp] = useState('bailDiameter');
-    const [currBailPosition, setCurrBailPosition] = useState('Right');
+    const [currBailPosition, setCurrBailPosition] = useState([]);
 
 
-    const setBails = (e, val) => {
+    const setBails = (e, val) => { 
         currBailProp === 'bailDiameter' ?
             setBailDiameter(val)
             :
-            (
-                currBailProp === 'bailWidth' ?
-                    setBailWidth(val) : setBailThickness(val)
-            )
+            setBailThickness(val)
     }
 
 
     useEffect(()=>{
         if(designProps.bails[index])
-        {setCurrBailPosition(designProps.bails[index].position)
+        {
+        setCurrBailPosition(designProps.bails[index].position)
         setBailDiameter(designProps.bails[index].sizes.diameter)
         setBailThickness(designProps.bails[index].sizes.thickness)
-        setBailWidth(designProps.bails[index].sizes.width)}
+        }
     },[designProps])
     // console.log(props)
 
@@ -46,11 +44,10 @@ const Bail = (props) => {
         if(!currBail[index].type) currBail[index].type = currBailType
         if(!currBail[index].dimensionType) currBail[index].dimensionType = currBailType === 'bail0'?'Diameter':'Size'
         currBail[index].sizes.diameter = bailDiameter
-        currBail[index].sizes.width = bailWidth
         currBail[index].sizes.thickness = bailThickness
         setBailsData(currBail)
 
-    }, [bailDiameter, bailThickness, bailWidth, currBailPosition])
+    }, [bailDiameter, bailThickness, currBailPosition])
 
 
     const deleteBail = () => {
@@ -75,7 +72,6 @@ const Bail = (props) => {
                         <MenuItem value={'bailDiameter'}>{
                             designProps?.bails[index]?.dimensionType
                         }</MenuItem>
-                        <MenuItem value={'bailWidth'}>Width</MenuItem>
                         <MenuItem value={'bailThickness'}>Thickness</MenuItem>
                     </Select>
                 </FormControl>
@@ -84,27 +80,31 @@ const Bail = (props) => {
             <div style={{ width: '100%', marginTop: '1rem', display: 'flex' }}>
                 <Slider
                     aria-label="Sizes"
+                   style={{ marginLeft:'.3rem'}}
                     onChange={setBails}
-                    min={10}
-                    max={20}
+                     step={.1}
+                    min={.5}
+                    max={1}
                     value={currBailProp === 'bailDiameter' ?
                         bailDiameter
                         :
-                        (
-                            currBailProp === 'bailWidth' ?
-                                bailWidth : bailThickness
-                        )
+                        bailThickness
+
                     }
                     color="primary"
                 />
-                <input onChange={e => setBails(e, parseInt(e.target.value))} style={{ padding: '.2rem', cursor: 'text' }} type='number' maxLength={30} minLength={20} className={classes.symbol}
+                <input 
+                onChange={e => setBails(e, parseInt(e.target.value))} 
+                    style={{ padding: '.2rem', cursor: 'text', width: '2rem' }} 
+                type='number' 
+                    step='.1'
+                    max='1.0'
+                    min='0.5'
+                className={classes.symbol}
                     value={currBailProp === 'bailDiameter' ?
                         bailDiameter
                         :
-                        (
-                            currBailProp === 'bailWidth' ?
-                                bailWidth : bailThickness
-                        )
+                        bailThickness
                     } />
             </div>
 

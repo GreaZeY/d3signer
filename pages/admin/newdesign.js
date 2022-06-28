@@ -411,15 +411,22 @@ function newDesign() {
     canvas2d.width = "700"
     canvas2d.height = "500"
     context.font = "12px Rubik";
+    context.fillRect(0, 0, canvas2d.width, canvas2d.height);
+    context.fillStyle = "white";
+    var rect = canvas2d.getBoundingClientRect();
+    console.log(rect)
     const imObjFunction = () => {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve, ) => {
         var imageObj = new Image();
         imageObj.onload = function () {
           context.drawImage(imageObj, 10, 10);
-          context.fillText(`Length: ${designProps.length}`, 600, 20);
-          context.fillText(`Width: ${designProps.width}`, 600, 35);
-          context.fillText(`Thickness: ${designProps.thickness}`, 600, 50);
-          context.fillText(`Stone Size: ${designProps.stoneSize}`, 600, 65);
+          console.log(imageObj)
+          context.fillText(`Length: ${designProps.length}`, 20, 20);
+          context.fillText(`Thickness: ${designProps.thickness}`, 120, 20);
+          context.fillText(`Stone Size: ${designProps.stoneSize}`, 220, 20);
+          context.fillText(`Base: ${designProps.base}`, 320, 20);
+          context.fillText(`No. of Bails: ${designProps.bails.length}`, 420, 20);
+          context.fillText(`Stone Size: ${designProps.stoneSize}`, 520, 20);
           resolve(true)
         };
         imageObj.src = canvas.toDataURL('image/png');

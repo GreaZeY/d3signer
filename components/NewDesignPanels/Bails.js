@@ -11,7 +11,8 @@ let box = {}
 const Bails = ({ txtSurface, transform, guiControls }) => {
 
     if (txtSurface.current?.geometry){
-        box = new THREE.Box3().setFromObject(txtSurface.current);
+        txtSurface.current.geometry.computeBoundingBox()
+        box = txtSurface.current.geometry.boundingBox
     }
     const { max, min }= box
     const { designProps } = useSelector(state => state.designProps)
@@ -33,7 +34,7 @@ const Bails = ({ txtSurface, transform, guiControls }) => {
                             <Bail
                                 key={i}
                                 args={{
-                                    radius: bail.sizes.diameter / 10 * 2,
+                                    radius: bail.sizes.diameter /2,
                                     tube: bail.sizes.thickness / 10,
                                     position:[max.x-2,max.y,(max.z-min.z)/2]
                                 }}

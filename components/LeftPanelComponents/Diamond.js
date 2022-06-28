@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { loadStone } from '../NewDesignPanels/PendantModel'
+import { loadStone } from '../NewDesignPanels/utils/threeUtils'
 import { stoneColor } from './panelData.js'
 import { useDispatch,useSelector } from 'react-redux';
 import { designProps } from '../../lib/actions/designAction';

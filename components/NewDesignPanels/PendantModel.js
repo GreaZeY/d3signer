@@ -1,24 +1,17 @@
 
 import { useRef, useEffect, useState, useMemo } from 'react'
 import * as THREE from 'three'
-import { useFBX } from '@react-three/drei';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry'
-import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
 import { extend, useFrame, useThree } from '@react-three/fiber'
-import { fonts } from './assets/allFonts';
+import { loadStone,getFont,union,intersect,subtractGeometry } from './utils/threeUtils'
 import { useSelector } from 'react-redux';
 import Bails from './Bails'
 import { useControl } from 'react-three-gui';
 import { ChangeMode } from '../ThreeGUIControls/guiContolsComponents'
 // import { MODEL_GENERATED, GENERATING_MODEL } from '../../lib/constants/designPropsConstants';
 // import { designProps as designPropsFunc } from '../../lib/actions/designAction';
-
 import Symbol from './Symbols.js'
-import { ThreeBSP } from './three-csg'
 
-// import Diamond from './Diamond'
-// import { importAll } from '../../lib/utils';
-// const stoneModels = importAll(require.context('public/assets/crimps/fbx', false, /\.(fbx)$/));
 
 
 let targetStone = null, clickAway = false, geometryWithoutHoles
@@ -67,17 +60,10 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
         textGeometry = new TextGeometry(text, {
             font,
             size: length,
-            height: thickness * 10,
+            height: thickness/10 ,
             ...bevelProps
         })
-        textGeometry.center()
         geometryWithoutHoles = textGeometry
-
-        textGeometry.computeBoundingBox()
-        console.log(textGeometry)       
-        setBoundingBoxPoints(textGeometry.computeBounding)
-
-
     }, [text, length, font, thickness, base])
 
 
@@ -94,9 +80,8 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     // will show a stone over mesh and follows the pointer
     const showStoneOnPendant = e => {
         if (!currStoneColor && !currStoneShape) return
-        const point = e.point
-        let helper = new THREE.Box3().setFromObject(txtSurface.current);
-        stone.current.position.set(point.x, point.y, helper.max.z - (stoneSize / 9.8))
+        const {x,y,z} = e.point
+        stone.current.position.set(x, y, z - (stoneSize / 9.8))
         // stone.current.material.transparent = true
         // stone.current.material.opacity = .5
     }
@@ -104,14 +89,13 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     // will drop a stone on pendant mesh
     const placeStone = async (e) => {
         if (!currStoneColor && !currStoneShape) return
-        const point = e.point
+        const { x, y, z } = e.point
         // await dispatch({ type: GENERATING_MODEL })
         const dia = diamond.clone()
         dia.name = 'stone'
         dia.material.transparent = false
         dia.material.opacity = 1
-        let helper = new THREE.Box3().setFromObject(txtSurface.current);
-        dia.position.set(point.x, point.y, helper.max.z - (stoneSize / 9.8))
+        stone.current.position.set(x, y, z - (stoneSize / 9.8))
         stoneGroup.current.add(dia)
 
         textGeometry = subtractGeometry(txtSurface.current, dia)
@@ -168,7 +152,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     useControl('Close', { type: 'button', onClick: closeControls });
 
     // click away listener for transform controls 
-    const canvasClickListener = (e) => {
+    const canvasClickListener = () => {
         console.log(clickAway)
         if (clickAway) {
             
@@ -205,7 +189,10 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
         if (intersects.length === 0) targetStone = null
 
         // click away listener for transform controls 
-        let intersectsTrans = state.raycaster.intersectObjects(pendant.current.parent.children);
+        let children = [pendant.current.parent]
+        let tControls = transform.current
+        if (tControls) children.push(tControls)
+        let intersectsTrans = state.raycaster.intersectObjects(children);
         if (intersectsTrans.length >0) {
             clickAway = false
         }else{
@@ -213,6 +200,13 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
         }
 
     })
+
+    const onUpdateTxtGeometry=(mesh)=>{
+        let geometry=mesh.geometry
+        geometry.center()
+    }
+
+
 
 
     return (
@@ -226,7 +220,9 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
                     onClick={placeStone}
                     onPointerMove={showStoneOnPendant}
                     onPointerEnter={() => diamond.visible = true}
-                    onPointerLeave={() => diamond.visible = false}>
+                    onPointerLeave={() => diamond.visible = false}
+                    onUpdate={onUpdateTxtGeometry}
+                    >
 
                     <meshStandardMaterial
                         attach='material'
@@ -246,20 +242,12 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
             </group>
             {txtSurface.current && <Symbol txtSurface={txtSurface} guiControls={guiControls} controls={controls} transform={transform} />}
             <Bails txtSurface={txtSurface} controls={controls} guiControls={guiControls} transform={transform} />
-
-            {/* <Html position={[-50, 0, 0]}>
-                <div style={{background:'black',color:'white',position:'fixed',top:0,right:0}} >
-                    Length:20mm
-                </div>
-                
-            </Html> */}
             </group>
             <group>
             <transformControls
                 ref={transform}
                 args={[camera, domElement]}
                 mode={mode}
-            // onUpdate={self => self.attach(symbolRef.current)}
             />
             </group>
         </>
@@ -268,47 +256,5 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
 
 
 export default pendantModel;
-
-//loading font
-const getFont = (currFont) => {
-    let font = fonts.filter(font => font.original_font_information.fullName === currFont)[0]
-    return new FontLoader().parse(font)
-}
-
-// loading FBX Stone Model 
-export const loadStone = (shape, color) => {
-    if (!shape) return new THREE.Group()
-    let path = `/assets/crimps/fbx/${shape}.fbx`
-    let dia = useFBX(path)?.children[0].clone()
-    dia.rotation.set(Math.PI / 2, Math.PI, 0)
-    dia.material = new THREE.MeshStandardMaterial({ color, metalness: 1, roughness: .05 })
-    return dia
-}
-
-
-// return subtracted minuend from subtrahend mesh
-const subtractGeometry = (minuendMesh, subtrahendMesh) => {
-    const subtrahendBSP = new ThreeBSP(subtrahendMesh);
-    const minuendBSP = new ThreeBSP(minuendMesh);
-    const sub = minuendBSP.subtract(subtrahendBSP);
-    return sub.toBufferGeometry();
-}
-
-// return intersected geometry of two mesh
-const intersect = (mesh1, mesh2) => {
-    const mesh2BSP = new ThreeBSP(mesh2);
-    const mesh1BSP = new ThreeBSP(mesh1);
-    const sub = mesh1BSP.intersect(mesh2BSP);
-    return sub.toBufferGeometry();
-}
-
-// return union geometry of two mesh
-const union = (mesh1, mesh2) => {
-    const mesh2BSP = new ThreeBSP(mesh2);
-    const mesh1BSP = new ThreeBSP(mesh1);
-    const sub = mesh1BSP.union(mesh2BSP);
-    return sub.toBufferGeometry();
-}
-
 
 

@@ -14,7 +14,8 @@ let scale, tf
 const Symbols = ({ txtSurface, guiControls, transform}) => {
   const { designProps } = useSelector(state => state.designProps)
   const { symbol, base, length, thickness } = designProps
-  const { max } = new THREE.Box3().setFromObject(txtSurface.current);
+  txtSurface.current.geometry.computeBoundingBox()
+  const { max } = txtSurface.current.geometry.boundingBox
   const [position, setPosition] = useState([max.x, 0, max.z])
   const shape = useMemo(() => createShape(symbol), [symbol]);
 
