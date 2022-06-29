@@ -1,10 +1,19 @@
+export const availableSymbols = [
+    { title:'Heart', symbol:'♡' },
+    { title:'Octothorp', symbol: '#' },
+    { title:'Star', symbol: '☆' },
+    { title:'Infinity', symbol: '∞' },
+    { title:'Ampersand', symbol: '&' },
+    { title:'Crown', symbol: '♛' }
+]
+
 export const stoneShapes = [
     'brilliant',
     'eight',
     'pear',
     'stepCut',
     'trilliant',
-] 
+]
 
 export const stoneColor = [
     'darkred',
@@ -12,7 +21,7 @@ export const stoneColor = [
     'yellow',
     'pink',
     'purple',
-] 
+]
 
 export const colors = [
     {

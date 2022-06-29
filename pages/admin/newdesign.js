@@ -419,8 +419,7 @@ function newDesign() {
       return new Promise((resolve, ) => {
         var imageObj = new Image();
         imageObj.onload = function () {
-          context.drawImage(imageObj, 10, 10);
-          console.log(imageObj)
+          context.drawImage(imageObj, 0, 0);
           context.fillText(`Length: ${designProps.length}`, 20, 20);
           context.fillText(`Thickness: ${designProps.thickness}`, 120, 20);
           context.fillText(`Stone Size: ${designProps.stoneSize}`, 220, 20);

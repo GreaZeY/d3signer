@@ -3,7 +3,6 @@ import { useEffect } from 'react'
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js'
 import { useSelector } from 'react-redux';
 import { extend } from '@react-three/fiber'
-import * as THREE from 'three'
 
 
 extend({ TransformControls })
@@ -35,8 +34,9 @@ const Bails = ({ txtSurface, transform, guiControls }) => {
                                 key={i}
                                 args={{
                                     radius: bail.sizes.diameter /2,
-                                    tube: bail.sizes.thickness / 10,
-                                    position:[max.x-2,max.y,(max.z-min.z)/2]
+                                    tube: bail.sizes.thickness / 5,
+                                    position:[max.x-2,max.y,(max.z-min.z)/2],
+
                                 }}
                                 base={base}
                                 currBailType={bail.type}

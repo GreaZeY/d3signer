@@ -3,14 +3,14 @@ import { useRef, useEffect, useState, useMemo } from 'react'
 import * as THREE from 'three'
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry'
 import { extend, useFrame, useThree } from '@react-three/fiber'
-import { loadStone,getFont,union,intersect,subtractGeometry } from './utils/threeUtils'
+import { loadStone, getFont, union, intersect, subtractGeometry } from './utils/threeUtils'
 import { useSelector } from 'react-redux';
 import Bails from './Bails'
 import { useControl } from 'react-three-gui';
 import { ChangeMode } from '../ThreeGUIControls/guiContolsComponents'
 // import { MODEL_GENERATED, GENERATING_MODEL } from '../../lib/constants/designPropsConstants';
 // import { designProps as designPropsFunc } from '../../lib/actions/designAction';
-import Symbol from './Symbols.js'
+import Symbols from './Symbols.js'
 
 
 
@@ -60,7 +60,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
         textGeometry = new TextGeometry(text, {
             font,
             size: length,
-            height: thickness/10 ,
+            height: thickness / 10,
             ...bevelProps
         })
         geometryWithoutHoles = textGeometry
@@ -69,7 +69,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
 
     useEffect(() => {
         if (stoneGroup.current) stoneGroup.current.children = []
-    }, [length, font, thickness, ])
+    }, [length, font, thickness,])
 
     const {
         camera,
@@ -80,7 +80,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     // will show a stone over mesh and follows the pointer
     const showStoneOnPendant = e => {
         if (!currStoneColor && !currStoneShape) return
-        const {x,y,z} = e.point
+        const { x, y, z } = e.point
         stone.current.position.set(x, y, z - (stoneSize / 9.8))
         // stone.current.material.transparent = true
         // stone.current.material.opacity = .5
@@ -108,7 +108,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
         if (e.button === 2 && targetStone) {
             let mesh = new THREE.Mesh(geometryWithoutHoles)
             let deletedGeom = intersect(targetStone, mesh)
-             let deletedMesh = new THREE.Mesh(deletedGeom, txtSurface.current.material)
+            let deletedMesh = new THREE.Mesh(deletedGeom, txtSurface.current.material)
             // pendant.current.add(deletedMesh)
             textGeometry = union(deletedMesh, txtSurface.current)
             txtSurface.current.geometry = textGeometry
@@ -135,9 +135,9 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
                 window.removeEventListener('pointerdown', (e) => removeStone(e, stoneGroup))
             }
         }
-    },[])
+    }, [])
 
-// gui controls to change transform mode 
+    // gui controls to change transform mode 
     const closeControls = () => {
         transform.current?.detach()
         guiControls.current.style.display = 'none'
@@ -155,7 +155,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     const canvasClickListener = () => {
         console.log(clickAway)
         if (clickAway) {
-            
+
             transform.current?.detach()
             guiControls.current.style.display = 'none'
             clickAway = !clickAway
@@ -190,19 +190,20 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
 
         // click away listener for transform controls 
         let children = [pendant.current.parent]
-        let tControls = transform.current
-        if (tControls) children.push(tControls)
+        // let tControls = transform.current
+        // if (tControls) children.push(tControls)
         let intersectsTrans = state.raycaster.intersectObjects(children);
-        if (intersectsTrans.length >0) {
+        // console.log(intersectsTrans)
+        if (intersectsTrans.length > 0) {
             clickAway = false
-        }else{
+        } else {
             clickAway = true
         }
 
     })
 
-    const onUpdateTxtGeometry=(mesh)=>{
-        let geometry=mesh.geometry
+    const onUpdateTxtGeometry = (mesh) => {
+        let geometry = mesh.geometry
         geometry.center()
     }
 
@@ -213,42 +214,44 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
         <>
             <spotLight angle={1} penumbra={0} ref={light} intensity={.5} />
             <group ref={model}  >
-            <group name='pendant' ref={pendant} >
-                <mesh
-                    geometry={textGeometry}
-                    ref={txtSurface}
-                    onClick={placeStone}
-                    onPointerMove={showStoneOnPendant}
-                    onPointerEnter={() => diamond.visible = true}
-                    onPointerLeave={() => diamond.visible = false}
-                    onUpdate={onUpdateTxtGeometry}
+                <group name='pendant' ref={pendant} >
+                    <mesh
+                        geometry={textGeometry}
+                        ref={txtSurface}
+                        onClick={placeStone}
+                        onPointerMove={showStoneOnPendant}
+                        onPointerEnter={() => diamond.visible = true}
+                        onPointerLeave={() => diamond.visible = false}
+                        onUpdate={onUpdateTxtGeometry}
                     >
 
-                    <meshStandardMaterial
-                        attach='material'
-                        color={base}
-                        metalness={.98}
-                        roughness={.15}
-                    />
-                </mesh>
-            </group>
-            {/* <instancedMesh position={[-50, 0, 10]} ref={instance} args={[
+                        <meshStandardMaterial
+                            attach='material'
+                            color={base}
+                            metalness={.98}
+                            roughness={.15}
+                        />
+                    </mesh>
+                </group>
+                {/* <instancedMesh position={[-50, 0, 10]} ref={instance} args={[
                 diamond.geometry,
                 diamond.material,
                 1000
             ]}></instancedMesh> */}
-            <group name='stoneGroup' ref={stoneGroup}>
-                <primitive scale={stoneSize / 6} ref={stone} object={diamond} color={currStoneColor} visible={false} />
-            </group>
-            {txtSurface.current && <Symbol txtSurface={txtSurface} guiControls={guiControls} controls={controls} transform={transform} />}
-            <Bails txtSurface={txtSurface} controls={controls} guiControls={guiControls} transform={transform} />
+                <group name='stoneGroup' ref={stoneGroup}>
+                    <primitive scale={stoneSize / 6} ref={stone} object={diamond} color={currStoneColor} visible={false} />
+                </group>
+                <Symbols props={{
+                    txtSurface, guiControls, controls, transform
+                }} />
+                <Bails txtSurface={txtSurface} controls={controls} guiControls={guiControls} transform={transform} />
             </group>
             <group>
-            <transformControls
-                ref={transform}
-                args={[camera, domElement]}
-                mode={mode}
-            />
+                <transformControls
+                    ref={transform}
+                    args={[camera, domElement]}
+                    mode={mode}
+                />
             </group>
         </>
     )

@@ -18,7 +18,7 @@ import { Typography } from "@material-ui/core";
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from "@material-ui/core/Button";
 import useCollapse from 'react-collapsed'
-import { stoneShapes, stoneColor, colors, bailType } from "components/LeftPanelComponents/panelData";
+import { stoneShapes, colors, bailType, availableSymbols } from "./panelData";
 
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 
@@ -30,7 +30,6 @@ import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 // import StepCut from "./StoneComponents/StepCut"
 
 import DiamondMenu from '../LeftPanelComponents/DiamondMenu'
-
 const shapeDir = '/assets/crimps/stoneShapes'
 
 
@@ -53,19 +52,20 @@ const LeftPanel = ({ props }) => {
     currStoneShape,
     currStoneColor,
     stoneSize,
+    symbols,
   } = currDesign;
 
   const dispatch = useDispatch()
   const compareVal = (val, min, max, currSizeProp = 'StoneSize') => {
     if (val >= min && val <= max) return val
-    if( currSizeProp === 'Length') return length 
-    if (currSizeProp === 'Thickness') return thickness 
+    if (currSizeProp === 'Length') return length
+    if (currSizeProp === 'Thickness') return thickness
     if (currSizeProp === 'StoneSize') return stoneSize
   }
 
   const setSizes = (e, val) => {
     currSizeProp === 'Length' ?
-      dispatch(designProps({ ...currDesign, length: val ? compareVal(val, 5, 50, currSizeProp):val }))
+      dispatch(designProps({ ...currDesign, length: val ? compareVal(val, 5, 50, currSizeProp) : val }))
       :
       dispatch(designProps({ ...currDesign, thickness: val ? compareVal(val, .4, 2, currSizeProp) : val }))
 
@@ -106,6 +106,14 @@ const LeftPanel = ({ props }) => {
     dispatch(designProps({ ...currDesign, currStoneShape: e.target.alt }))
   }
 
+  const dispatchSymbol = (e) => {
+    let sym = e.target.title
+    if (symbols.includes(sym)) {
+      let tmpSyms = symbols.filter(tmpSym => sym !== tmpSym)
+      return dispatch(designProps({ ...currDesign, symbols: tmpSyms }))
+    }
+    return dispatch(designProps({ ...currDesign, symbols: [...symbols, e.target.title] }))
+  }
 
   const [showTip, setShowTip] = useState(false)
 
@@ -196,14 +204,18 @@ const LeftPanel = ({ props }) => {
           </div>
           <div style={{ marginTop: '1rem' }}  >
             <div>
-              <InputLabel className="settings-head">Add Symbol</InputLabel>
-              <div onClick={(e) => dispatch(designProps({ ...currDesign, symbol: e.target.title }))} className={classes.flexRow}>
-                <div title='Heart' className={classes.symbol}  >♡</div>
-                <div title='Octothorp' className={classes.symbol}  >#</div>
-                <div title='Star' className={classes.symbol}  >☆</div>
-                <div title='Infinity' className={classes.symbol}  >∞</div>
-                <div title='Ampersand' className={classes.symbol}  >&</div>
-                <div title='Crown' className={classes.symbol}  >♛</div>
+              <InputLabel className="settings-head">Add Symbols</InputLabel>
+              <div onClick={dispatchSymbol} className={classes.flexRow}>
+                {
+                  availableSymbols.map(symbol =>
+                    <div
+                      title={symbol.title}
+                      style={{ border: symbols.includes(symbol.title) && '2px solid #8e24aa' }}
+                      className={classes.symbol}
+                    >
+                      {symbol.symbol}
+                    </div>)
+                }
               </div>
             </div>
           </div>
@@ -279,7 +291,7 @@ const LeftPanel = ({ props }) => {
             <div style={{ marginTop: '.5rem' }}  >
               <InputLabel className="settings-head">Stone Size</InputLabel>
               <input
-                onChange={(e) => dispatch(designProps({ ...currDesign, stoneSize: e.target.value ? compareVal(e.target.value, .5, 5) :e.target.value }))}
+                onChange={(e) => dispatch(designProps({ ...currDesign, stoneSize: e.target.value ? compareVal(e.target.value, .5, 5) : e.target.value }))}
                 value={stoneSize}
                 type='number'
                 step='.1'
