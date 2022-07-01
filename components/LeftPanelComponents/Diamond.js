@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
 import { loadStone } from '../NewDesignPanels/utils/threeUtils'
-import { stoneColor } from './panelData.js'
+import { stoneColor } from '../NewDesignPanels/panelData'
 import { useDispatch,useSelector } from 'react-redux';
 import { designProps } from '../../lib/actions/designAction';
 
-let x = [-15, -10, -5, -0, 5]
+let x = [-15, -10, -5, -0, 5, 10]
 const Diamond = ({ model }) => {
 
     const dispatch = useDispatch()
@@ -20,7 +20,7 @@ const Diamond = ({ model }) => {
                     geometry={diamond.geometry} 
                     scale={3} 
                     rotation={[Math.PI / 2, Math.PI, 0]}
-                        onClick={() => dispatch(designProps({ ...currDesign, currStoneColor: color }))}
+                    onClick={() => dispatch(designProps({ ...currDesign, currStoneColor: color }))}
                     >
                      <meshStandardMaterial
                         color={color}
