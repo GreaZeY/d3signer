@@ -35,7 +35,7 @@ const Bails = ({ txtSurface, transform, guiControls }) => {
                                 args={{
                                     radius: bail.sizes.diameter /2,
                                     tube: bail.sizes.thickness / 5,
-                                    position:[max.x-2,max.y,(max.z-min.z)/2],
+                                    position:[max.x,max.y,(max.z-min.z)/2],
 
                                 }}
                                 base={base}

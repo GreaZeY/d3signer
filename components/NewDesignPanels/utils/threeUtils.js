@@ -3,6 +3,9 @@ import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
 import { useFBX } from '@react-three/drei';
 import { fonts } from '../assets/allFonts';
 import * as THREE from 'three'
+import { useLoader } from '@react-three/fiber'
+import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader'
+
 //loading font
 export const getFont = (currFont) => {
     let font = fonts.filter(font => font.original_font_information.fullName === currFont)[0]
@@ -45,3 +48,40 @@ export const union = (mesh1, mesh2) => {
 }
 
 
+export const createShape = (symbol) => {
+    const shape = new THREE.Shape();
+    if (symbol === 'Heart') {
+        shape.moveTo(25, 25);
+        shape.bezierCurveTo(25, 25, 20, 0, 0, 0);
+        shape.bezierCurveTo(- 30, 0, - 30, 35, - 30, 35);
+        shape.bezierCurveTo(- 30, 55, - 10, 77, 25, 95);
+        shape.bezierCurveTo(60, 77, 80, 55, 80, 35);
+        shape.bezierCurveTo(80, 35, 80, 0, 50, 0);
+        shape.bezierCurveTo(35, 0, 25, 25, 25, 25);
+        return shape
+    }
+    if (symbol === 'Star') {
+        shape.moveTo(0, 50);
+        shape.lineTo(0, 50)
+        shape.lineTo(10, 10)
+        shape.lineTo(40, 10)
+        shape.lineTo(20, -10)
+        shape.lineTo(30, -50)
+        shape.lineTo(0, -20)
+        shape.lineTo(-30, -50)
+        shape.lineTo(-20, -10)
+        shape.lineTo(-40, 10)
+        shape.lineTo(-10, 10)
+        return shape
+    }
+    if (symbol) {
+        const { paths } = useLoader(SVGLoader, `/assets/symbols/${symbol}.svg`)
+        var shapes = [];
+        for (var i = 0; i < paths.length; i++) {
+            Array.prototype.push.apply(shapes, SVGLoader.createShapes(paths[i]));
+
+        }
+        return shapes
+    }
+
+}

@@ -21,6 +21,7 @@ export const stoneColor = [
     'yellow',
     'pink',
     'purple',
+    'white'
 ]
 
 export const colors = [

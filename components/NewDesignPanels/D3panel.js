@@ -1,7 +1,7 @@
 import { Suspense, useRef } from 'react'
 import { Canvas } from '@react-three/fiber'
 import PendantModel from './PendantModel'
-import { OrbitControls,Environment } from "@react-three/drei";
+import { OrbitControls, Environment, OrthographicCamera } from "@react-three/drei";
 import { store } from "../../lib/store";
 import { Provider } from "react-redux";
 import { Controls, withControls } from 'react-three-gui';
@@ -14,7 +14,11 @@ const D3panel = ({ model, zoom }) => {
 
   return (
     <Controls.Provider>
-      <CanvasWithControls gl={{ preserveDrawingBuffer: true }} camera={{ position: [0, 0, 10] }}>
+      <CanvasWithControls gl={{ preserveDrawingBuffer: true }} camera={{ position: [0, 0, .5] }}>
+        {/* <OrthographicCamera
+          makeDefault
+          position={[0, 0, .3]}
+        /> */}
       <OrbitControls enableDamping ref={controls} />
       <Suspense fallback={"Loading"}>
         <Environment files={'home.hdr'} path={'/assets/hdrMap/'} />

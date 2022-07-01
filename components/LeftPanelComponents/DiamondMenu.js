@@ -8,7 +8,7 @@ import { Environment, OrthographicCamera } from "@react-three/drei";
 const DiamondMenu = ({ color, model }) => {
     return (
         <Canvas style={{ width: '10rem', height: '3rem' }} >
-            {/* <ambientLight intensity={1} /> */}
+            <ambientLight intensity={1} />
             <OrthographicCamera
                 makeDefault
                 zoom={4.6}

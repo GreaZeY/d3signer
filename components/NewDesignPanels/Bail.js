@@ -28,11 +28,11 @@ const Bail = (props) => {
         <>
             <mesh
                 name='bail'
-                scale-z={args.tube}
-                scale-x={args.thickness}
+                // scale-z={args.tube}
+                // scale-x={args.thickness}
                 position={position}
                 geometry={bailGeometry}
-                scale={currBailType !== 'bail0' ? [radius / 4, radius / 4, radius / 4] : [1, 1, 1]}
+                scale={currBailType !== 'bail0' ? [.01, .01, .01] : [.1, .1, .1]}
                 style={{ cursor: 'pointer' }}
                 onClick={attachTransformControl} 
                 >

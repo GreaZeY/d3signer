@@ -2,6 +2,7 @@
 import { useRef, useEffect, useState, useMemo } from 'react'
 import * as THREE from 'three'
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry'
+import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js'
 import { extend, useFrame, useThree } from '@react-three/fiber'
 import { loadStone, getFont, union, intersect, subtractGeometry } from './utils/threeUtils'
 import { useSelector } from 'react-redux';
@@ -11,6 +12,7 @@ import { ChangeMode } from '../ThreeGUIControls/guiContolsComponents'
 // import { MODEL_GENERATED, GENERATING_MODEL } from '../../lib/constants/designPropsConstants';
 // import { designProps as designPropsFunc } from '../../lib/actions/designAction';
 import Symbols from './Symbols.js'
+import { THREE_UNIT_TO_MM } from '../../lib/constants/designPropsConstants'
 
 
 
@@ -24,7 +26,7 @@ const bevelProps = {
 }
 
 // let stoneCount = 0
-extend({ TextGeometry })
+extend({ TextGeometry, TransformControls })
 let textGeometry = new TextGeometry()
 
 const pendantModel = ({ controls, guiControls, zoom, model }) => {
@@ -59,7 +61,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     useEffect(() => {
         textGeometry = new TextGeometry(text, {
             font,
-            size: length,
+            size: length / THREE_UNIT_TO_MM,
             height: thickness / 10,
             ...bevelProps
         })
@@ -81,7 +83,10 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     const showStoneOnPendant = e => {
         if (!currStoneColor && !currStoneShape) return
         const { x, y, z } = e.point
-        stone.current.position.set(x, y, z - (stoneSize / 9.8))
+        txtSurface.current.geometry.computeBoundingBox()
+        // let _z = txtSurface.current.geometry.boundingBox.max.z
+        // stone.current.position.set(x, y, thickness)
+        stone.current.position.set(x, y, z)
         // stone.current.material.transparent = true
         // stone.current.material.opacity = .5
     }
@@ -95,7 +100,8 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
         dia.name = 'stone'
         dia.material.transparent = false
         dia.material.opacity = 1
-        stone.current.position.set(x, y, z - (stoneSize / 9.8))
+        // stone.current.position.set(x, y, z - (stoneSize / 9.8))
+        stone.current.position.set(x, y, z )
         stoneGroup.current.add(dia)
 
         textGeometry = subtractGeometry(txtSurface.current, dia)
@@ -224,7 +230,6 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
                         onPointerLeave={() => diamond.visible = false}
                         onUpdate={onUpdateTxtGeometry}
                     >
-
                         <meshStandardMaterial
                             attach='material'
                             color={base}
@@ -239,7 +244,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
                 1000
             ]}></instancedMesh> */}
                 <group name='stoneGroup' ref={stoneGroup}>
-                    <primitive scale={stoneSize / 6} ref={stone} object={diamond} color={currStoneColor} visible={false} />
+                    <primitive scale={stoneSize / (10*THREE_UNIT_TO_MM)} ref={stone} object={diamond} color={currStoneColor} visible={false} />
                 </group>
                 <Symbols props={{
                     txtSurface, guiControls, controls, transform

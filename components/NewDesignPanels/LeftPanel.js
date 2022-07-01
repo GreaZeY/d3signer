@@ -53,6 +53,7 @@ const LeftPanel = ({ props }) => {
     currStoneColor,
     stoneSize,
     symbols,
+    symbolSize
   } = currDesign;
 
   const dispatch = useDispatch()
@@ -218,6 +219,33 @@ const LeftPanel = ({ props }) => {
                 }
               </div>
             </div>
+            {
+              symbols.length>0&& <>
+            <InputLabel style={{ marginTop: '1rem', width: '100%' }} className="settings-head">Size</InputLabel>
+            <div style={{ width: '100%' }} className={classes.flexRow} >
+              <Slider
+                aria-label="Sizes"
+                style={{ marginRight: '1rem' }}
+                color="primary"
+                step={0.1}
+                min={.4}
+                max={2}
+                value={symbolSize}
+                onChange={(e,val) => dispatch(designProps({ ...currDesign, symbolSize: val })) }
+              />
+              <input
+                className={classes.symbol}
+                style={{ padding: '.2rem', cursor: 'text', width: '2rem' }}
+                type='number'
+                step={0.1}
+                min={.4}
+                max={2}
+                value={symbolSize}
+                onChange={(e) => dispatch(designProps({ ...currDesign, symbolSize: e.target.value }))}
+              />
+            </div>
+            </>
+            }
           </div>
 
           <fieldset style={{ position: 'relative', marginTop: '1rem', border: '1px solid rgb(185 183 183)', width: 'max-content' }}>

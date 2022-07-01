@@ -408,19 +408,18 @@ function newDesign() {
     let canvas = document.getElementsByTagName('canvas')[1];
     const canvas2d = document.createElement('canvas')
     var context = canvas2d.getContext("2d");
-    canvas2d.width = "700"
-    canvas2d.height = "500"
+    canvas2d.width = canvas.width
+    canvas2d.height = canvas.height
     context.font = "12px Rubik";
     context.fillRect(0, 0, canvas2d.width, canvas2d.height);
     context.fillStyle = "white";
     var rect = canvas2d.getBoundingClientRect();
-    console.log(rect)
     const imObjFunction = () => {
       return new Promise((resolve, ) => {
         var imageObj = new Image();
         imageObj.onload = function () {
           context.drawImage(imageObj, 0, 0);
-          context.fillText(`Length: ${designProps.length}`, 20, 20);
+          context.fillText(`Width: ${designProps.length}`, 20, 20);
           context.fillText(`Thickness: ${designProps.thickness}`, 120, 20);
           context.fillText(`Stone Size: ${designProps.stoneSize}`, 220, 20);
           context.fillText(`Base: ${designProps.base}`, 320, 20);
@@ -521,9 +520,6 @@ function newDesign() {
                       style={{ paddingLeft: '1rem', paddingRight: '1rem', marginLeft: '1rem', color: 'white', background: 'linear-gradient(60deg, #ab47bc, #8e24aa)' }}>
                       Save
                     </Button>
-
-
-
                     <ReactModal
                       isOpen={modalShow}
                       onRequestClose={() => setModalShow(false)}
