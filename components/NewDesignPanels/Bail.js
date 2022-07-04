@@ -22,6 +22,8 @@ const Bail = (props) => {
     const attachTransformControl= (e) => {
         transform.current.attach(e.object)
         guiControls.current.style.display = 'block'
+
+        console.log(e.object.geometry)
     }
 
     return (
@@ -32,9 +34,11 @@ const Bail = (props) => {
                 // scale-x={args.thickness}
                 position={position}
                 geometry={bailGeometry}
-                scale={currBailType !== 'bail0' ? [.01, .01, .01] : [.1, .1, .1]}
+                scale={currBailType !== 'bail0' ? .01 : .1}
+                rotation-y={currBailType === 'bail0' ? 0 : Math.PI/2}
                 style={{ cursor: 'pointer' }}
                 onClick={attachTransformControl} 
+                onUpdate={mesh => mesh.geometry.center()}
                 >
                 <meshStandardMaterial
                     attach="material"

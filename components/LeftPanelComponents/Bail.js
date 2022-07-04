@@ -6,8 +6,10 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Slider from '@material-ui/core/Slider';
 import { useSelector } from 'react-redux';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import {maxBailDiameter,maxBailThickness,minBailDiameter,minBailThickness} from '../../lib/constants/pendantDimensionConstants'
+import { maxBailDiameter, maxBailThickness, minBailDiameter, minBailThickness } from '../../lib/constants/pendantDimensionConstants'
 const sizes = { diameter: minBailDiameter, thickness: minBailThickness }
+
+
 const Bail = (props) => {
 
 
@@ -54,7 +56,7 @@ const Bail = (props) => {
         setBailsData(currBail)
     }
 
-    const getMin=()=>(
+    const getMin = () => (
         currBailProp === 'bailDiameter' ?
             minBailDiameter
             :
@@ -67,8 +69,19 @@ const Bail = (props) => {
             :
             maxBailThickness
     )
-    
-    
+
+
+    function delay(func, timeout = 300) {
+        let timer;
+        return (...args) => {
+            clearTimeout(timer);
+            timer = setTimeout(() => { func.apply(this, args); }, timeout);
+        };
+    }
+
+    const debounce = delay((e, val) => setBails(e, val));
+
+
 
     return (
         <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -93,7 +106,10 @@ const Bail = (props) => {
                 <Slider
                     aria-label="Sizes"
                     style={{ marginLeft: '.3rem' }}
-                    onChange={setBails}
+                    sx={{ color: 'red' }}
+                    onChange={debounce}
+                    getAriaValueText={e => console.log(e)}
+
                     step={.1}
                     min={getMin()}
                     max={getMax()}
@@ -103,7 +119,7 @@ const Bail = (props) => {
                         bailSizes.thickness
 
                     }
-                    color="primary"
+
                 />
                 <input
                     onChange={e => setBails(e, e.target.value)}

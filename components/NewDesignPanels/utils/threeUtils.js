@@ -19,6 +19,7 @@ export const loadStone = (shape, color) => {
     let dia = useFBX(path)?.children[0].clone()
     dia.rotation.set(Math.PI / 2, Math.PI, 0)
     dia.material = new THREE.MeshStandardMaterial({ color, metalness: 1, roughness: .05 })
+    dia.geometry.center()
     return dia
 }
 

@@ -14,7 +14,7 @@ const D3panel = ({ model, zoom }) => {
 
   return (
     <Controls.Provider>
-      <CanvasWithControls gl={{ preserveDrawingBuffer: true }} camera={{ position: [0, 0, .5] }}>
+      <CanvasWithControls gl={{ preserveDrawingBuffer: true }} camera={{ position: [0, 0, 1] }}>
         {/* <OrthographicCamera
           makeDefault
           position={[0, 0, .3]}

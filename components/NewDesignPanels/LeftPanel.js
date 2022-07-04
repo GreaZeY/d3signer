@@ -18,6 +18,9 @@ import { Typography } from "@material-ui/core";
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from "@material-ui/core/Button";
 import useCollapse from 'react-collapsed'
+import { createMuiTheme } from '@material-ui/core/styles';
+import { ThemeProvider } from '@material-ui/styles';
+
 import { stoneShapes, colors, bailType, availableSymbols } from "./panelData";
 
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
@@ -31,6 +34,20 @@ import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 
 import DiamondMenu from '../LeftPanelComponents/DiamondMenu'
 const shapeDir = '/assets/crimps/stoneShapes'
+
+const muiTheme = createMuiTheme({
+  overrides: {
+    MuiSlider: {
+      thumb: {
+        color: "#8e24aa",
+      },
+      track: {
+        color: '#ab47bc'
+      },
+
+    }
+  }
+});
 
 
 const LeftPanel = ({ props }) => {
@@ -103,17 +120,22 @@ const LeftPanel = ({ props }) => {
   // }
 
   const setStoneShape = e => {
-    if (e.target.tagName !== 'IMG') return
-    dispatch(designProps({ ...currDesign, currStoneShape: e.target.alt }))
+    let shape = e.target.getAttribute('shape-data')
+    if (!shape) return
+    dispatch(designProps({ ...currDesign, currStoneShape: shape }))
   }
 
   const dispatchSymbol = (e) => {
     let sym = e.target.title
-    if (symbols.includes(sym)) {
-      let tmpSyms = symbols.filter(tmpSym => sym !== tmpSym)
-      return dispatch(designProps({ ...currDesign, symbols: tmpSyms }))
-    }
-    return dispatch(designProps({ ...currDesign, symbols: [...symbols, e.target.title] }))
+    // if (symbols.includes(sym)) {
+    //   let tmpSyms = symbols.filter(tmpSym => sym !== tmpSym)
+    //   return dispatch(designProps({ ...currDesign, symbols: tmpSyms }))
+    // }
+    return dispatch(designProps({ ...currDesign, symbols: [...symbols, sym] }))
+  }
+
+  const setStoneSize = (e,val) => {
+    dispatch(designProps({ ...currDesign, stoneSize: val }))
   }
 
   const [showTip, setShowTip] = useState(false)
@@ -170,16 +192,18 @@ const LeftPanel = ({ props }) => {
 
             </div>
             <div style={{ marginTop: '2rem', width: '100%' }} className={classes.flexRow} >
-              <Slider
-                aria-label="Sizes"
-                onChange={setSizes}
-                step={0.1}
-                style={{ marginRight: '1rem' }}
-                min={currSizeProp === 'Length' ? 5 : 0.4}
-                max={currSizeProp === 'Length' ? 50 : 2}
-                value={currSizeProp === 'Length' ? length : thickness}
-                color="primary"
-              />
+              <ThemeProvider theme={muiTheme}>
+                <Slider
+                  aria-label="Sizes"
+                  onChange={setSizes}
+                  step={0.1}
+                  style={{ marginRight: '1rem' }}
+                  min={currSizeProp === 'Length' ? 5 : 0.4}
+                  max={currSizeProp === 'Length' ? 50 : 2}
+                  value={currSizeProp === 'Length' ? length : thickness}
+                  color="primary"
+                />
+              </ThemeProvider>
               <input
                 className={classes.symbol}
                 style={{ padding: '.2rem', cursor: 'text', width: '2rem' }}
@@ -220,31 +244,31 @@ const LeftPanel = ({ props }) => {
               </div>
             </div>
             {
-              symbols.length>0&& <>
-            <InputLabel style={{ marginTop: '1rem', width: '100%' }} className="settings-head">Size</InputLabel>
-            <div style={{ width: '100%' }} className={classes.flexRow} >
-              <Slider
-                aria-label="Sizes"
-                style={{ marginRight: '1rem' }}
-                color="primary"
-                step={0.1}
-                min={.4}
-                max={2}
-                value={symbolSize}
-                onChange={(e,val) => dispatch(designProps({ ...currDesign, symbolSize: val })) }
-              />
-              <input
-                className={classes.symbol}
-                style={{ padding: '.2rem', cursor: 'text', width: '2rem' }}
-                type='number'
-                step={0.1}
-                min={.4}
-                max={2}
-                value={symbolSize}
-                onChange={(e) => dispatch(designProps({ ...currDesign, symbolSize: e.target.value }))}
-              />
-            </div>
-            </>
+              symbols.length > 0 && <>
+                <InputLabel style={{ marginTop: '1rem', width: '100%' }} className="settings-head">Size</InputLabel>
+                <div style={{ width: '100%' }} className={classes.flexRow} >
+                  <Slider
+                    aria-label="Sizes"
+                    style={{ marginRight: '1rem' }}
+                    color="primary"
+                    step={0.1}
+                    min={.4}
+                    max={2}
+                    value={symbolSize}
+                    onChange={(e, val) => dispatch(designProps({ ...currDesign, symbolSize: val }))}
+                  />
+                  <input
+                    className={classes.symbol}
+                    style={{ padding: '.2rem', cursor: 'text', width: '2rem' }}
+                    type='number'
+                    step={0.1}
+                    min={.4}
+                    max={2}
+                    value={symbolSize}
+                    onChange={(e) => dispatch(designProps({ ...currDesign, symbolSize: e.target.value }))}
+                  />
+                </div>
+              </>
             }
           </div>
 
@@ -262,9 +286,15 @@ const LeftPanel = ({ props }) => {
               <div onClick={setStoneShape} className={classes.flexRow} style={{ flexWrap: 'wrap' }} >
                 {
                   stoneShapes.map(shape => (
-                    <div style={{ border: currStoneShape === shape && '2px solid #8e24aa' }} className={classes.stoneShape + ' ' + classes.flexRow}>
-                      <img className={classes.img} src={`${shapeDir}/${shape}.svg`} alt={shape} />
-
+                    <div
+                      style={{
+                        border: currStoneShape === shape && '2px solid #8e24aa',
+                        background: `url('${shapeDir}/${shape}.svg')`,
+                        backgroundPosition: 'center',
+                        backgroundSize: '1rem 1rem'
+                      }}
+                      shape-data={shape}
+                      className={classes.stoneShape + ' ' + classes.flexRow}>
                     </div>
                   ))
                 }
@@ -276,7 +306,7 @@ const LeftPanel = ({ props }) => {
                   <img src={img.src} style={{border:currStone===img.src&&'2px solid #8e24aa'}} className={classes.base} alt={img.src} />
                 ))
               } */}
-            <div style={{ marginTop: '.5rem' }}  >
+            {currStoneShape && <div style={{ marginTop: '.5rem' }}  >
               <InputLabel className="settings-head">Color</InputLabel>
               <div className={classes.flexRow}
                 // onClick={setStoneColor} 
@@ -315,23 +345,34 @@ const LeftPanel = ({ props }) => {
                   //         ))
                 }
               </div>
-            </div>
+            </div>}
             <div style={{ marginTop: '.5rem' }}  >
               <InputLabel className="settings-head">Stone Size</InputLabel>
-              <input
-                onChange={(e) => dispatch(designProps({ ...currDesign, stoneSize: e.target.value ? compareVal(e.target.value, .5, 5) : e.target.value }))}
-                value={stoneSize}
-                type='number'
-                step='.1'
-                max='5.0'
-                min='0.5'
+              <div style={{ width: '100%' }} className={classes.flexRow} >
+                <Slider
+                  aria-label="Sizes"
+                  onChange={setStoneSize}
+                  step={0.1}
+                  style={{ marginRight: '1rem' }}
+                  max={10.0}
+                  min={0.5}
+                  value={stoneSize}
+                />
+                <input
+                  onChange={(e)=>setStoneSize(e,e.target.value)}
+                  value={stoneSize}
+                  type='number'
+                  step='.1'
+                  max='10.0'
+                  min='0.5'
 
-                className={classes.symbol}
-                style={
-                  { width: '2.5rem' }
-                }
+                  className={classes.symbol}
+                  style={
+                    { width: '2.5rem' }
+                  }
 
-              />
+                />
+              </div>
             </div>
           </fieldset>
           <div style={{ marginTop: '1rem' }} >

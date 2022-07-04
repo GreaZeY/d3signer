@@ -66,6 +66,8 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
             ...bevelProps
         })
         geometryWithoutHoles = textGeometry
+        textGeometry.computeBoundingBox()
+        setBoundingBoxPoints(textGeometry.boundingBox)
     }, [text, length, font, thickness, base])
 
 
@@ -82,11 +84,10 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     // will show a stone over mesh and follows the pointer
     const showStoneOnPendant = e => {
         if (!currStoneColor && !currStoneShape) return
-        const { x, y, z } = e.point
-        txtSurface.current.geometry.computeBoundingBox()
-        // let _z = txtSurface.current.geometry.boundingBox.max.z
-        // stone.current.position.set(x, y, thickness)
-        stone.current.position.set(x, y, z)
+        const { x, y } = e.point
+        const z = boundingBoxPoints.max.z
+        const diff = (stoneSize/100)*.06
+        stone.current.position.set(x, y, z - diff)
         // stone.current.material.transparent = true
         // stone.current.material.opacity = .5
     }
@@ -94,14 +95,14 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     // will drop a stone on pendant mesh
     const placeStone = async (e) => {
         if (!currStoneColor && !currStoneShape) return
-        const { x, y, z } = e.point
+        const { x, y } = e.point
         // await dispatch({ type: GENERATING_MODEL })
         const dia = diamond.clone()
         dia.name = 'stone'
         dia.material.transparent = false
         dia.material.opacity = 1
-        // stone.current.position.set(x, y, z - (stoneSize / 9.8))
-        stone.current.position.set(x, y, z )
+        // stone.current.position.set(x, y)
+        // stone.current.position.set(x, y, z )
         stoneGroup.current.add(dia)
 
         textGeometry = subtractGeometry(txtSurface.current, dia)
@@ -123,21 +124,36 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
 
     }
 
+    // handling keyboard shortcuts 
+    const keyPressHandler = (e)=>{
+        // todo: delete  from store as well 
+        if (e.key=== "Delete"){
+            let obj = transform.current?.object
+            if (obj){
+                transform.current.detach()
+                model.current.remove(obj)
+                
+            }
+        }
+    }
+
     useEffect(() => {
         // listeners
         if (transform.current) {
             // disabling Orbit Controls when transform controls are enabled
             const tControls = transform.current
-            const callback = (event) => (controls.current.enabled = !event.value)
-            tControls.addEventListener('dragging-changed', callback)
+            const disableOrbitControls = (event) => (controls.current.enabled = !event.value)
+            tControls.addEventListener('dragging-changed', disableOrbitControls)
             // remove stone listener
             window.addEventListener('pointerdown', (e) => removeStone(e, stoneGroup))
             domElement.addEventListener('click', canvasClickListener)
+            document.addEventListener('keydown', keyPressHandler)
 
             // cleanup for listeners
             return () => {
-                tControls.removeEventListener('dragging-changed', callback)
+                tControls.removeEventListener('dragging-changed', disableOrbitControls)
                 domElement.removeEventListener('click', canvasClickListener)
+                document.removeEventListener('keydown', keyPressHandler)
                 window.removeEventListener('pointerdown', (e) => removeStone(e, stoneGroup))
             }
         }
@@ -171,16 +187,16 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     // three render loop
     useFrame((state) => {
         const { x, y, z } = state.camera.position
-        light.current.position.set(x, y, z + 10);
+        // light.current.position.set(x, y, z + 1);
 
         // zoom controls
         if (zoom.isZooming) {
             if (zoom.mode === '-') {
-                if (z > 150) return
-                state.camera.position.z += 1
+                if (z > 1) return
+                state.camera.position.z += .1
             } else {
-                if (z < 10) return
-                state.camera.position.z -= 1
+                if (z < .25) return
+                state.camera.position.z -= .1
             }
         }
 
@@ -217,7 +233,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
 
     return (
         <>
-            <spotLight angle={1} penumbra={0} ref={light} intensity={.5} />
+            {/* <spotLight angle={1} penumbra={0} ref={light} intensity={.5} /> */}
             <group ref={model}  >
                 <group name='pendant' ref={pendant} >
                     <mesh
@@ -237,11 +253,6 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
                         />
                     </mesh>
                 </group>
-                {/* <instancedMesh position={[-50, 0, 10]} ref={instance} args={[
-                diamond.geometry,
-                diamond.material,
-                1000
-            ]}></instancedMesh> */}
                 <group name='stoneGroup' ref={stoneGroup}>
                     <primitive scale={stoneSize / (10*THREE_UNIT_TO_MM)} ref={stone} object={diamond} color={currStoneColor} visible={false} />
                 </group>
