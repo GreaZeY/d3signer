@@ -26,7 +26,6 @@ export default async function handler(req, res) {
                 break;
 
             case "DELETE":
-                console.log(req.query, req.body)
                 let design = await db.collection(collection).deleteOne({ _id: ObjectId(req.query.id) });
                 if (design.deletedCount !== 0) {
                     const designs = await db.collection(collection).find({}).toArray();

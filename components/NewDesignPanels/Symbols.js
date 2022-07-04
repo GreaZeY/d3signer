@@ -9,7 +9,6 @@ const Symbols = ({props}) => {
     props.txtSurface.current.geometry.computeBoundingBox()
     boundingBox = props.txtSurface.current.geometry.boundingBox
   }
-  console.log(boundingBox)
   
   return (symbols.length>0&&props.txtSurface.current) ?
       symbols.map(symbol => <Symbol props={{...props,symbol,boundingBox}} />)

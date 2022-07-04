@@ -72,7 +72,6 @@ function Dashboard() {
     });
 
   }
-console.log(designs[0])
   return (
     <>
       <div>

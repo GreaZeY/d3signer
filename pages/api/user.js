@@ -7,7 +7,6 @@ export default async function handler(req, res) {
   const db = client.db("designer");
   switch (req.method) {
     case "POST":
-      console.log(req.body)
       let user = await db.collection("users").findOne({email:req.body.email});
       if(user) return res.status(409).json({success:false, message: 'A user is already registered with this mail!' });
       

@@ -26,11 +26,6 @@ export default function SignIn(props) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      name: data.get('name'),
-      password: data.get('password'),
-    });
     await dispatch(register(
       {
         email: data.get('email'),

@@ -159,7 +159,6 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
 
     // click away listener for transform controls 
     const canvasClickListener = () => {
-        console.log(clickAway)
         if (clickAway) {
 
             transform.current?.detach()

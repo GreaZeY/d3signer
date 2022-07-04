@@ -42,7 +42,6 @@ const Symbols = ({ props }) => {
                 rotation = [3.14, 0, 0]
                 break;
             case 'Crown':
-                console.log(length)
                 scale = length / 10750
                 rotation = [3.14, 0, 0]
                 break;
