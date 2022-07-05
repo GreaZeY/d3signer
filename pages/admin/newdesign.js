@@ -405,7 +405,8 @@ function newDesign() {
   }
 
   const getCanvasImgData = async () => {
-    let canvas = document.getElementsByTagName('canvas')[1];
+    let canvas = document.getElementsByTagName('canvas');
+    canvas = canvas[canvas.length-1]
     const canvas2d = document.createElement('canvas')
     var context = canvas2d.getContext("2d");
     canvas2d.width = canvas.width
@@ -413,15 +414,14 @@ function newDesign() {
     context.font = "12px Rubik";
     context.fillRect(0, 0, canvas2d.width, canvas2d.height);
     context.fillStyle = "white";
-    var rect = canvas2d.getBoundingClientRect();
     const imObjFunction = () => {
       return new Promise((resolve, ) => {
         var imageObj = new Image();
         imageObj.onload = function () {
           context.drawImage(imageObj, 0, 0);
-          context.fillText(`Width: ${designProps.length}`, 20, 20);
-          context.fillText(`Thickness: ${designProps.thickness}`, 120, 20);
-          context.fillText(`Stone Size: ${designProps.stoneSize}`, 220, 20);
+          context.fillText(`Width: ${designProps.length}mm`, 20, 20);
+          context.fillText(`Thickness: ${designProps.thickness}mm`, 120, 20);
+          context.fillText(`Stone Size: ${designProps.stoneSize}mm`, 220, 20);
           context.fillText(`Base: ${designProps.base}`, 320, 20);
           context.fillText(`No. of Bails: ${designProps.bails.length}`, 420, 20);
           context.fillText(`Stone Size: ${designProps.stoneSize}`, 520, 20);

@@ -8,7 +8,7 @@ let rotation = [3.14, 0, 0]
 let scale
 
 const Symbols = ({ props }) => {
-    const { guiControls, transform, symbol, boundingBox } =props
+    const { guiControls, transform, symbol, boundingBox, index } =props
     const {max} = boundingBox
 
     const { designProps } = useSelector(state => state.designProps)
@@ -72,9 +72,10 @@ const Symbols = ({ props }) => {
     return (
         <>
             <mesh
-                name='symbol'
+                name={symbol}
                 scale={.0005}
                 position={max}
+                userData={{type:'symbol', index, symbol }}
                 // position-y={position[1] + 4}
                 rotation={rotation}
                 onClick={attachTransformControl}

@@ -5,9 +5,10 @@ import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry'
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js'
 import { extend, useFrame, useThree } from '@react-three/fiber'
 import { loadStone, getFont, union, intersect, subtractGeometry } from './utils/threeUtils'
-import { useSelector } from 'react-redux';
+import { useSelector,useDispatch } from 'react-redux';
 import Bails from './Bails'
 import { useControl } from 'react-three-gui';
+import { designProps } from '../../lib/actions/designAction'
 import { ChangeMode } from '../ThreeGUIControls/guiContolsComponents'
 // import { MODEL_GENERATED, GENERATING_MODEL } from '../../lib/constants/designPropsConstants';
 // import { designProps as designPropsFunc } from '../../lib/actions/designAction';
@@ -31,7 +32,7 @@ let textGeometry = new TextGeometry()
 
 const pendantModel = ({ controls, guiControls, zoom, model }) => {
 
-    const { designProps } = useSelector(state => state.designProps)
+    const { designProps:currDesign } = useSelector(state => state.designProps)
     const {
         text,
         base,
@@ -40,8 +41,9 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
         font: currFont,
         currStoneColor,
         currStoneShape,
-        stoneSize
-    } = designProps;
+        stoneSize,
+        symbols
+    } = currDesign;
 
     const [boundingBoxPoints, setBoundingBoxPoints] = useState({ max: {}, min: {} })
 
@@ -51,6 +53,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     const stone = useRef()
     const stoneGroup = useRef()
     const transform = useRef()
+    const dispatch = useDispatch()
     // const instance = useRef()
     // const dispatch = useDispatch()
 
@@ -130,9 +133,13 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
         if (e.key=== "Delete"){
             let obj = transform.current?.object
             if (obj){
+                console.log(obj)
                 transform.current.detach()
                 model.current.remove(obj)
-                
+                // console.log(currDesign)
+                // let syms = symbols.filter((s,i)=>i!==obj.userData.index)
+               
+                // dispatch(designProps({ ...currDesign, symbols:syms  }))
             }
         }
     }
@@ -172,6 +179,8 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     });
 
     useControl('Close', { type: 'button', onClick: closeControls });
+
+    useControl('Delete', { type: 'button', onClick: () => keyPressHandler({ key:"Delete" }) });
 
     // click away listener for transform controls 
     const canvasClickListener = () => {
