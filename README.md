@@ -1,29 +1,26 @@
-# README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+#                                       [Designer](https://d3signer.vercel.app/)
 
-### What is this repository for? ###
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+### Run in development mode
+* Fork the repository
+* Clone the repository
+* Install pnpm if you havn't already by running `npm i pnpm -g`
+* Install the dependencies by `pnpm install`
+* [Configure .env](https://github.com/GreaZeY/d3signer#Configure-.env-file) 
+* Run in development mode by `pnpm run dev`
+* Your app will run on http://localhost:3000
 
-### How do I get set up? ###
+### To create your Production Build
+*  `pnpm run build`
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+### Configure .env file 
+- MONGODB_URI = YOUR_MONGO_URI
 
-### Contribution guidelines ###
 
-* Writing tests
-* Code review
-* Other guidelines
 
-### Who do I talk to? ###
 
-* Repo owner or admin
-* Other community or team contact
+
+
+
+
