@@ -447,29 +447,60 @@ function newDesign() {
         {/* <meta property="og:image" content={canvasImg} /> */}
       </Head>
       <div>
-
-        <GridContainer direction={windowWidth <= 960 ? "column-reverse" : ''}   >
+        <GridContainer direction={windowWidth <= 960 ? "column-reverse" : ""}>
           <LeftPanel props={{ classes }} />
-          <GridItem xs={12} sm={12} md={9} style={{padding:0}}  >
-            <Card  >
-              <CardBody className={classes.preview} >
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <GridItem xs={12} sm={12} md={9} style={{ padding: 0 }}>
+            <Card>
+              <CardBody className={classes.preview}>
+                <div
+                  style={{ display: "flex", justifyContent: "space-between" }}
+                >
                   <Typography>Preview</Typography>
-                  <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', zIndex: `${modalShow ? '0' : '100'}` }}>
-                    <ButtonGroup variant="text" ref={anchorRef} aria-label="split button">
-                      <Button disabled={exportLoading} size="small" style={{ background: 'white', border: '1px solid #ECEBEB ' }} onClick={()=>exportFile(selectedIndex)}>
-                        {
-                          exportLoading ?
-                            <Spinner style={{ width: '.7rem', height: '.7rem', marginRight: '.5rem' }} />
-                            :
-                            <CloudDownload style={{ marginTop: '0px', marginRight: '.5rem' }} />
-
-                        } {options[selectedIndex]}</Button>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      alignItems: "center",
+                      zIndex: `${modalShow ? "0" : "100"}`,
+                    }}
+                  >
+                    <ButtonGroup
+                      variant="text"
+                      ref={anchorRef}
+                      aria-label="split button"
+                    >
+                      <Button
+                        disabled={exportLoading}
+                        size="small"
+                        style={{
+                          background: "white",
+                          border: "1px solid #ECEBEB ",
+                        }}
+                        onClick={() => exportFile(selectedIndex)}
+                      >
+                        {exportLoading ? (
+                          <Spinner
+                            style={{
+                              width: ".7rem",
+                              height: ".7rem",
+                              marginRight: ".5rem",
+                            }}
+                          />
+                        ) : (
+                          <CloudDownload
+                            style={{ marginTop: "0px", marginRight: ".5rem" }}
+                          />
+                        )}{" "}
+                        {options[selectedIndex]}
+                      </Button>
                       <Button
                         size="small"
-                        style={{ background: 'white', border: '1px solid #ECEBEB ' }}
-                        aria-controls={open ? 'split-button-menu' : undefined}
-                        aria-expanded={open ? 'true' : undefined}
+                        style={{
+                          background: "white",
+                          border: "1px solid #ECEBEB ",
+                        }}
+                        aria-controls={open ? "split-button-menu" : undefined}
+                        aria-expanded={open ? "true" : undefined}
                         aria-label="select merge strategy"
                         aria-haspopup="menu"
                         onClick={handleToggle}
@@ -490,10 +521,12 @@ function newDesign() {
                           {...TransitionProps}
                           style={{
                             transformOrigin:
-                              placement === 'bottom' ? 'center top' : 'center bottom',
+                              placement === "bottom"
+                                ? "center top"
+                                : "center bottom",
                           }}
                         >
-                          <Paper >
+                          <Paper>
                             <ClickAwayListener onClickAway={handleClose}>
                               <MenuList id="split-button-menu" autoFocusItem>
                                 {options.map((option, index) => (
@@ -501,8 +534,16 @@ function newDesign() {
                                     key={option}
                                     // style={{ zIndex: '100' }}
                                     selected={index === selectedIndex}
-                                    onClick={(event) => handleMenuItemClick(event, index)}
-                                  ><CloudDownload style={{ marginTop: '0px', marginRight: '.5rem' }} />
+                                    onClick={(event) =>
+                                      handleMenuItemClick(event, index)
+                                    }
+                                  >
+                                    <CloudDownload
+                                      style={{
+                                        marginTop: "0px",
+                                        marginRight: ".5rem",
+                                      }}
+                                    />
                                     {option}
                                   </MenuItem>
                                 ))}
@@ -513,11 +554,28 @@ function newDesign() {
                       )}
                     </Popper>
 
-                    <ShareIcon onClick={() => setModalShow(true)} style={{ paddingLeft: '.5rem', paddingRight: '.5rem', marginLeft: '1rem', cursor: 'pointer' }} />
+                    <ShareIcon
+                      onClick={() => setModalShow(true)}
+                      style={{
+                        paddingLeft: ".5rem",
+                        paddingRight: ".5rem",
+                        marginLeft: "1rem",
+                        cursor: "pointer",
+                      }}
+                    />
 
-
-                    <Button size="small" startIcon={<Save />} onClick={handleSavePost}
-                      style={{ paddingLeft: '1rem', paddingRight: '1rem', marginLeft: '1rem', color: 'white', background: 'linear-gradient(60deg, #ab47bc, #8e24aa)' }}>
+                    <Button
+                      size="small"
+                      startIcon={<Save />}
+                      onClick={handleSavePost}
+                      style={{
+                        paddingLeft: "1rem",
+                        paddingRight: "1rem",
+                        marginLeft: "1rem",
+                        color: "white",
+                        background: "linear-gradient(60deg, #eb9809, #c28215)",
+                      }}
+                    >
                       Save
                     </Button>
                     <ReactModal
@@ -550,53 +608,116 @@ function newDesign() {
 
                       <div className={classes.containerDiv}>
                         <header className={classes.modalHeader}>
-                          <div><span style={{
-                            fontSize: '21px',
-                            fontWeight: 600
-                          }}>Share your design</span></div>
+                          <div>
+                            <span
+                              style={{
+                                fontSize: "21px",
+                                fontWeight: 600,
+                              }}
+                            >
+                              Share your design
+                            </span>
+                          </div>
 
-                          <div className="close" style={{ fontSize: '2rem', cursor: 'pointer' }} onClick={() => setModalShow(false)}><i class="uil uil-times"></i></div>
+                          <div
+                            className="close"
+                            style={{ fontSize: "2rem", cursor: "pointer" }}
+                            onClick={() => setModalShow(false)}
+                          >
+                            <i class="uil uil-times"></i>
+                          </div>
                         </header>
 
-                        <div style={{ padding: '0 1.5rem' }}>
+                        <div style={{ padding: "0 1.5rem" }}>
                           <div>
-                            <p style={{ fontSize: '16px' }}>Share this link via</p>
-                            <ul style={{ padding: 0 }} className={classes.linksCenter}>
-                              <a href={`https://www.facebook.com/sharer/sharer.php?u=${url.encodedUrl}`} target='_blank' className={classes.shareLink}><i style={{
-                                color: '#1877F2',
-                                borderColor: '#b7d4fb'
-                              }} className={`fab fa-facebook-f ${classes.shareIcons}`}></i></a>
-                              <a href={`https://twitter.com/intent/tweet?url=${url.encodedUrl}`} target='_blank' className={classes.shareLink}><i style={{
-                                color: '#46C1F6',
-                                borderColor: '#b6e7fc'
-                              }} className="fab fa-twitter"></i></a>
+                            <p style={{ fontSize: "16px" }}>
+                              Share this link via
+                            </p>
+                            <ul
+                              style={{ padding: 0 }}
+                              className={classes.linksCenter}
+                            >
+                              <a
+                                href={`https://www.facebook.com/sharer/sharer.php?u=${url.encodedUrl}`}
+                                target="_blank"
+                                className={classes.shareLink}
+                              >
+                                <i
+                                  style={{
+                                    color: "#1877F2",
+                                    borderColor: "#b7d4fb",
+                                  }}
+                                  className={`fab fa-facebook-f ${classes.shareIcons}`}
+                                ></i>
+                              </a>
+                              <a
+                                href={`https://twitter.com/intent/tweet?url=${url.encodedUrl}`}
+                                target="_blank"
+                                className={classes.shareLink}
+                              >
+                                <i
+                                  style={{
+                                    color: "#46C1F6",
+                                    borderColor: "#b6e7fc",
+                                  }}
+                                  className="fab fa-twitter"
+                                ></i>
+                              </a>
                               {/* <a href="#" className={classes.shareLink}><i style={{
                               color: ' #e1306c',
                               borderColor: '#f5bccf'
                             }} className="fab fa-instagram"></i></a> */}
 
-                              <a href={`https://t.me/share/url?url=${url.encodedUrl}`} target='_blank' className={classes.shareLink}><i style={{
-                                color: '#0088cc',
-                                borderColor: '#b3e6ff'
-                              }} class="fab fa-telegram-plane"></i></a>
+                              <a
+                                href={`https://t.me/share/url?url=${url.encodedUrl}`}
+                                target="_blank"
+                                className={classes.shareLink}
+                              >
+                                <i
+                                  style={{
+                                    color: "#0088cc",
+                                    borderColor: "#b3e6ff",
+                                  }}
+                                  class="fab fa-telegram-plane"
+                                ></i>
+                              </a>
 
-                              <a href={`https://wa.me/?text=${url.encodedUrl}`} data-action="share/whatsapp/share" target='_blank' className={classes.shareLink}><i style={{
-                                color: '#25D366',
-                                borderColor: '#bef4d2'
-                              }} className="fab fa-whatsapp"></i></a>
+                              <a
+                                href={`https://wa.me/?text=${url.encodedUrl}`}
+                                data-action="share/whatsapp/share"
+                                target="_blank"
+                                className={classes.shareLink}
+                              >
+                                <i
+                                  style={{
+                                    color: "#25D366",
+                                    borderColor: "#bef4d2",
+                                  }}
+                                  className="fab fa-whatsapp"
+                                ></i>
+                              </a>
                             </ul>
                           </div>
 
                           <p style={{ marginBottom: 0 }}>Or copy link</p>
                           <div className={classes.field}>
                             <i className="url-icon uil uil-link"></i>
-                            <input type="text" readonly value={url.decodedUrl} />
-                            <span onClick={copyToClipboard} class="material-symbols-outlined"
+                            <input
+                              type="text"
+                              readonly
+                              value={url.decodedUrl}
+                            />
+                            <span
+                              onClick={copyToClipboard}
+                              class="material-symbols-outlined"
                               style={{
-                                transform: 'translateY(4px)',
-                                cursor: 'pointer', color: 'grey', fontSize: '1.2rem'
+                                transform: "translateY(4px)",
+                                cursor: "pointer",
+                                color: "grey",
+                                fontSize: "1.2rem",
                               }}
-                              title="copy">
+                              title="copy"
+                            >
                               content_copy
                             </span>
                           </div>
@@ -606,15 +727,26 @@ function newDesign() {
                   </div>
                 </div>
 
-                <div className={classes.zoomControls + ' ' + classes.flexRow} style={{ justifyContent: 'space-between' }} >
-                  <Fab aria-label="add" size="small"
-                    onPointerDown={() => setZoom({ isZooming: true, mode: '+' })}
+                <div
+                  className={classes.zoomControls + " " + classes.flexRow}
+                  style={{ justifyContent: "space-between" }}
+                >
+                  <Fab
+                    aria-label="add"
+                    size="small"
+                    onPointerDown={() =>
+                      setZoom({ isZooming: true, mode: "+" })
+                    }
                     onPointerUp={() => setZoom({ ...zoom, isZooming: false })}
                   >
                     <ZoomInIcon />
                   </Fab>
-                  <Fab aria-label="add" size="small"
-                    onPointerDown={() => setZoom({ isZooming: true, mode: '-' })}
+                  <Fab
+                    aria-label="add"
+                    size="small"
+                    onPointerDown={() =>
+                      setZoom({ isZooming: true, mode: "-" })
+                    }
                     onPointerUp={() => setZoom({ ...zoom, isZooming: false })}
                   >
                     <ZoomOutIcon />
@@ -622,16 +754,14 @@ function newDesign() {
                 </div>
 
                 <D3panel model={model} zoom={zoom} />
-                {
-                  loading && <div className={classes.loaderContainer} >
+                {loading && (
+                  <div className={classes.loaderContainer}>
                     <DotLoader />
                   </div>
-                }
-
+                )}
               </CardBody>
             </Card>
           </GridItem>
-
         </GridContainer>
       </div>
       {/* {

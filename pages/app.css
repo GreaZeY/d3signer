@@ -31,7 +31,8 @@ input[type=number] {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(60deg, #ab47bc, #8e24aa);
+  background: linear-gradient(60deg, #eb9809,
+    #bd7d0f);
   border-radius: 50vmax;
 }
 

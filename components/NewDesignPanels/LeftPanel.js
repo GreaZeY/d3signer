@@ -39,14 +39,13 @@ const muiTheme = createMuiTheme({
   overrides: {
     MuiSlider: {
       thumb: {
-        color: "#8e24aa",
+        color: "#c28215",
       },
       track: {
-        color: '#ab47bc'
+        color: "#eb9809",
       },
-
-    }
-  }
+    },
+  },
 });
 
 

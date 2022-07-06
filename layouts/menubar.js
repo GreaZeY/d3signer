@@ -88,137 +88,148 @@ const MenuAppBar = () => {
 
 
   return (
-    <AppBar style={{background:'linear-gradient(60deg, #ab47bc, #8e24aa)'}} position="static">
-
-        <Toolbar  >
-        
-          <div className={classes.flexRow} >
-          <img src="https://freepngimg.com/thumb/sparkle/27358-8-sparkle-transparent-background.png" style={{ height: '80px'}}/>
+    <AppBar
+      style={{ background: "linear-gradient(60deg, #eb9809, #c28215)" }}
+      position="static"
+    >
+      <Toolbar>
+        <div className={classes.flexRow}>
+          <img
+            src="https://freepngimg.com/thumb/sparkle/27358-8-sparkle-transparent-background.png"
+            style={{ height: "80px" }}
+          />
           <Typography
             variant="h6"
             noWrap
             component="div"
-            sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}
+            sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}
           >
             LOGO
           </Typography>
-          </div>
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleOpenNavMenu}
-              color="inherit"
-            >
-              <MenuIcon />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
-              sx={{
-                display: { xs: 'block', md: 'none' },
-              }}
-            >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
-              ))}
-           
-            </Menu>
-          </Box>
-         
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+        </div>
+        <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+          <IconButton
+            size="large"
+            aria-label="account of current user"
+            aria-controls="menu-appbar"
+            aria-haspopup="true"
+            onClick={handleOpenNavMenu}
+            color="inherit"
+          >
+            <MenuIcon />
+          </IconButton>
+          <Menu
+            id="menu-appbar"
+            anchorEl={anchorElNav}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "left",
+            }}
+            keepMounted
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "left",
+            }}
+            open={Boolean(anchorElNav)}
+            onClose={handleCloseNavMenu}
+            sx={{
+              display: { xs: "block", md: "none" },
+            }}
+          >
             {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {page}
-              </Button>
+              <MenuItem key={page} onClick={handleCloseNavMenu}>
+                <Typography textAlign="center">{page}</Typography>
+              </MenuItem>
             ))}
-          </Box>
-          <Link style={{marginRight:'1vmax'}} href= '/admin/newdesign'> 
-        <Button  className={classes.newDesign} variant="outlined">New Design</Button>
-        </Link>
-          
-        {isAuthenticated?
-        <> 
-        
-        <Box sx={{textAlign:'center',marginLeft:'1vmax'}}>
-          Welcome
-         <br/>
-          {user.firstName}
-          </Box>
-          
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
+          </Menu>
+        </Box>
+
+        <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+          {pages.map((page) => (
+            <Button
+              key={page}
+              onClick={handleCloseNavMenu}
+              sx={{ my: 2, color: "white", display: "block" }}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Link href={setting.link}>
-                    <Typography >{setting.text}</Typography>
+              {page}
+            </Button>
+          ))}
+        </Box>
+        <Link style={{ marginRight: "1vmax" }} href="/admin/newdesign">
+          <Button className={classes.newDesign} variant="outlined">
+            New Design
+          </Button>
+        </Link>
+
+        {isAuthenticated ? (
+          <>
+            <Box sx={{ textAlign: "center", marginLeft: "1vmax" }}>
+              Welcome
+              <br />
+              {user.firstName}
+            </Box>
+
+            <Box sx={{ flexGrow: 0 }}>
+              <Tooltip title="Open settings">
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                </IconButton>
+              </Tooltip>
+              <Menu
+                sx={{ mt: "45px" }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                {settings.map((setting) => (
+                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                    <Link href={setting.link}>
+                      <Typography>{setting.text}</Typography>
+                    </Link>
+                  </MenuItem>
+                ))}
+                <MenuItem onClick={() => dispatch({ type: "LOGOUT_SUCCESS" })}>
+                  <Link href=" ">
+                    <Typography>Logout</Typography>
                   </Link>
                 </MenuItem>
-              ))}
-                <MenuItem onClick={()=>dispatch({ type: "LOGOUT_SUCCESS" })}>
-                  <Link href=' '>
-                    <Typography >Logout</Typography>
-                  </Link>
-                </MenuItem>
-            </Menu>
-          </Box>
+              </Menu>
+            </Box>
           </>
-          :
-          <Button onClick={()=>setShowLoginModal(true)} className={classes.newDesign} variant="outlined">Sign in</Button>
-          }
-{
-  showLoginModal&&
-  <LoginModal setShowLoginModal={setShowLoginModal} setShowSigninModal={setShowSigninModal} classes={classes} />
-  
-}
-{
-  showSigninModal&&
-  <SignupModal setShowLoginModal={setShowLoginModal} setShowSigninModal={setShowSigninModal} classes={classes} />
-  
-}
-         
-          
-        </Toolbar>
-     
+        ) : (
+          <Button
+            onClick={() => setShowLoginModal(true)}
+            className={classes.newDesign}
+            variant="outlined"
+          >
+            Sign in
+          </Button>
+        )}
+        {showLoginModal && (
+          <LoginModal
+            setShowLoginModal={setShowLoginModal}
+            setShowSigninModal={setShowSigninModal}
+            classes={classes}
+          />
+        )}
+        {showSigninModal && (
+          <SignupModal
+            setShowLoginModal={setShowLoginModal}
+            setShowSigninModal={setShowSigninModal}
+            classes={classes}
+          />
+        )}
+      </Toolbar>
     </AppBar>
   );
 };
