@@ -43,99 +43,101 @@ export default function SignIn(props) {
   }, [error])
 
   return (
-    <div className={classes.modal}  >
+    <div className={classes.modal}>
       <Container component="main" maxWidth="xs">
-
         <Box
           className={classes.loginForm}
           sx={{
-            display: 'flex',
-            borderRadius: '8px',
-            flexDirection: 'column',
-            alignItems: 'center',
-            backgroundColor: 'white',
-            position: 'relative',
-            padding: '2rem',
-
+            display: "flex",
+            borderRadius: "8px",
+            flexDirection: "column",
+            alignItems: "center",
+            backgroundColor: "white",
+            position: "relative",
+            padding: "2rem",
           }}
         >
-          {/* <Avatar style={{ background: 'linear-gradient(60deg, #ab47bc, #8e24aa)' }} >
+          {/* <Avatar style={{ background: 'linear-gradient(60deg, #ab47bc, #FFD700)' }} >
             <LockOutlinedIcon />
 
           </Avatar> */}
-          <img src={'/assets/img/logosample.png'} style={{ height: '50px' }} />
-          <Typography style={{ color: 'gray' }} component="h1" variant="h5">
+          <img src={"/assets/img/logosample.png"} style={{ height: "50px" }} />
+          <Typography style={{ color: "gray" }} component="h1" variant="h5">
             Sign In
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate >
-
+          <Box component="form" onSubmit={handleSubmit} noValidate>
             <CustomInput
-
               labelText="Email"
               id="email"
-
               className={classes.form}
               formControlProps={{
                 fullWidth: true,
-                className: classes.formMargin0
+                className: classes.formMargin0,
               }}
             />
 
             <CustomInput
               labelText="Password"
               id="password"
-              inputProps={{ type: 'password' }}
+              inputProps={{ type: "password" }}
               formControlProps={{
                 fullWidth: true,
-                className: classes.form
+                className: classes.form,
               }}
             />
             <FormControlLabel
-              style={{ marginTop: '1rem' }}
+              style={{ marginTop: "1rem" }}
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
             />
             <Button
               type="submit"
               fullWidth
-              style={{ marginTop: '1rem', color: 'white', background: 'linear-gradient(60deg, #ab47bc, #8e24aa)' }}
+              style={{
+                marginTop: "1rem",
+                color: "white",
+                background: "linear-gradient(60deg, #eb9809, #c28215)",
+              }}
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              {
-                loading ?
-                  <Spinner style={{width:'1rem',height:'1rem'}}  />
-                  :
-                  <>
-                    Sign In
-                  </>
-
-              }
-
+              {loading ? (
+                <Spinner style={{ width: "1rem", height: "1rem" }} />
+              ) : (
+                <>Sign In</>
+              )}
             </Button>
 
-
-
             <Link href="#" variant="body2">
-              <p style={{ textAlign: 'right' }} >Forgot password?</p>
+              <p style={{ textAlign: "right" }}>Forgot password?</p>
             </Link>
 
-            <div style={{ marginTop: '2rem' }} >
-              <Link href="#" variant="body2" onClick={() => {
-                setShowLoginModal(false)
-                setShowSigninModal(true)
-              }} >
-
-                <p style={{ textAlign: 'center' }} >Don't have an account? Sign Up</p>
+            <div style={{ marginTop: "2rem" }}>
+              <Link
+                href="#"
+                variant="body2"
+                onClick={() => {
+                  setShowLoginModal(false);
+                  setShowSigninModal(true);
+                }}
+              >
+                <p style={{ textAlign: "center" }}>
+                  Don't have an account? Sign Up
+                </p>
               </Link>
             </div>
-
           </Box>
-          <CloseIcon style={{ position: 'absolute', top: 0, right: 0, color: 'gray', cursor: 'pointer' }} onClick={() => setShowLoginModal(false)} />
+          <CloseIcon
+            style={{
+              position: "absolute",
+              top: 0,
+              right: 0,
+              color: "gray",
+              cursor: "pointer",
+            }}
+            onClick={() => setShowLoginModal(false)}
+          />
         </Box>
-
-
-
       </Container>
     </div>
   );
