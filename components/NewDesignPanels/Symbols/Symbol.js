@@ -1,22 +1,18 @@
 import { useEffect, useState, useMemo } from 'react'
 import { useSelector } from 'react-redux';
-import {createShape} from '../NewDesignPanels/utils/threeUtils'
-
-
+import {createShape} from '../utils/threeUtils'
 
 let rotation = [3.14, 0, 0]
 let scale
 
 const Symbols = ({ props }) => {
-    const { guiControls, transform, symbol, boundingBox, index } =props
+    const {symbol, boundingBox, index } =props
     const {max} = boundingBox
 
     const { designProps } = useSelector(state => state.designProps)
     const { base, length, thickness, symbolSize } = designProps
     const shape = useMemo(() => createShape(symbol), [symbol]);
 
-    // transform.current?.detach()
-    //  if(guiControls.current?.style?.display) guiControls.current.style.display = 'none'
 
     useEffect(() => {
         if (!symbol) return
@@ -62,12 +58,6 @@ const Symbols = ({ props }) => {
         bevelSize: 10,
     };
 
-    const attachTransformControl = (e) => {
-        transform.current.attach(e.object)
-        guiControls.current.style.display = 'block'
-    }
-
-
     if (!symbol) return <></>
     return (
         <>
@@ -78,7 +68,6 @@ const Symbols = ({ props }) => {
                 userData={{type:'symbol', index, symbol }}
                 // position-y={position[1] + 4}
                 rotation={rotation}
-                onClick={attachTransformControl}
             >
                 <extrudeGeometry onUpdate={g=>g.center()} args={[shape, extrudeSettings]} />
                 <meshStandardMaterial

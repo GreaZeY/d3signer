@@ -1,13 +1,8 @@
 import Bail from './Bail';
-import { useEffect } from 'react'
-import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js'
 import { useSelector } from 'react-redux';
-import { extend } from '@react-three/fiber'
 
-
-extend({ TransformControls })
 let box = {}
-const Bails = ({ txtSurface, transform, guiControls }) => {
+const Bails = ({ txtSurface }) => {
 
     if (txtSurface.current?.geometry){
         txtSurface.current.geometry.computeBoundingBox()
@@ -17,12 +12,6 @@ const Bails = ({ txtSurface, transform, guiControls }) => {
     const { designProps } = useSelector(state => state.designProps)
     const { bails, base } = designProps;
 
-    useEffect(()=>{
-        transform.current?.detach()
-        if(guiControls.current?.style?.display) {
-            guiControls.current.style.display = 'none'
-        }
-    },[bails])
     
     return (
         <>
@@ -31,7 +20,7 @@ const Bails = ({ txtSurface, transform, guiControls }) => {
                     {
                     bails.map((bail, i) => (
                             <Bail
-                                key={i}
+                                key={bail.type+i}
                                 args={{
                                     radius: bail.sizes.diameter /2,
                                     tube: bail.sizes.thickness / 5,
@@ -40,8 +29,6 @@ const Bails = ({ txtSurface, transform, guiControls }) => {
                                 }}
                                 base={base}
                                 currBailType={bail.type}
-                                transform={transform}
-                                guiControls={guiControls}
                             />
                         ))
                     }

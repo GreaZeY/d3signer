@@ -39,10 +39,10 @@ const muiTheme = createMuiTheme({
   overrides: {
     MuiSlider: {
       thumb: {
-        color: "#c28215",
+        color: "#BF953F",
       },
       track: {
-        color: "#eb9809",
+        color: "#FDB931",
       },
     },
   },
@@ -221,7 +221,7 @@ const LeftPanel = ({ props }) => {
             <div onClick={(e) => dispatch(designProps({ ...currDesign, base: e.target.style.color }))} className={classes.flexRow}>
               {
                 colors.map(item => (
-                  <div className={classes.base} title={item.name} style={{ color: item.color, background: `url('/assets/img/bases/${item.name}.png')` }} ></div>
+                  <div className={classes.base+' metallic-gold'} title={item.name} style={{ color: item.color, background: `url('/assets/img/bases/${item.name}.png')` }} ></div>
                 ))
               }
             </div>
@@ -386,10 +386,10 @@ const LeftPanel = ({ props }) => {
               <InputLabel style={{ marginLeft: '1rem' }} className="settings-head">Bails</InputLabel>
               <div className={classes.flexRow} style={{ flexWrap: 'wrap', marginLeft: '1rem' }} >
                 {
-                  bailType.map(bail => (
+                  bailType.map((bail,i) => (
                     <div
                       onClick={(e) => setCurrBailType(e.target.alt)}
-                      key={bail}
+                      key={i}
                       style={{ border: currBailType === bail && '3px solid #8e24aa' }}
                       className={classes.bailType + ' ' + classes.flexRow}>
                       <img width={25} height={25} src={`/assets/bails/img/${bail}.png`} alt={bail} />

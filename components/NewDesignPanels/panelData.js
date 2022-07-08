@@ -25,23 +25,23 @@ export const stoneColor = [
 ]
 
 export const colors = [
-    {
-        name: 'Gold',
-        color: '#FFD700'
-    },
-    {
-        name: 'Silver',
-        color: '#C3C7C7'
-    },
-    {
-        name: 'Rose Gold',
-        color: '#B76E79'
-    },
-    {
-        name: 'Sterling Silver',
-        color: '#9EAFC2'
-    }
-]
+  {
+    name: "Gold",
+    color: "rgb(692, 522, 136)",
+  },
+  {
+    name: "Silver",
+    color: "#C3C7C7",
+  },
+  {
+    name: "Rose Gold",
+    color: "#B76E79",
+  },
+  {
+    name: "Sterling Silver",
+    color: "#9EAFC2",
+  },
+];
 
 export const bailType = [
     'bail0',

@@ -7,286 +7,258 @@ import GridContainer from "components/Grid/GridContainer.js";
 import Card from "components/Card/Card.js";
 import CardBody from "components/Card/CardBody.js";
 import { Typography } from "@material-ui/core";
-import MenuItem from '@material-ui/core/MenuItem';
+import MenuItem from "@material-ui/core/MenuItem";
 import CloudDownload from "@material-ui/icons/CloudDownload";
-import ButtonGroup from '@material-ui/core/ButtonGroup';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import Grow from '@material-ui/core/Grow';
-import Paper from '@material-ui/core/Paper';
-import Popper from '@material-ui/core/Popper';
-import MenuList from '@material-ui/core/MenuList';
-import { useDispatch, useSelector } from 'react-redux';
+import ButtonGroup from "@material-ui/core/ButtonGroup";
+import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
+import ClickAwayListener from "@material-ui/core/ClickAwayListener";
+import Grow from "@material-ui/core/Grow";
+import Paper from "@material-ui/core/Paper";
+import Popper from "@material-ui/core/Popper";
+import MenuList from "@material-ui/core/MenuList";
+import { useDispatch, useSelector } from "react-redux";
 import LeftPanel from "../../components/NewDesignPanels/LeftPanel";
-import D3panel from "../../components/NewDesignPanels/D3panel"
+import D3panel from "../../components/NewDesignPanels/D3panel";
 import DotLoader from "components/loaders/dotLoader";
-import { saveAs } from 'file-saver';
+import { saveAs } from "file-saver";
 import Spinner from "components/loaders/spinner";
 import { saveDesign } from "../../lib/actions/designAction";
-import { useAlert } from 'react-alert';
-import ShareIcon from '@material-ui/icons/Share'
-import ReactModal from 'react-modal';
-import Fab from '@material-ui/core/Fab';
-import SettingsIcon from '@material-ui/icons/Settings';
-import ZoomInIcon from '@material-ui/icons/ZoomIn';
-import ZoomOutIcon from '@material-ui/icons/ZoomOut';
-
+import { useAlert } from "react-alert";
+import ShareIcon from "@material-ui/icons/Share";
+import ReactModal from "react-modal";
+import Fab from "@material-ui/core/Fab";
+import ZoomInIcon from "@material-ui/icons/ZoomIn";
+import ZoomOutIcon from "@material-ui/icons/ZoomOut";
+import { designProps } from "../../lib/actions/designAction";
 import { makeStyles } from "@material-ui/core/styles";
-import Head from 'next/head'
+import Head from "next/head";
 import axios from "axios";
-const options = ['STL', 'OBJ', 'PNG'];
+import CustomFileInput from "../../components/CustomFIleInput/CustomFileInput";
+const options = ["STL", "OBJ", "PNG"];
 
 function newDesign() {
-  const alert = useAlert()
+  const alert = useAlert();
   const dispatch = useDispatch();
 
   const useStyles = makeStyles({
     infoTip: {
-      position: 'absolute',
+      position: "absolute",
       left: -10,
       zIndex: "100",
-      display: 'flex',
-      background: 'black',
-      color: 'white',
-      padding: '1rem',
-      borderRadius: '8px',
-      textAlign: 'center',
-
+      display: "flex",
+      background: "black",
+      color: "white",
+      padding: "1rem",
+      borderRadius: "8px",
+      textAlign: "center",
     },
     flexRow: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'flex-start',
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "flex-start",
     },
     main: {
-      display: 'flex',
-      width: '100%',
-      justifyContent: 'center',
+      display: "flex",
+      width: "100%",
+      justifyContent: "center",
       "@media screen and (max-width: 640px)": {
-        flexDirection: 'column',
-      }
+        flexDirection: "column",
+      },
     },
     settings: {
-      padding: '1rem',
+      padding: "1rem",
     },
     preview: {
-      padding: '1rem',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginLeft: '.5rem',
+      padding: "1rem",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      marginLeft: ".5rem",
       "@media screen and (max-width: 640px)": {
         marginLeft: 0,
-
-      }
+      },
     },
     base: {
-      width: '1rem',
-      height: '1rem',
-      borderRadius: '50%',
-      cursor: 'pointer',
-      border: '2px Solid white',
-      transition: '.5s',
-      marginRight: '.2rem',
+      width: "1rem",
+      height: "1rem",
+      borderRadius: "50%",
+      cursor: "pointer",
+      border: "2px Solid white",
+      transition: ".5s",
+      marginRight: ".2rem",
       "&:hover": {
-        border: '2px Solid gray',
-      }
+        border: "2px Solid gray",
+      },
     },
     stoneShape: {
-      width: '1rem',
-      height: '1rem',
-      borderRadius: '50%',
-      cursor: 'pointer',
-      border: '2px Solid white',
-      transition: '.5s',
-      marginRight: '.2rem',
+      width: "1rem",
+      height: "1rem",
+      borderRadius: "50%",
+      cursor: "pointer",
+      border: "2px Solid white",
+      transition: ".5s",
+      marginRight: ".2rem",
       "&:hover": {
-        border: '2px Solid gray',
-      }
+        border: "2px Solid gray",
+      },
     },
     bailType: {
-      borderRadius: '50%',
-      cursor: 'pointer',
-      border: '3px Solid white',
-      transition: '.5s',
-      marginRight: '.2rem',
+      borderRadius: "50%",
+      cursor: "pointer",
+      border: "3px Solid white",
+      transition: ".5s",
+      marginRight: ".2rem",
       "&:hover": {
-        border: '3px Solid gray',
-      }
+        border: "3px Solid gray",
+      },
     },
     img: {
-      width: '1rem',
-      height: '1rem',
-      objectFit: 'cover',
-
+      width: "1rem",
+      height: "1rem",
+      objectFit: "cover",
     },
     symbol: {
-      border: '1px solid #ECEBEB',
-      width: '1rem',
-      height: '1rem',
-      display: 'flex',
-      alignItems: 'center',
-      cursor: 'pointer',
-      transition: '.5s',
-      justifyContent: 'center',
-      marginRight: '.2rem',
-      color: 'gray',
-      fontSize: '12px',
+      border: "1px solid #ECEBEB",
+      width: "1rem",
+      height: "1rem",
+      display: "flex",
+      alignItems: "center",
+      cursor: "pointer",
+      transition: ".5s",
+      justifyContent: "center",
+      marginRight: ".2rem",
+      color: "gray",
+      fontSize: "12px",
       "&:hover": {
-        border: '1px Solid gray',
-
-      }
+        border: "1px Solid gray",
+      },
     },
     formMargin0: {
-      marginTop: '0rem !important',
-      marginBottom: '1rem !important'
+      marginTop: "0rem !important",
+      marginBottom: "1rem !important",
     },
     loaderContainer: {
       height: "calc(100-10)% !important",
-      background: 'black',
-      position: 'absolute',
+      background: "black",
+      position: "absolute",
       top: "50%",
       left: "50%",
       transform: "translate(-50%,-50%)",
-      zIndex: 100
+      zIndex: 100,
     },
     delete: {
-      marginTop: '.7rem',
-      cursor: 'pointer',
-      transition: '.3s',
+      marginTop: ".7rem",
+      cursor: "pointer",
+      transition: ".3s",
       "&:hover": {
-        color: 'red'
-      }
+        color: "red",
+      },
     },
 
-
     modalStyle: {
-      position: 'fixed',
-      height: '100vh',
-      width: '100vw',
-      background: 'rgba(0, 0, 0, 0.514)',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      zIndex: 1000
-
+      position: "fixed",
+      height: "100vh",
+      width: "100vw",
+      background: "rgba(0, 0, 0, 0.514)",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      zIndex: 1000,
     },
 
     containerDiv: {
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      minWidth: '25vw',
-      borderRadius: '8px',
-      boxSizing: 'border-box',
-      flexDirection: 'column',
-      background: 'white',
-      zIndex: 1000
-
-    }
-    ,
-
-    shareIcons: {
-      transition: 'transform 0.3s ease-in-out'
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      minWidth: "25vw",
+      borderRadius: "8px",
+      boxSizing: "border-box",
+      flexDirection: "column",
+      background: "white",
+      zIndex: 1000,
     },
-
+    shareIcons: {
+      transition: "transform 0.3s ease-in-out",
+    },
 
     shareLink: {
       // height: '50px',
-      width: '50px',
-      fontSize: '2rem',
+      width: "50px",
+      fontSize: "2rem",
       // margin: '1rem',
-      textDecoration: 'none',
-      border: '1px solid transparent'
-    }
-    ,
+      textDecoration: "none",
+      border: "1px solid transparent",
+    },
     modalHeader: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      width: '100%',
-      boxSizing: 'border-box',
-      padding: '1rem'
+      display: "flex",
+      justifyContent: "space-between",
+      width: "100%",
+      boxSizing: "border-box",
+      padding: "1rem",
     },
 
     field: {
-      '& input': {
-        border: 'none',
-        outline: 'none',
-        fontSize: '15px'
+      "& input": {
+        border: "none",
+        outline: "none",
+        fontSize: "15px",
       },
-      margin: '1rem 0',
-      borderRadius: '4px',
-      padding: '0 0 0 5px',
-      border: '2px solid #e1e1e1'
-    }
+      margin: "1rem 0",
+      borderRadius: "4px",
+      padding: "0 0 0 5px",
+      border: "2px solid #e1e1e1",
+    },
 
-    ,
     linksCenter: {
-      display: 'flex',
-      justifyContent: 'space-around',
-      alignItems: 'center',
-
+      display: "flex",
+      justifyContent: "space-around",
+      alignItems: "center",
     },
-    fabButton: {
-      position: 'fixed',
-      bottom: 0,
-      right: 0,
-      background: 'linear-gradient(60deg, #ab47bc, #8e24aa)',
-
-    },
-
     zoomControls: {
-      position: 'absolute',
+      position: "absolute",
       bottom: 0,
       right: 0,
-      padding: '1rem .5rem',
+      padding: "1rem .5rem",
       zIndex: 10,
-      width: '6rem'
+      width: "6rem",
     },
-    preview:{ 
-      position: 'relative',
-      height:'75vh',
-       "@media screen and (max-width: 960px)": {
-        height:'40vh',
-
-      } 
-    }
-
-
-
+    preview: {
+      position: "relative",
+      height: "75vh",
+      "@media screen and (max-width: 960px)": {
+        height: "40vh",
+      },
+    },
   });
 
-  const classes = useStyles()
+  const classes = useStyles();
 
   const anchorRef = useRef(null);
-  const model = useRef()
+  const model = useRef();
 
   const [modalShow, setModalShow] = useState(false);
   const [url, setUrl] = useState({});
   const [open, setOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(1);
-  const [exportLoading, setExportLoading] = useState(false)
-  const [windowWidth, setWindowWidth] = useState(0)
-  const [zoom, setZoom] = useState({ isZooming: false })
+  const [exportLoading, setExportLoading] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(0);
+  const [zoom, setZoom] = useState({ isZooming: false });
 
   // const [canvasImg, setCanvasImage] = useState(' ')
 
-  const { loading, designProps } = useSelector(state => state.designProps);
+  const { loading, designProps:currDesign } = useSelector((state) => state.designProps);
 
   useEffect(() => {
     let decodedUrl = window.location.href;
     setUrl({ decodedUrl, encodedUrl: encodeURI(decodedUrl) });
-
-
-  }, [])
-
+  }, []);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       // Handler to call on window resize
       function handleResize() {
         // Set window width/height to state
-        setWindowWidth(window.innerWidth)
+        setWindowWidth(window.innerWidth);
       }
 
       // Add event listener
@@ -298,44 +270,44 @@ function newDesign() {
       // Remove event listener on cleanup
       return () => window.removeEventListener("resize", handleResize);
     }
-  }, [])
-
+  }, []);
 
   const exportFile = async (index) => {
-    try{
-      if(index === 2) {
-         await savePng()
-        }else{
+    try {
+      if (index === 2) {
+        await savePng();
+      } else {
+        axios.post("/api/downloadcount", { time: Date.now() });
+        setExportLoading(true);
+        let modelClone = model.current.clone();
 
-          axios.post('/api/downloadcount', { time: Date.now() })
-          setExportLoading(true)
-          let modelClone = model.current.clone()
-          
-          let stoneGroup = modelClone.children.filter(kid => (kid.type === 'Group' && kid.name === "stoneGroup"))
-          modelClone.remove(stoneGroup[0])
+        let stoneGroup = modelClone.children.filter(
+          (kid) => kid.type === "Group" && kid.name === "stoneGroup"
+        );
+        modelClone.remove(stoneGroup[0]);
 
-           if (index === 0) {
-          await stlExporter(modelClone)
-          setExportLoading(false)
-          return
+        if (index === 0) {
+          await stlExporter(modelClone);
+          setExportLoading(false);
+          return;
         }
-      if (index === 1) {
-          await objExporter(modelClone)
-          setExportLoading(false)
-          return
-       }
+        if (index === 1) {
+          await objExporter(modelClone);
+          setExportLoading(false);
+          return;
         }
-    setExportLoading(false)
-  }catch(e){
-    console.log(e)
-    alert.error(e.message)
-    setExportLoading(false)
-  }
-  }
+      }
+      setExportLoading(false);
+    } catch (e) {
+      console.log(e);
+      alert.error(e.message);
+      setExportLoading(false);
+    }
+  };
 
   const handleMenuItemClick = (event, index) => {
     setSelectedIndex(index);
-    exportFile(index)
+    exportFile(index);
     setOpen(false);
   };
 
@@ -351,98 +323,106 @@ function newDesign() {
   };
 
   const handleSavePost = async () => {
-    const url = await getCanvasImgData()
+    const url = await getCanvasImgData();
     const today = new Date();
     const yyyy = today.getFullYear();
     let mm = today.getMonth() + 1; // Months start at 0!
     let dd = today.getDate();
 
-    if (dd < 10) dd = '0' + dd;
-    if (mm < 10) mm = '0' + mm;
+    if (dd < 10) dd = "0" + dd;
+    if (mm < 10) mm = "0" + mm;
 
-    let createdAt = dd + '/' + mm + '/' + yyyy;
-    let designToSave = { ...designProps, url, createdAt }
+    let createdAt = dd + "/" + mm + "/" + yyyy;
+    let designToSave = { ...currDesign, url, createdAt };
     await dispatch(saveDesign(designToSave));
     // Router.push("/admin/dashboard");
     alert.success("Your design has been Saved.");
-  }
+  };
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(url.decodedUrl);
 
-    alert.success('Url is copied to clipboard.');
+    alert.success("Url is copied to clipboard.");
 
     // setShowTick(true);
-
-  }
-
+  };
 
   // Exporters
   const stlExporter = (model) => {
-    import('three/examples/jsm/exporters/STLExporter')
-      .then(module => {
-        const exporter = new module.STLExporter();
-        let str = exporter.parse(model, { binary: true }); // Export the scene
-        let blob = new Blob([str], { type: 'text/plain' }); // Generate Blob from the string
-        saveAs(blob, 'export.stl');
-      });
-  }
+    import("three/examples/jsm/exporters/STLExporter").then((module) => {
+      const exporter = new module.STLExporter();
+      let str = exporter.parse(model, { binary: true }); // Export the scene
+      let blob = new Blob([str], { type: "text/plain" }); // Generate Blob from the string
+      saveAs(blob, "export.stl");
+    });
+  };
 
   const objExporter = (model) => {
-    import('three/examples/jsm/exporters/OBJExporter')
-      .then(module => {
-        const exporter = new module.OBJExporter();
-        let str = exporter.parse(model, { binary: true }); // Export the scene
-        let blob = new Blob([str], { type: 'text/plain' }); // Generate Blob from the string
-        saveAs(blob, 'export.obj');
-      });
-  }
+    import("three/examples/jsm/exporters/OBJExporter").then((module) => {
+      const exporter = new module.OBJExporter();
+      let str = exporter.parse(model, { binary: true }); // Export the scene
+      let blob = new Blob([str], { type: "text/plain" }); // Generate Blob from the string
+      saveAs(blob, "export.obj");
+    });
+  };
 
   const savePng = async () => {
-    const dataURL = await getCanvasImgData()
-    const blob = await fetch(dataURL).then(r => r.blob());
-    saveAs(blob, 'export.png');
-  }
+    const dataURL = await getCanvasImgData();
+    const blob = await fetch(dataURL).then((r) => r.blob());
+    saveAs(blob, "export.png");
+  };
 
   const getCanvasImgData = async () => {
-    let canvas = document.getElementsByTagName('canvas');
-    canvas = canvas[canvas.length-1]
-    const canvas2d = document.createElement('canvas')
+    let canvas = document.getElementsByTagName("canvas");
+    canvas = canvas[canvas.length - 1];
+    const canvas2d = document.createElement("canvas");
     var context = canvas2d.getContext("2d");
-    canvas2d.width = canvas.width
-    canvas2d.height = canvas.height
+    canvas2d.width = canvas.width;
+    canvas2d.height = canvas.height;
     context.font = "12px Rubik";
     context.fillRect(0, 0, canvas2d.width, canvas2d.height);
     context.fillStyle = "white";
     const imObjFunction = () => {
-      return new Promise((resolve, ) => {
+      return new Promise((resolve) => {
         var imageObj = new Image();
         imageObj.onload = function () {
           context.drawImage(imageObj, 0, 0);
-          context.fillText(`Width: ${designProps.length}mm`, 20, 20);
-          context.fillText(`Thickness: ${designProps.thickness}mm`, 120, 20);
-          context.fillText(`Stone Size: ${designProps.stoneSize}mm`, 220, 20);
-          context.fillText(`Base: ${designProps.base}`, 320, 20);
-          context.fillText(`No. of Bails: ${designProps.bails.length}`, 420, 20);
-          context.fillText(`Stone Size: ${designProps.stoneSize}`, 520, 20);
-          resolve(true)
+          context.fillText(`Width: ${currDesign.length}mm`, 20, 20);
+          context.fillText(`Thickness: ${currDesign.thickness}mm`, 120, 20);
+          context.fillText(`Stone Size: ${currDesign.stoneSize}mm`, 220, 20);
+          context.fillText(`Base: ${currDesign.base}`, 320, 20);
+          context.fillText(
+            `No. of Bails: ${currDesign.bails.length}`,
+            420,
+            20
+          );
+          context.fillText(`Stone Size: ${currDesign.stoneSize}`, 520, 20);
+          resolve(true);
         };
-        imageObj.src = canvas.toDataURL('image/png');
-      })
-    }
-    const isDrawn = await imObjFunction()
+        imageObj.src = canvas.toDataURL("image/png");
+      });
+    };
+    const isDrawn = await imObjFunction();
     // document.body.appendChild(canvas2d)
-    if (isDrawn) return canvas2d.toDataURL('image/png');
+    if (isDrawn) return canvas2d.toDataURL("image/png");
 
     canvas2d.remove();
-    alert.error('An Error Occurred!')
-  }
+    alert.error("An Error Occurred!");
+  };
 
+  const dispatchFiles=(e)=>{
+    let files = Array.prototype.map
+      .call(e.target.files,(blob) => URL.createObjectURL(blob));
+
+    let models = [...currDesign.models, ...files];
+    console.log(models);
+    dispatch(designProps({ ...currDesign, models}));
+  }
   return (
     <>
       <Head>
-        <title>{`Editing: ${designProps.text}`}</title>
-        <meta property="og:title" content={`${designProps.text}`} />
+        <title>{`Editing: ${currDesign.text}`}</title>
+        <meta property="og:title" content={`${currDesign.text}`} />
         <meta property="og:url" content={url.decodedUrl} />
         {/* <meta property="og:image" content={canvasImg} /> */}
       </Head>
@@ -563,8 +543,24 @@ function newDesign() {
                         cursor: "pointer",
                       }}
                     />
+                    <CustomFileInput
+                      label="Import"
+                      style={{
+                        paddingLeft: "1rem",
+                        paddingRight: "1rem",
+                        marginLeft: "1rem",
+                        color: "black",
+                        border: "1px solid #ECEBEB",
+                        padding: ".25rem 1.5rem",
+                        fontSize: "1rem",
+                        borderRadius: "6px",
+                        cursor: "pointer",
+                      }}
+                      onChange={dispatchFiles}
+                    />
 
                     <Button
+                      className="metallic-gold-btn"
                       size="small"
                       startIcon={<Save />}
                       onClick={handleSavePost}
@@ -572,8 +568,6 @@ function newDesign() {
                         paddingLeft: "1rem",
                         paddingRight: "1rem",
                         marginLeft: "1rem",
-                        color: "white",
-                        background: "linear-gradient(60deg, #eb9809, #c28215)",
                       }}
                     >
                       Save
@@ -764,13 +758,6 @@ function newDesign() {
           </GridItem>
         </GridContainer>
       </div>
-      {/* {
-        windowWidth <= 960 && <Fab className={classes.fabButton} 
-        variant="extended" 
-        onClick={() => window.scrollTo(0, document.body.scrollHeight)} >
-          <SettingsIcon />
-        </Fab>
-      } */}
     </>
   );
 }
