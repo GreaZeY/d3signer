@@ -2,26 +2,31 @@ import { useThree, useFrame } from "@react-three/fiber";
 import { useEffect, useState } from "react";
 import { createShapeFromPoints } from "./utils/threeUtils";
 
-// let isDrawing = false;
-let timeout = null,
-  pointsArr = [];
-   var mouse;
+let pointsArr = [];
+let isDrawing = false;
+
 const JoinLetters = ({ controls }) => {
-  const [isDrawing, setDrawing] = useState(false);
   const [shape, setShape] = useState(null);
+
   const {
     gl: { domElement },
   } = useThree();
-const getPoints = (e)=>{
-    console.log(isDrawing);
-    if(isDrawing){
-    // console.log(e)
+
+  const getPoints = (e) => {
+    if (isDrawing) {
+      const x = e.clientX,
+        y = e.clientY;
+      pointsArr.push({ x, y });
+      console.log(x, y);
+        let shape = createShapeFromPoints(pointsArr);
+        setShape(shape);
+        // pointsArr = [];
     }
-}
+  };
   useEffect(() => {
     const setIsDrawing = () => {
       controls.current.enabled = isDrawing;
-      setDrawing((prev) => !prev);
+      isDrawing = !isDrawing;
     };
     domElement.addEventListener("pointerdown", setIsDrawing);
     domElement.addEventListener("pointerup", setIsDrawing);
@@ -34,24 +39,20 @@ const getPoints = (e)=>{
     };
   }, []);
 
-    useEffect(()=>{
-        if(!isDrawing){
-              console.log('changed',pointsArr);
-            let shape = createShapeFromPoints(pointsArr);
-        setShape(shape);
-        }
-
-    },[isDrawing])
+  useEffect(() => {
+    console.log("effect", isDrawing);
+    if (!isDrawing) {
+      console.log("changed", pointsArr);
+      let shape = createShapeFromPoints(pointsArr);
+      setShape(shape);
+    }
+  }, [isDrawing]);
 
   useFrame((state) => {
     // if (isDrawing) {
-
     //     console.log(state);
     // //   pointsArr.push(state.mouse);
-
-        
     //     // pointsArr = [];
-     
     // }
   });
 
@@ -67,7 +68,7 @@ const getPoints = (e)=>{
   return (
     <>
       {shape && (
-        <mesh onUpdate={(g) => console.log(g)} position={[0, 10, 0]}>
+        <mesh onUpdate={(g) => console.log(g)} scale={[.1,.1,.1]}>
           <extrudeGeometry
             onUpdate={(g) => g.center()}
             args={[shape, extrudeSettings]}

@@ -5,6 +5,7 @@ import { fonts } from "../assets/allFonts";
 import * as THREE from "three";
 import { useLoader } from "@react-three/fiber";
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader";
+import { saveAs } from "file-saver";
 
 //loading font
 export const getFont = (currFont) => {
@@ -104,4 +105,83 @@ export const createShapeFromPoints = (points) => {
 export const load3DModel = (url) => {
   let model = useGLTF(url);
   return model;
+};
+
+// Exporters
+export const stlExporter = (model, filename) => {
+  import("three/examples/jsm/exporters/STLExporter").then((module) => {
+    const exporter = new module.STLExporter();
+    let str = exporter.parse(model, { binary: true }); // Export the scene
+    let blob = new Blob([str], { type: "text/plain" }); // Generate Blob from the string
+    saveAs(blob, filename + ".stl");
+  });
+};
+
+export const objExporter = (model, filename) => {
+  import("three/examples/jsm/exporters/OBJExporter").then((module) => {
+    const exporter = new module.OBJExporter();
+    let str = exporter.parse(model, { binary: true }); // Export the scene
+    let blob = new Blob([str], { type: "text/plain" }); // Generate Blob from the string
+    saveAs(blob, filename + ".obj");
+  });
+};
+
+export const gltfExporter = (model, filename) => {
+  import("three/examples/jsm/exporters/GLTFExporter").then((module) => {
+    const exporter = new module.GLTFExporter();
+    // Export the scene
+    exporter.parse(
+      model,
+      (gltf) => {
+        let str = JSON.stringify(gltf, null, 2);
+        let blob = new Blob([str], { type: "application/json" }); // Generate Blob from the string
+        saveAs(blob, filename + ".gltf");
+      },
+      // called when there is an error in the generation of GLTF
+      (err) => {
+        console.log(err);
+      }
+    );
+  });
+};
+
+export const savePng = async (currDesign, alert) => {
+  const dataURL = await getCanvasImgData(currDesign, alert);
+  const blob = await fetch(dataURL).then((r) => r.blob());
+  console.log(blob);
+  saveAs(blob, currDesign.text + ".png");
+};
+
+export const getCanvasImgData = async (currDesign, alert) => {
+  let canvas = document.getElementsByTagName("canvas");
+  canvas = canvas[canvas.length - 1];
+  const canvas2d = document.createElement("canvas");
+  var context = canvas2d.getContext("2d");
+  canvas2d.width = canvas.width;
+  canvas2d.height = canvas.height;
+  context.font = "12px Rubik";
+  context.fillRect(0, 0, canvas2d.width, canvas2d.height);
+  context.fillStyle = "white";
+  const imObjFunction = () => {
+    return new Promise((resolve) => {
+      var imageObj = new Image();
+      imageObj.onload = function () {
+        context.drawImage(imageObj, 0, 0);
+        context.fillText(`Width: ${currDesign.length}mm`, 20, 20);
+        context.fillText(`Thickness: ${currDesign.thickness}mm`, 120, 20);
+        context.fillText(`Stone Size: ${currDesign.stoneSize}mm`, 220, 20);
+        context.fillText(`Base: ${currDesign.base}`, 320, 20);
+        context.fillText(`No. of Bails: ${currDesign.bails.length}`, 420, 20);
+        context.fillText(`Stone Size: ${currDesign.stoneSize}`, 520, 20);
+        resolve(true);
+      };
+      imageObj.src = canvas.toDataURL("image/png");
+    });
+  };
+  const isDrawn = await imObjFunction();
+  // document.body.appendChild(canvas2d)
+  if (isDrawn) return canvas2d.toDataURL("image/png");
+
+  canvas2d.remove();
+  alert.error("An Error Occurred!");
 };

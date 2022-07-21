@@ -20,7 +20,6 @@ import { useDispatch, useSelector } from "react-redux";
 import LeftPanel from "../../components/NewDesignPanels/LeftPanel";
 import D3panel from "../../components/NewDesignPanels/D3panel";
 import DotLoader from "components/loaders/dotLoader";
-import { saveAs } from "file-saver";
 import Spinner from "components/loaders/spinner";
 import { saveDesign } from "../../lib/actions/designAction";
 import { useAlert } from "react-alert";
@@ -34,7 +33,14 @@ import { makeStyles } from "@material-ui/core/styles";
 import Head from "next/head";
 import axios from "axios";
 import CustomFileInput from "../../components/CustomFIleInput/CustomFileInput";
-const options = ["STL", "OBJ", "PNG"];
+import {
+  stlExporter,
+  objExporter,
+  gltfExporter,
+  savePng,
+  getCanvasImgData,
+} from "../../components/NewDesignPanels/utils/threeUtils";
+const options = ["STL", "OBJ", "GLTF", "PNG"];
 
 function newDesign() {
   const alert = useAlert();
@@ -246,7 +252,9 @@ function newDesign() {
 
   // const [canvasImg, setCanvasImage] = useState(' ')
 
-  const { loading, designProps:currDesign } = useSelector((state) => state.designProps);
+  const { loading, designProps: currDesign } = useSelector(
+    (state) => state.designProps
+  );
 
   useEffect(() => {
     let decodedUrl = window.location.href;
@@ -274,8 +282,9 @@ function newDesign() {
 
   const exportFile = async (index) => {
     try {
-      if (index === 2) {
-        await savePng();
+      if (index === 3) {
+        console.log(index);
+        await savePng(currDesign, alert);
       } else {
         axios.post("/api/downloadcount", { time: Date.now() });
         setExportLoading(true);
@@ -287,12 +296,17 @@ function newDesign() {
         modelClone.remove(stoneGroup[0]);
 
         if (index === 0) {
-          await stlExporter(modelClone);
+          await stlExporter(modelClone, currDesign.text);
           setExportLoading(false);
           return;
         }
         if (index === 1) {
-          await objExporter(modelClone);
+          await objExporter(modelClone, currDesign.text);
+          setExportLoading(false);
+          return;
+        }
+        if (index === 2) {
+          await gltfExporter(modelClone, currDesign.text);
           setExportLoading(false);
           return;
         }
@@ -323,7 +337,7 @@ function newDesign() {
   };
 
   const handleSavePost = async () => {
-    const url = await getCanvasImgData();
+    const url = await getCanvasImgData(currDesign, alert);
     const today = new Date();
     const yyyy = today.getFullYear();
     let mm = today.getMonth() + 1; // Months start at 0!
@@ -348,76 +362,39 @@ function newDesign() {
   };
 
   // Exporters
-  const stlExporter = (model) => {
-    import("three/examples/jsm/exporters/STLExporter").then((module) => {
-      const exporter = new module.STLExporter();
-      let str = exporter.parse(model, { binary: true }); // Export the scene
-      let blob = new Blob([str], { type: "text/plain" }); // Generate Blob from the string
-      saveAs(blob, "export.stl");
-    });
-  };
+  // const stlExporter = (model) => {
+  //   import("three/examples/jsm/exporters/STLExporter").then((module) => {
+  //     const exporter = new module.STLExporter();
+  //     let str = exporter.parse(model, { binary: true }); // Export the scene
+  //     let blob = new Blob([str], { type: "text/plain" }); // Generate Blob from the string
+  //     saveAs(blob, "export.stl");
+  //   });
+  // };
 
-  const objExporter = (model) => {
-    import("three/examples/jsm/exporters/OBJExporter").then((module) => {
-      const exporter = new module.OBJExporter();
-      let str = exporter.parse(model, { binary: true }); // Export the scene
-      let blob = new Blob([str], { type: "text/plain" }); // Generate Blob from the string
-      saveAs(blob, "export.obj");
-    });
-  };
+  // const objExporter = (model) => {
+  //   import("three/examples/jsm/exporters/OBJExporter").then((module) => {
+  //     const exporter = new module.OBJExporter();
+  //     let str = exporter.parse(model, { binary: true }); // Export the scene
+  //     let blob = new Blob([str], { type: "text/plain" }); // Generate Blob from the string
+  //     saveAs(blob, "export.obj");
+  //   });
+  // };
 
-  const savePng = async () => {
-    const dataURL = await getCanvasImgData();
-    const blob = await fetch(dataURL).then((r) => r.blob());
-    saveAs(blob, "export.png");
-  };
+  // const savePng = async () => {
+  //   const dataURL = await getCanvasImgData();
+  //   const blob = await fetch(dataURL).then((r) => r.blob());
+  //   saveAs(blob, "export.png");
+  // };
 
-  const getCanvasImgData = async () => {
-    let canvas = document.getElementsByTagName("canvas");
-    canvas = canvas[canvas.length - 1];
-    const canvas2d = document.createElement("canvas");
-    var context = canvas2d.getContext("2d");
-    canvas2d.width = canvas.width;
-    canvas2d.height = canvas.height;
-    context.font = "12px Rubik";
-    context.fillRect(0, 0, canvas2d.width, canvas2d.height);
-    context.fillStyle = "white";
-    const imObjFunction = () => {
-      return new Promise((resolve) => {
-        var imageObj = new Image();
-        imageObj.onload = function () {
-          context.drawImage(imageObj, 0, 0);
-          context.fillText(`Width: ${currDesign.length}mm`, 20, 20);
-          context.fillText(`Thickness: ${currDesign.thickness}mm`, 120, 20);
-          context.fillText(`Stone Size: ${currDesign.stoneSize}mm`, 220, 20);
-          context.fillText(`Base: ${currDesign.base}`, 320, 20);
-          context.fillText(
-            `No. of Bails: ${currDesign.bails.length}`,
-            420,
-            20
-          );
-          context.fillText(`Stone Size: ${currDesign.stoneSize}`, 520, 20);
-          resolve(true);
-        };
-        imageObj.src = canvas.toDataURL("image/png");
-      });
-    };
-    const isDrawn = await imObjFunction();
-    // document.body.appendChild(canvas2d)
-    if (isDrawn) return canvas2d.toDataURL("image/png");
-
-    canvas2d.remove();
-    alert.error("An Error Occurred!");
-  };
-
-  const dispatchFiles=(e)=>{
-    let files = Array.prototype.map
-      .call(e.target.files,(blob) => URL.createObjectURL(blob));
+  const dispatchFiles = (e) => {
+    let files = Array.prototype.map.call(e.target.files, (blob) =>
+      URL.createObjectURL(blob)
+    );
 
     let models = [...currDesign.models, ...files];
     console.log(models);
-    dispatch(designProps({ ...currDesign, models}));
-  }
+    dispatch(designProps({ ...currDesign, models }));
+  };
   return (
     <>
       <Head>

@@ -1,11 +1,11 @@
 import { Suspense, useRef } from 'react'
 import { Canvas } from '@react-three/fiber'
 import PendantModel from './PendantModel'
-import { OrbitControls, Environment, OrthographicCamera } from "@react-three/drei";
+import { OrbitControls, Environment, Html } from "@react-three/drei";
 import { store } from "../../lib/store";
 import { Provider } from "react-redux";
 import { Controls, withControls } from 'react-three-gui';
-
+import SilverMetalLoading from '../loaders/silverMetalLoading';
 const CanvasWithControls = withControls(Canvas);
 
 const D3panel = ({ model, zoom }) => {
@@ -15,12 +15,10 @@ const D3panel = ({ model, zoom }) => {
   return (
     <Controls.Provider>
       <CanvasWithControls gl={{ preserveDrawingBuffer: true }} camera={{ position: [0, 0, 1] }}>
-        {/* <OrthographicCamera
-          makeDefault
-          position={[0, 0, .3]}
-        /> */}
       <OrbitControls enableDamping ref={controls} />
-      <Suspense fallback={"Loading"}>
+      <Suspense fallback={<Html position={[-.5,.8,0]}>
+<SilverMetalLoading/>
+      </Html>}>
         <Environment files={'home.hdr'} path={'/assets/hdrMap/'} />
           <Provider store={store} >
               <PendantModel controls={controls} guiControls={guiControls} zoom={zoom} model={model} />

@@ -1,11 +1,15 @@
 export const availableSymbols = [
-    { title:'Heart', symbol:'♡' },
-    { title:'Octothorp', symbol: '#' },
-    { title:'Star', symbol: '☆' },
-    { title:'Infinity', symbol: '∞' },
-    { title:'Ampersand', symbol: '&' },
-    { title:'Crown', symbol: '♛' }
-]
+  { title: "Heart", symbol: "♡" },
+  { title: "Octothorp", symbol: "#" },
+  { title: "Star", symbol: "☆" },
+  { title: "Infinity", symbol: "∞" },
+  { title: "Ampersand", symbol: "&" },
+  { title: "Dollar", symbol: "$" },
+  { title: "Crucifix", symbol: "†" },
+  { title: "Ankh", symbol: "☥" },
+  // { title: "Eye of Horus", symbol: "☥" },
+  { title: "Anchor", symbol: "⚓" },
+];
 
 export const stoneShapes = [
     'brilliant',
