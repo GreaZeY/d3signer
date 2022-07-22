@@ -39,6 +39,7 @@ import {
   gltfExporter,
   savePng,
   getCanvasImgData,
+  createText
 } from "../../components/NewDesignPanels/utils/threeUtils";
 const options = ["STL", "OBJ", "GLTF", "PNG"];
 
@@ -548,6 +549,19 @@ function newDesign() {
                       }}
                     >
                       Save
+                    </Button>
+                    <Button
+                      className="metallic-gold-btn"
+                      size="small"
+                      startIcon={<Save />}
+                      onClick={createText}
+                      style={{
+                        paddingLeft: "1rem",
+                        paddingRight: "1rem",
+                        marginLeft: "1rem",
+                      }}
+                    >
+                      canvas
                     </Button>
                     <ReactModal
                       isOpen={modalShow}

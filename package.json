@@ -12,6 +12,7 @@
     "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && rm -rf .next/ && npm install && npm run dev"
   },
   "dependencies": {
+    "@doodle3d/potrace-js": "^0.0.6",
     "@material-ui/core": "4.11.3",
     "@material-ui/icons": "4.11.2",
     "@next/bundle-analyzer": "^12.1.5",
@@ -22,6 +23,7 @@
     "classnames": "2.2.6",
     "file-saver": "^2.0.5",
     "history": "5.0.0",
+    "html2canvas": "^1.4.1",
     "list-react-files": "^0.2.0",
     "mongo": "^0.1.0",
     "mongodb-client-encryption": "^2.1.0",

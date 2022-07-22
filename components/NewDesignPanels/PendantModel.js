@@ -48,7 +48,6 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     currStoneColor,
     currStoneShape,
     stoneSize,
-    symbols,
   } = currDesign;
 
   const [boundingBoxPoints, setBoundingBoxPoints] = useState({
@@ -58,11 +57,11 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
 
   const txtSurface = useRef();
   const pendant = useRef();
-  const light = useRef();
+  // const light = useRef();
   const stone = useRef();
   const stoneGroup = useRef();
   const transform = useRef();
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   // const instance = useRef()
   // const dispatch = useDispatch()
 

@@ -6,7 +6,7 @@ import * as THREE from "three";
 import { useLoader } from "@react-three/fiber";
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader";
 import { saveAs } from "file-saver";
-
+import html2canvas from "html2canvas";
 //loading font
 export const getFont = (currFont) => {
   let font = fonts.filter(
@@ -185,3 +185,25 @@ export const getCanvasImgData = async (currDesign, alert) => {
   canvas2d.remove();
   alert.error("An Error Occurred!");
 };
+
+
+
+export const createText = () => {
+
+  let canvas = getCanvas()
+  console.log(canvas);
+
+};
+
+
+  const getCanvas = async () => {
+    let text1 = document.createElement("div");
+    text1.style.color = "black";
+    text1.style.fontSize = "400px";
+    text1.innerText = "JOD";
+    console.log(text1);
+    let canvas = await html2canvas(text1);
+    console.log(document.body);
+    document.body.appendChild(canvas);
+    return canvas;
+  };
