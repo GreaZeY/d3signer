@@ -511,7 +511,7 @@ footer ul li a:hover {
   left: 80px;
 }
 * {
-  letter-spacing: normal !important;
+  letter-spacing: normal ;
 }
 .body-page-transition {
   overflow: hidden;

@@ -7,6 +7,8 @@ import { useLoader } from "@react-three/fiber";
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader";
 import { saveAs } from "file-saver";
 import html2canvas from "html2canvas";
+import * as POTRACE from "@doodle3d/potrace-js";
+
 //loading font
 export const getFont = (currFont) => {
   let font = fonts.filter(
@@ -188,22 +190,41 @@ export const getCanvasImgData = async (currDesign, alert) => {
 
 
 
-export const createText = () => {
+export const createText = (currDesign) =>async (dispatch)=> {
+  let canvas = await getCanvas(currDesign)
+  console.log(canvas.toDataURL());
 
-  let canvas = getCanvas()
-  console.log(canvas);
+    let paths = POTRACE.getPaths(
+      POTRACE.traceCanvas(canvas, {
+        turnpolicy: "black",
+        turdsize: 5.0,
+        optcurve: false,
+        alphamax: 0.5,
+        opttolerance: 0.2,
+      })
+    );
+   paths = paths.map((path) =>
+    path.map(({ x, y }) => ({
+      x,
+      y
+    }))
+  );
 
+    console.log(paths)
 };
 
 
-  const getCanvas = async () => {
-    let text1 = document.createElement("div");
-    text1.style.color = "black";
-    text1.style.fontSize = "400px";
-    text1.innerText = "JOD";
-    console.log(text1);
-    let canvas = await html2canvas(text1);
-    console.log(document.body);
-    document.body.appendChild(canvas);
+  const getCanvas = async (currDesign) => {
+    let text = document.createElement("span");
+    text.style.color = "black";
+    text.style.fontSize = "40px";
+    text.innerText = currDesign.text;
+    text.style.position = 'absolute'
+    text.style.padding = "2rem";
+    text.style.zIndex = "-100";
+    text.style.left = "-100%";
+    document.body.appendChild(text);
+    let canvas = await html2canvas(text);
+    document.body.removeChild(text);
     return canvas;
   };

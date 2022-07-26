@@ -553,7 +553,6 @@ function newDesign() {
                     <Button
                       className="metallic-gold-btn"
                       size="small"
-                      startIcon={<Save />}
                       onClick={createText}
                       style={{
                         paddingLeft: "1rem",

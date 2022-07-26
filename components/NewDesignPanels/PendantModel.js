@@ -17,6 +17,7 @@ import { ChangeMode } from "../ThreeGUIControls/guiContolsComponents";
 import Symbols from "./Symbols/Symbols.js";
 import { THREE_UNIT_TO_MM } from "../../lib/constants/designPropsConstants";
 import JoinLetters from "./JoinLetters";
+import PendantFromCanvas from "./PendantFromCanvas";
 import LoadModels from "./LoadModels/LoadModels";
 // import { designProps } from "../../lib/actions/designAction";
 // import { MODEL_GENERATED, GENERATING_MODEL } from '../../lib/constants/designPropsConstants';
@@ -30,7 +31,7 @@ const bevelProps = {
   // bevelThickness: 1.5,
   // bevelSize: 1.5,
   // bevelSegments: 10,
-  // curveSegments: 50,
+  curveSegments: 2,
 };
 
 // let stoneCount = 0
@@ -63,7 +64,6 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
   const transform = useRef();
   // const dispatch = useDispatch();
   // const instance = useRef()
-  // const dispatch = useDispatch()
 
   const font = useMemo(() => getFont(currFont), [currFont]);
 
@@ -297,6 +297,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
           <Bails txtSurface={txtSurface} />
           <LoadModels />
           {/* <JoinLetters controls={controls} /> */}
+          <PendantFromCanvas />
         </group>
       </group>
       <group>
