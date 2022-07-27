@@ -231,7 +231,7 @@ const getCanvas = async (currDesign) => {
   text.innerText = currDesign.text;
   // text.style.fontSize = currDesign.length+'mm';
   text.style.fontSize = "25mm";
-  text.style.letterSpacing = "-10px";
+  text.style.letterSpacing = currDesign.width+"px";
 
 
   document.body.appendChild(text);

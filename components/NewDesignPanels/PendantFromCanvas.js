@@ -6,16 +6,17 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { createText } from "./utils/threeUtils";
 
-const PendantFromCanvas = () => {
+const PendantFromCanvas = (props) => {
   const dispatch = useDispatch();
   const { designProps: currDesign } = useSelector((state) => state.designProps);
 
-  const [shape, setShape] = useState([])
-   
+  const [shape, setShape] = useState([]);
+
   const {
     text,
     base,
     length,
+    width,
     thickness,
     font: currFont,
     currStoneColor,
@@ -23,32 +24,31 @@ const PendantFromCanvas = () => {
     stoneSize,
   } = currDesign;
 
-useEffect(async () => {
-  setShape(await createText(currDesign));
-}, [text, length]);
- console.log(shape);
+  useEffect(async () => {
+    setShape(await createText(currDesign));
+  }, [text, length, width]);
 
+  console.log(shape);
 
-      const extrudeSettings = {
-        depth: 2,
-        bevelEnabled: false,
-        curveSegments: 10,
-        bevelSegments: 3,
-        bevelThickness: 1,
-        bevelSize: 1,
-      };
+  const extrudeSettings = {
+    depth: 2,
+    bevelEnabled: false,
+    curveSegments: 10,
+    bevelSegments: 3,
+    bevelThickness: 1,
+    bevelSize: 1,
+  };
 
   return (
     <>
       {shape.length && (
         <mesh
-          onUpdate={(o) => {
-            var box = new THREE.Box3();
-            box.setFromObject(o);
-            console.log(box);
-          }}
-          scale={-0.03 * length}
+          // scale={-0.03 * length}
           rotation-y={Math.PI}
+          {...props}
+          onUpdate={props.onUpdate}
+          
+          ref={props.txtSurface}
         >
           <extrudeGeometry
             onUpdate={(g) => {

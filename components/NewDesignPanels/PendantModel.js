@@ -81,7 +81,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     });
     geometryWithoutHoles = textGeometry;
     textGeometry.computeBoundingBox();
-    setBoundingBoxPoints(textGeometry.boundingBox);
+    // setBoundingBoxPoints(textGeometry.boundingBox);
   }, [text, length, font, thickness, base]);
 
   useEffect(() => {
@@ -96,8 +96,9 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
   // will show a stone over mesh and follows the pointer
   const showStoneOnPendant = (e) => {
     if (!currStoneColor && !currStoneShape) return;
+    debugger;
     const { x, y } = e.point;
-    const z = boundingBoxPoints.max.z;
+    const z = txtSurface.current.geometry.boundingBox.max.z;
     const diff = (stoneSize / 100) * 0.06;
     stone.current.position.set(x, y, z - diff);
     // stone.current.material.transparent = true
@@ -118,6 +119,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     stoneGroup.current.add(dia);
 
     textGeometry = subtractGeometry(txtSurface.current, dia);
+    textGeometry.computeBoundingBox()
     txtSurface.current.geometry = textGeometry;
     // dispatch({ type: MODEL_GENERATED })
   };
@@ -252,6 +254,11 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
   const onUpdateTxtGeometry = (mesh) => {
     let geometry = mesh.geometry;
     geometry.center();
+    var box = new THREE.Box3();
+            box.setFromObject(mesh);
+            console.log(box);
+            geometry.scale(-.1,-.1,.1)
+            debugger
   };
 
   const attachTransformControl = (e) => {
@@ -282,10 +289,18 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
               onUpdate={(e) => console.log(e)}
             />
           </mesh> */}
+          <PendantFromCanvas
+            txtSurface={txtSurface}
+            onClick={placeStone}
+            onPointerMove={showStoneOnPendant}
+            onPointerEnter={() => (diamond.visible = true)}
+            onPointerLeave={() => (diamond.visible = false)}
+            onUpdate={onUpdateTxtGeometry}
+          />
         </group>
         <group name="stoneGroup" ref={stoneGroup}>
           <primitive
-            scale={stoneSize / (10 * THREE_UNIT_TO_MM)}
+            scale={stoneSize / 2}
             ref={stone}
             object={diamond}
             color={currStoneColor}
@@ -297,7 +312,6 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
           <Bails txtSurface={txtSurface} />
           <LoadModels />
           {/* <JoinLetters controls={controls} /> */}
-          <PendantFromCanvas />
         </group>
       </group>
       <group>
