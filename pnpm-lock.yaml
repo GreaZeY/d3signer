@@ -10,6 +10,7 @@ specifiers:
   axios: ^0.26.1
   chartist: 0.10.1
   classnames: 2.2.6
+  dom-to-svg: ^0.12.2
   eslint: ^8.14.0
   file-saver: ^2.0.5
   history: 5.0.0
@@ -54,6 +55,7 @@ dependencies:
   axios: 0.26.1
   chartist: 0.10.1
   classnames: 2.2.6
+  dom-to-svg: 0.12.2
   file-saver: 2.0.5
   history: 5.0.0
   html2canvas: 1.4.1
@@ -1462,6 +1464,14 @@ packages:
       csstype: 3.0.11
     dev: false
 
+  /dom-to-svg/0.12.2:
+    resolution: {integrity: sha512-zVlswIYMj3669dUfErBszLcYOy+NzPEFhMezdzLVaqFcaj7VQecS0o8r9bqzBSczDtex2X/4HMZktFoj4EDqOA==}
+    dependencies:
+      gradient-parser: 1.0.2
+      postcss: 8.4.5
+      postcss-value-parser: 4.2.0
+    dev: false
+
   /draco3d/1.5.2:
     resolution: {integrity: sha512-AeRQ25Fb29c14vpjnh167UGW0nGY0ZpEM3ld+zEXoEySlmEXcXfsCHZeTgo5qXH925V1JsdjrzasdaQ22/vXog==}
     dev: false
@@ -1907,6 +1917,11 @@ packages:
     resolution: {integrity: sha512-9ByhssR2fPVsNZj478qUUbKfmL0+t5BDVyjShtyZZLiK7ZDAArFFfopyOTj0M05wE2tJPisA4iTnnXl2YoPvOA==}
     dev: false
     optional: true
+
+  /gradient-parser/1.0.2:
+    resolution: {integrity: sha512-gR6nY33xC9yJoH4wGLQtZQMXDi6RI3H37ERu7kQCVUzlXjNedpZM7xcA489Opwbq0BSGohtWGsWsntupmxelMg==}
+    engines: {node: '>=0.10.0'}
+    dev: false
 
   /gzip-size/6.0.0:
     resolution: {integrity: sha512-ax7ZYomf6jqPTQ4+XCpUGyXKHk5WweS+e05MBO4/y3WJ5RkmPXNKvX+bx1behVILVwr6JSQvZAku021CHPXG3Q==}

@@ -264,7 +264,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
       {/* <spotLight angle={1} penumbra={0} ref={light} intensity={.5} /> */}
       <group ref={model}>
         <group name="pendant" ref={pendant}>
-          <mesh
+          {/* <mesh
             geometry={textGeometry}
             ref={txtSurface}
             onClick={placeStone}
@@ -281,7 +281,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
               emissiveIntensity={1}
               onUpdate={(e) => console.log(e)}
             />
-          </mesh>
+          </mesh> */}
         </group>
         <group name="stoneGroup" ref={stoneGroup}>
           <primitive

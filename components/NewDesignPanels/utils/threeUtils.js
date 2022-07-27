@@ -84,8 +84,8 @@ export const createShape = (symbol) => {
   }
   if (symbol) {
     const { paths } = useLoader(SVGLoader, `/assets/symbols/${symbol}.svg`);
-    var shapes = [];
-    for (var i = 0; i < paths.length; i++) {
+    let shapes = [];
+    for (let i = 0; i < paths.length; i++) {
       Array.prototype.push.apply(shapes, SVGLoader.createShapes(paths[i]));
     }
     return shapes;
@@ -158,7 +158,7 @@ export const getCanvasImgData = async (currDesign, alert) => {
   let canvas = document.getElementsByTagName("canvas");
   canvas = canvas[canvas.length - 1];
   const canvas2d = document.createElement("canvas");
-  var context = canvas2d.getContext("2d");
+  let context = canvas2d.getContext("2d");
   canvas2d.width = canvas.width;
   canvas2d.height = canvas.height;
   context.font = "12px Rubik";
@@ -166,7 +166,7 @@ export const getCanvasImgData = async (currDesign, alert) => {
   context.fillStyle = "white";
   const imObjFunction = () => {
     return new Promise((resolve) => {
-      var imageObj = new Image();
+      let imageObj = new Image();
       imageObj.onload = function () {
         context.drawImage(imageObj, 0, 0);
         context.fillText(`Width: ${currDesign.length}mm`, 20, 20);
@@ -188,43 +188,83 @@ export const getCanvasImgData = async (currDesign, alert) => {
   alert.error("An Error Occurred!");
 };
 
-
-
-export const createText = (currDesign) =>async (dispatch)=> {
-  let canvas = await getCanvas(currDesign)
+export const createText = async (currDesign) => {
+  let canvas = await getCanvas(currDesign);
   console.log(canvas.toDataURL());
 
-    let paths = POTRACE.getPaths(
-      POTRACE.traceCanvas(canvas, {
-        turnpolicy: "black",
-        turdsize: 5.0,
-        optcurve: false,
-        alphamax: 0.5,
-        opttolerance: 0.2,
-      })
-    );
-   paths = paths.map((path) =>
-    path.map(({ x, y }) => ({
-      x,
-      y
-    }))
+  // tracing shape(TEXT) on canvas for paths
+  let paths = POTRACE.getPaths(
+    POTRACE.traceCanvas(canvas, {
+      turnpolicy: "black",
+      turdsize: 5.0,
+      optcurve: false,
+      alphamax: 0.5,
+      opttolerance: 0.2,
+    })
   );
 
-    console.log(paths)
+  //  paths = paths.map((path) =>
+  //   path.map(({ x, y,type }) => ({
+  //     x,
+  //     y,
+  //     type
+  //   }))
+  // );
+
+  let shapes = createShapefromPaths(paths);
+  return shapes;
 };
 
+const getCanvas = async (currDesign) => {
+  let text = document.createElement("span");
+  text.style.color = "black";
+  text.style.width = "200px";
+  text.style.height = "150px";
+  text.style.fontWeight = 800;
+  text.style.position = "absolute";
+  text.style.zIndex = "-100";
+  text.style.display = "flex";
+  text.style.alignItems = "center";
+  text.style.justifyContent = "center";
+  text.style.left = "-100%";
 
-  const getCanvas = async (currDesign) => {
-    let text = document.createElement("span");
-    text.style.color = "black";
-    text.style.fontSize = "40px";
-    text.innerText = currDesign.text;
-    text.style.position = 'absolute'
-    text.style.padding = "2rem";
-    text.style.zIndex = "-100";
-    text.style.left = "-100%";
-    document.body.appendChild(text);
-    let canvas = await html2canvas(text);
-    document.body.removeChild(text);
-    return canvas;
+  text.innerText = currDesign.text;
+  // text.style.fontSize = currDesign.length+'mm';
+  text.style.fontSize = "25mm";
+  text.style.letterSpacing = "-10px";
+
+
+  document.body.appendChild(text);
+  let canvas = await html2canvas(text);  // getting canvas with text filled on it.
+  document.body.removeChild(text);
+
+  return canvas;
+};
+
+const createShapefromPaths = (points) => {
+  const shapePath = new THREE.ShapePath();
+  shapePath.userData = {
+    node: {},
+    style: {
+      fill: "black",
+      fillOpacity: 1,
+      strokeOpacity: 1,
+      strokeWidth: 100,
+      strokeLineJoin: "round",
+      strokeLineCap: "round",
+    },
   };
+  points.forEach((pts) => {
+    shapePath.moveTo(pts[0].x, pts[0].y);
+    pts.map((pt) => {
+      if (pt.type === "POINT") {
+        shapePath.lineTo(pt.x, pt.y);
+      } else {
+        shapePath.bezierCurveTo(pt.x1, pt.y1, pt.x2, pt.y2, pt.x, pt.y);
+      }
+    });
+  });
+  let shapes = [];
+  Array.prototype.push.apply(shapes, SVGLoader.createShapes(shapePath));
+  return shapes;
+};

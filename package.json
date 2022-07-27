@@ -21,6 +21,7 @@
     "axios": "^0.26.1",
     "chartist": "0.10.1",
     "classnames": "2.2.6",
+    "dom-to-svg": "^0.12.2",
     "file-saver": "^2.0.5",
     "history": "5.0.0",
     "html2canvas": "^1.4.1",
