@@ -52,7 +52,7 @@ const LetterSliders = ({ text, classes, items,values, label, onChange }) => {
           <Slider
             aria-label="Sizes"
             onChange={(e,val) => onChange(val, currItem)}
-            step={1}
+            step={.1}
             style={{ marginRight: "1rem" }}
             min={0}
             max={10}
@@ -66,7 +66,7 @@ const LetterSliders = ({ text, classes, items,values, label, onChange }) => {
             type="number"
             min={0}
             max={10}
-            step={1}
+            step={.1}
             value={values[currItem] || 0}
           />
         </div>

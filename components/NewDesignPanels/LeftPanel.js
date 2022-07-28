@@ -131,7 +131,7 @@ const LeftPanel = ({ props }) => {
   const setSliderSpacing = (val, currItem) => {
     console.log(val, currItem);
     let spaces = [...letterSpacings];
-    spaces[currItem] = parseInt(val);
+    spaces[currItem] = parseFloat(val);
     dispatch(designProps({ ...currDesign, letterSpacings: spaces }));
   };
 
