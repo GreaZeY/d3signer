@@ -31,7 +31,7 @@ export const stoneColor = [
 export const colors = [
   {
     name: "Gold",
-    color: "rgb(692, 522, 136)",
+    color: "#FFC900",
   },
   {
     name: "Silver",

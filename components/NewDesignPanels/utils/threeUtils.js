@@ -1,5 +1,5 @@
-import { ThreeBSP } from "../three-csg";
-import { FontLoader } from "three/examples/jsm/loaders/FontLoader";
+import { ThreeBSP } from "./three-csg";
+import { FontLoader } from "./FontLoader";
 import { useFBX, useGLTF } from "@react-three/drei";
 import { fonts } from "../assets/allFonts";
 import * as THREE from "three";

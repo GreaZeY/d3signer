@@ -16,7 +16,7 @@ import { useControl } from "react-three-gui";
 import { ChangeMode } from "../ThreeGUIControls/guiContolsComponents";
 import Symbols from "./Symbols/Symbols.js";
 import { THREE_UNIT_TO_MM } from "../../lib/constants/designPropsConstants";
-import JoinLetters from "./JoinLetters";
+// import JoinLetters from "./JoinLetters";
 import LoadModels from "./LoadModels/LoadModels";
 // import { designProps } from "../../lib/actions/designAction";
 // import { MODEL_GENERATED, GENERATING_MODEL } from '../../lib/constants/designPropsConstants';
@@ -48,6 +48,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     currStoneColor,
     currStoneShape,
     stoneSize,
+    letterSpacings,
     symbols,
   } = currDesign;
 
@@ -76,14 +77,15 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
   useEffect(() => {
     textGeometry = new TextGeometry(text, {
       font,
-      size: length / THREE_UNIT_TO_MM,
+      size: { size:length/ THREE_UNIT_TO_MM,letterSpacings},
+      letterSpacings,
       height: thickness / 10,
       ...bevelProps,
     });
     geometryWithoutHoles = textGeometry;
     textGeometry.computeBoundingBox();
     setBoundingBoxPoints(textGeometry.boundingBox);
-  }, [text, length, font, thickness, base]);
+  }, [text, length, font, thickness, base, letterSpacings]);
 
   useEffect(() => {
     if (stoneGroup.current) stoneGroup.current.children = [];
