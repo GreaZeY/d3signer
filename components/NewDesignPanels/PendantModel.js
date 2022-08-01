@@ -16,8 +16,8 @@ import { useControl } from "react-three-gui";
 import { ChangeMode } from "../ThreeGUIControls/guiContolsComponents";
 import Symbols from "./Symbols/Symbols.js";
 import { THREE_UNIT_TO_MM } from "../../lib/constants/designPropsConstants";
-// import JoinLetters from "./JoinLetters";
 import LoadModels from "./LoadModels/LoadModels";
+// import JoinLetters from "./JoinLetters";
 // import { designProps } from "../../lib/actions/designAction";
 // import { MODEL_GENERATED, GENERATING_MODEL } from '../../lib/constants/designPropsConstants';
 // import { designProps as designPropsFunc } from '../../lib/actions/designAction';
@@ -49,12 +49,11 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     currStoneShape,
     stoneSize,
     letterSpacings,
-    symbols,
   } = currDesign;
 
   const [boundingBoxPoints, setBoundingBoxPoints] = useState({
-    max: {},
-    min: {},
+    max: {x:0,y:0,z:0},
+    min: {x:0,y:0,z:0},
   });
 
   const txtSurface = useRef();
@@ -77,14 +76,12 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
   useEffect(() => {
     textGeometry = new TextGeometry(text, {
       font,
-      size: { size:length/ THREE_UNIT_TO_MM,letterSpacings},
+      size: { size: length / THREE_UNIT_TO_MM, letterSpacings },
       letterSpacings,
       height: thickness / 10,
       ...bevelProps,
     });
     geometryWithoutHoles = textGeometry;
-    textGeometry.computeBoundingBox();
-    setBoundingBoxPoints(textGeometry.boundingBox);
   }, [text, length, font, thickness, base, letterSpacings]);
 
   useEffect(() => {
@@ -255,6 +252,8 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
   const onUpdateTxtGeometry = (mesh) => {
     let geometry = mesh.geometry;
     geometry.center();
+    geometry.computeBoundingBox();
+    setBoundingBoxPoints(geometry.boundingBox);
   };
 
   const attachTransformControl = (e) => {
@@ -277,18 +276,17 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
             onUpdate={onUpdateTxtGeometry}
           >
             <meshStandardMaterial
-              attach="material"
               color={base}
               metalness={1}
-              roughness={0.3}
-              emissiveIntensity={1}
+              roughness={0.2}
+              envMapIntensity={1}
               onUpdate={(e) => console.log(e)}
             />
           </mesh>
         </group>
         <group name="stoneGroup" ref={stoneGroup}>
           <primitive
-            scale={stoneSize / (10 * THREE_UNIT_TO_MM)}
+            scale={stoneSize / 10}
             ref={stone}
             object={diamond}
             color={currStoneColor}
@@ -296,8 +294,8 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
           />
         </group>
         <group name="controllables" onClick={attachTransformControl}>
-          <Symbols txtSurface={txtSurface} />
-          <Bails txtSurface={txtSurface} />
+          <Symbols boundingBoxPoints={boundingBoxPoints} />
+          <Bails boundingBoxPoints={boundingBoxPoints} />
           <LoadModels />
           {/* <JoinLetters controls={controls} /> */}
         </group>

@@ -395,6 +395,8 @@ function newDesign() {
     console.log(models);
     dispatch(designProps({ ...currDesign, models }));
   };
+
+  
   return (
     <>
       <Head>

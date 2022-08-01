@@ -1,4 +1,4 @@
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import LoadModel from "./LoadModel";
 const LoadModels = () => {
   const { designProps } = useSelector((state) => state.designProps);

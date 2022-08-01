@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import AddIcon from "@material-ui/icons/Add";
-import Bail from "./Bails/Bail";
+import Bail from "components/LeftPanelComponents/Bail.js";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -20,20 +20,23 @@ import Button from "@material-ui/core/Button";
 import useCollapse from "react-collapsed";
 import { createMuiTheme } from "@material-ui/core/styles";
 import { ThemeProvider } from "@material-ui/styles";
-import LetterSliders from "./sliders/LetterSliders.js";
+import DropdownSliders from "components/CustomDropdownSliders/DropdownSliders.js";
 import { stoneShapes, colors, bailType, availableSymbols } from "./panelData";
-
+import { compareVal } from "./utils/utils";
 import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
-
+import DiamondMenu from "../LeftPanelComponents/DiamondMenu";
+import {
+  lengthBounds,
+  thicknessBounds,
+  letterSpacingBounds,
+} from "../../lib/constants/pendantDimensionConstants";
+const shapeDir = "/assets/crimps/stoneShapes"
 // importing shape components
 // import Brilliant from "./StoneComponents/Brilliant";
 // import Trilliant from "./StoneComponents/Trilliant";
 // import Eight from "./StoneComponents/Eight"
 // import Pear from "./StoneComponents/Pear";
 // import StepCut from "./StoneComponents/StepCut"
-
-import DiamondMenu from "../LeftPanelComponents/DiamondMenu";
-const shapeDir = "/assets/crimps/stoneShapes";
 
 const muiTheme = createMuiTheme({
   overrides: {
@@ -53,8 +56,6 @@ const LeftPanel = ({ props }) => {
   // bail expand and collapse
   const { getCollapseProps, getToggleProps, isExpanded, setExpanded } =
     useCollapse();
-
-  const [currSizeProp, setCurrSizeProp] = useState("Length");
   const [bails, bailsCount] = useState([]);
   const [currBailType, setCurrBailType] = useState("bail0");
 
@@ -73,25 +74,19 @@ const LeftPanel = ({ props }) => {
   } = currDesign;
 
   const dispatch = useDispatch();
-  const compareVal = (val, min, max, currSizeProp = "StoneSize") => {
-    if (val >= min && val <= max) return val;
-    if (currSizeProp === "Length") return length;
-    if (currSizeProp === "Thickness") return thickness;
-    if (currSizeProp === "StoneSize") return stoneSize;
-  };
 
-  const setSizes = (e, val) => {
-    currSizeProp === "Length"
+  const setSizes = (val, currItem) => {
+    currItem === 0
       ? dispatch(
           designProps({
             ...currDesign,
-            length: val ? compareVal(val, 5, 50, currSizeProp) : val,
+            length: val ? compareVal(val, 5, 50) : val,
           })
         )
       : dispatch(
           designProps({
             ...currDesign,
-            thickness: val ? compareVal(val, 0.4, 2, currSizeProp) : val,
+            thickness: val ? compareVal(val, 0.4, 2) : val,
           })
         );
   };
@@ -128,10 +123,9 @@ const LeftPanel = ({ props }) => {
 
   // }
 
-  const setSliderSpacing = (val, currItem) => {
-    console.log(val, currItem);
+  const setSpacings = (val, currItem) => {
     let spaces = [...letterSpacings];
-    spaces[currItem] = parseFloat(val);
+    spaces[currItem] = val;
     dispatch(designProps({ ...currDesign, letterSpacings: spaces }));
   };
 
@@ -201,60 +195,23 @@ const LeftPanel = ({ props }) => {
                 </Select>
               </FormControl>
             )}
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <div
-                style={{
-                  marginTop: "1rem",
-                  marginRight: "2rem",
-                  justifyContent: "space-between",
-                }}
-                className={classes.flexRow}
-              >
-                <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-                  <InputLabel>Sizes</InputLabel>
-                  <Select
-                    size="small"
-                    value={currSizeProp}
-                    label="Size"
-                    onChange={(e) => setCurrSizeProp(e.target.value)}
-                  >
-                    <MenuItem value={"Length"}>Width</MenuItem>
-                    <MenuItem value={"Thickness"}>Thickness</MenuItem>
-                  </Select>
-                </FormControl>
-              </div>
-              <div
-                style={{ marginTop: "2rem", width: "100%" }}
-                className={classes.flexRow}
-              >
-                <Slider
-                  aria-label="Sizes"
-                  onChange={setSizes}
-                  step={0.1}
-                  style={{ marginRight: "1rem" }}
-                  min={currSizeProp === "Length" ? 5 : 0.4}
-                  max={currSizeProp === "Length" ? 50 : 2}
-                  value={currSizeProp === "Length" ? length : thickness}
-                  color="primary"
-                />
-                <input
-                  className={classes.symbol}
-                  style={{ padding: ".2rem", cursor: "text", width: "2rem" }}
-                  onChange={(e) => setSizes(e, e.target.value)}
-                  type="number"
-                  min={currSizeProp === "Length" ? 5 : 0.4}
-                  max={currSizeProp === "Length" ? 50 : 2}
-                  step={0.1}
-                  value={currSizeProp === "Length" ? length : thickness}
-                />
-              </div>
-            </div>
-            <LetterSliders
+            <DropdownSliders
+              items={["Width", "Thickness"]}
+              values={[length, thickness]}
+              onChange={setSizes}
+              classes={classes}
+              mins={[lengthBounds.min, thicknessBounds.min]}
+              maxs={[lengthBounds.max, thicknessBounds.max]}
+              label="Sizes"
+            />
+            <DropdownSliders
               items={[...text]}
               values={letterSpacings}
-              onChange={setSliderSpacing}
+              onChange={setSpacings}
               classes={classes}
-              label={"Letter Spacing"}
+              label="Letter Spacings"
+              mins={[letterSpacingBounds.min]}
+              maxs={[letterSpacingBounds.max]}
             />
             <div style={{ marginTop: "1rem" }}>
               <InputLabel className="settings-head">Base Material</InputLabel>
@@ -476,7 +433,7 @@ const LeftPanel = ({ props }) => {
                 }}
                 className={classes.flexRow}
               >
-                <Button disabled={true} {...getToggleProps()} size="small">
+                <Button {...getToggleProps()} size="small">
                   {isExpanded ? (
                     <>
                       <KeyboardArrowUpIcon />
@@ -495,14 +452,13 @@ const LeftPanel = ({ props }) => {
               </div>
               <section {...getCollapseProps()}>
                 <InputLabel
-                  style={{ marginLeft: "1rem" }}
                   className="settings-head"
                 >
                   Bails
                 </InputLabel>
                 <div
                   className={classes.flexRow}
-                  style={{ flexWrap: "wrap", marginLeft: "1rem" }}
+                  style={{ flexWrap: "wrap"}}
                 >
                   {bailType.map((bail, i) => (
                     <div

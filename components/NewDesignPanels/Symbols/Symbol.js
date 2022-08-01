@@ -6,8 +6,8 @@ let rotation = [3.14, 0, 0]
 let scale
 
 const Symbols = ({ props }) => {
-    const {symbol, boundingBox, index } =props
-    const {max} = boundingBox
+    const {symbol, boundingBoxPoints, index } =props
+    const {max} = boundingBoxPoints
 
     const { designProps } = useSelector(state => state.designProps)
     const { base, length, thickness, symbolSize } = designProps
@@ -66,7 +66,6 @@ const Symbols = ({ props }) => {
                 scale={.0005}
                 position={max}
                 userData={{type:'symbol', index, symbol }}
-                // position-y={position[1] + 4}
                 rotation={rotation}
             >
                 <extrudeGeometry onUpdate={g=>g.center()} args={[shape, extrudeSettings]} />

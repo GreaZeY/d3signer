@@ -24,7 +24,7 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 
 import { useAlert } from 'react-alert';
 import { Typography } from "@material-ui/core";
-
+import { designProps as initialDesign } from "../../lib/reducers/designPropsReducer";
 import { Button } from "@material-ui/core";
 import Router from "next/router";
 import Spinner from "../../components/loaders/spinner";
@@ -46,7 +46,7 @@ function Dashboard() {
   }, [])
 
   const handleEdit = (design) => {
-    dispatch(designProps(design))
+    dispatch(designProps({ ...initialDesign, ...design }));
     Router.push("/admin/newdesign");
   }
 
