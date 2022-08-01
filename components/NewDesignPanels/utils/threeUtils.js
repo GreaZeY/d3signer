@@ -5,6 +5,7 @@ import { fonts } from "../assets/allFonts";
 import * as THREE from "three";
 import { useLoader } from "@react-three/fiber";
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader";
+import { STLLoader } from "three/examples/jsm/loaders/STLLoader";
 import { saveAs } from "file-saver";
 
 //loading font
@@ -67,17 +68,17 @@ export const createShape = (symbol) => {
     return shape;
   }
   if (symbol === "Star") {
-    shape.moveTo(0, 50);
-    shape.lineTo(0, 50);
-    shape.lineTo(10, 10);
-    shape.lineTo(40, 10);
-    shape.lineTo(20, -10);
-    shape.lineTo(30, -50);
-    shape.lineTo(0, -20);
-    shape.lineTo(-30, -50);
-    shape.lineTo(-20, -10);
-    shape.lineTo(-40, 10);
-    shape.lineTo(-10, 10);
+    shape.moveTo(0, -50);
+    shape.lineTo(0, -50);
+    shape.lineTo(10, -10);
+    shape.lineTo(40, -10);
+    shape.lineTo(20, 10);
+    shape.lineTo(30, 50);
+    shape.lineTo(0, 20);
+    shape.lineTo(-30, 50);
+    shape.lineTo(-20, 10);
+    shape.lineTo(-40, -10);
+    shape.lineTo(-10, -10);
     return shape;
   }
   if (symbol) {
@@ -90,16 +91,16 @@ export const createShape = (symbol) => {
   }
 };
 
-export const createShapeFromPoints = (points) => {
-  console.log(points);
-  const shape = new THREE.Shape();
-  points.forEach((pts, i) => {
-    if (i === 0) {
-      shape.moveTo(pts.x, pts.y);
-    }
-    shape.lineTo(pts.x, pts.y);
-  });
-  return shape;
+// loading bail geometry
+export const loadBail = (bail, radius, tube) => {
+  let geometry;
+  if (bail === "bail0") {
+    geometry = new THREE.TorusGeometry(radius, tube, 100, 100);
+  } else {
+    geometry = useLoader(STLLoader, `/assets/bails/stl/${bail}.stl`);
+  }
+  geometry.center();
+  return geometry;
 };
 
 export const load3DModel = (url) => {
@@ -143,45 +144,4 @@ export const gltfExporter = (model, filename) => {
       }
     );
   });
-};
-
-export const savePng = async (currDesign, alert) => {
-  const dataURL = await getCanvasImgData(currDesign, alert);
-  const blob = await fetch(dataURL).then((r) => r.blob());
-  console.log(blob);
-  saveAs(blob, currDesign.text + ".png");
-};
-
-export const getCanvasImgData = async (currDesign, alert) => {
-  let canvas = document.getElementsByTagName("canvas");
-  canvas = canvas[canvas.length - 1];
-  const canvas2d = document.createElement("canvas");
-  var context = canvas2d.getContext("2d");
-  canvas2d.width = canvas.width;
-  canvas2d.height = canvas.height;
-  context.font = "12px Rubik";
-  context.fillRect(0, 0, canvas2d.width, canvas2d.height);
-  context.fillStyle = "white";
-  const imObjFunction = () => {
-    return new Promise((resolve) => {
-      var imageObj = new Image();
-      imageObj.onload = function () {
-        context.drawImage(imageObj, 0, 0);
-        context.fillText(`Width: ${currDesign.length}mm`, 20, 20);
-        context.fillText(`Thickness: ${currDesign.thickness}mm`, 120, 20);
-        context.fillText(`Stone Size: ${currDesign.stoneSize}mm`, 220, 20);
-        context.fillText(`Base: ${currDesign.base}`, 320, 20);
-        context.fillText(`No. of Bails: ${currDesign.bails.length}`, 420, 20);
-        context.fillText(`Stone Size: ${currDesign.stoneSize}`, 520, 20);
-        resolve(true);
-      };
-      imageObj.src = canvas.toDataURL("image/png");
-    });
-  };
-  const isDrawn = await imObjFunction();
-  // document.body.appendChild(canvas2d)
-  if (isDrawn) return canvas2d.toDataURL("image/png");
-
-  canvas2d.remove();
-  alert.error("An Error Occurred!");
 };

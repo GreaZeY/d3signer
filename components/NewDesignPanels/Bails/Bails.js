@@ -15,8 +15,9 @@ const Bails = ({ boundingBoxPoints }) => {
               key={bail.type + i}
               args={{
                 radius: bail.sizes.diameter / 2,
-                tube: bail.sizes.thickness / 5,
-                position: [max.x, max.y, (max.z - min.z) / 2],
+                tube: bail.sizes.thickness,
+                position: [max.x, max.y, max.z],
+                boundingBoxPoints
               }}
               base={base}
               currBailType={bail.type}

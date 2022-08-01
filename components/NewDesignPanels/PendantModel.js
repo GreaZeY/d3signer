@@ -32,8 +32,6 @@ const bevelProps = {
   // bevelSegments: 10,
   // curveSegments: 50,
 };
-
-// let stoneCount = 0
 extend({ TextGeometry, TransformControls });
 let textGeometry = new TextGeometry();
 
@@ -52,19 +50,17 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
   } = currDesign;
 
   const [boundingBoxPoints, setBoundingBoxPoints] = useState({
-    max: {x:0,y:0,z:0},
-    min: {x:0,y:0,z:0},
+    max: { x: 0, y: 0, z: 0 },
+    min: { x: 0, y: 0, z: 0 },
   });
 
   const txtSurface = useRef();
   const pendant = useRef();
-  const light = useRef();
   const stone = useRef();
   const stoneGroup = useRef();
   const transform = useRef();
-  const dispatch = useDispatch();
-  // const instance = useRef()
-  // const dispatch = useDispatch()
+  // const dispatch = useDispatch();
+
 
   const font = useMemo(() => getFont(currFont), [currFont]);
 
@@ -77,8 +73,6 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     textGeometry = new TextGeometry(text, {
       font,
       size: { size: length / THREE_UNIT_TO_MM, letterSpacings },
-      letterSpacings,
-      height: thickness / 10,
       ...bevelProps,
     });
     geometryWithoutHoles = textGeometry;
@@ -86,7 +80,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
 
   useEffect(() => {
     if (stoneGroup.current) stoneGroup.current.children = [];
-  }, [length, font, thickness]);
+  }, [length, font, thickness, letterSpacings]);
 
   const {
     camera,
@@ -98,25 +92,19 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     if (!currStoneColor && !currStoneShape) return;
     const { x, y } = e.point;
     const z = boundingBoxPoints.max.z;
-    const diff = (stoneSize / 100) * 0.06;
+    const diff = stone.current.geometry.boundingBox.max.z * 0.25; //75% of diamond will be inside pendant
     stone.current.position.set(x, y, z - diff);
-    // stone.current.material.transparent = true
-    // stone.current.material.opacity = .5
   };
 
   // will drop a stone on pendant mesh
-  const placeStone = async (e) => {
+  const placeStone = async () => {
     if (!currStoneColor && !currStoneShape) return;
-    const { x, y } = e.point;
     // await dispatch({ type: GENERATING_MODEL })
     const dia = diamond.clone();
     dia.name = "stone";
     dia.material.transparent = false;
     dia.material.opacity = 1;
-    // stone.current.position.set(x, y)
-    // stone.current.position.set(x, y, z )
     stoneGroup.current.add(dia);
-
     textGeometry = subtractGeometry(txtSurface.current, dia);
     txtSurface.current.geometry = textGeometry;
     // dispatch({ type: MODEL_GENERATED })
@@ -211,16 +199,16 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
 
   // three render loop
   useFrame((state) => {
-    const { x, y, z } = state.camera.position;
+    const { z } = state.camera.position;
     // light.current.position.set(x, y, z + 1);
 
     // zoom controls
     if (zoom.isZooming) {
       if (zoom.mode === "-") {
-        if (z > 1) return;
+        if (z > 50) return;
         state.camera.position.z += 0.1;
       } else {
-        if (z < 0.25) return;
+        if (z < 1) return;
         state.camera.position.z -= 0.1;
       }
     }
@@ -238,10 +226,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
 
     // click away listener for transform controls
     let children = [pendant.current.parent];
-    // let tControls = transform.current
-    // if (tControls) children.push(tControls)
     let intersectsTrans = state.raycaster.intersectObjects(children);
-    // console.log(intersectsTrans)
     if (intersectsTrans.length > 0) {
       clickAway = false;
     } else {
@@ -249,11 +234,14 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     }
   });
 
-  const onUpdateTxtGeometry = (mesh) => {
+  const onUpdateTxtMesh = (mesh) => {
     let geometry = mesh.geometry;
     geometry.center();
-    geometry.computeBoundingBox();
+    const { x, y, z } = geometry.boundingBox.max;
+    geometry.scale(length / x, (length / y) * 0.5, thickness / z);
     setBoundingBoxPoints(geometry.boundingBox);
+    // console.log(geometry.boundingBox.max);
+    // console.log(geometry.boundingBox.min);
   };
 
   const attachTransformControl = (e) => {
@@ -263,8 +251,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
 
   return (
     <>
-      {/* <spotLight angle={1} penumbra={0} ref={light} intensity={.5} /> */}
-      <group ref={model}>
+      <object3D ref={model} color={base}>
         <group name="pendant" ref={pendant}>
           <mesh
             geometry={textGeometry}
@@ -273,7 +260,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
             onPointerMove={showStoneOnPendant}
             onPointerEnter={() => (diamond.visible = true)}
             onPointerLeave={() => (diamond.visible = false)}
-            onUpdate={onUpdateTxtGeometry}
+            onUpdate={onUpdateTxtMesh}
           >
             <meshStandardMaterial
               color={base}
@@ -293,13 +280,17 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
             visible={false}
           />
         </group>
-        <group name="controllables" onClick={attachTransformControl}>
+        <group
+          name="controllables"
+          onClick={attachTransformControl}
+          userData={{ color: base }}
+        >
           <Symbols boundingBoxPoints={boundingBoxPoints} />
           <Bails boundingBoxPoints={boundingBoxPoints} />
           <LoadModels />
           {/* <JoinLetters controls={controls} /> */}
         </group>
-      </group>
+      </object3D>
       <group>
         <transformControls
           ref={transform}

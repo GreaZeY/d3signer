@@ -119,7 +119,6 @@ function createPath(char, scale, offsetX, offsetY, data) {
         case "m": // moveTo
           x = outline[i++] * scale + offsetX;
           y = outline[i++] * scale + offsetY;
-
           path.moveTo(x, y);
 
           break;

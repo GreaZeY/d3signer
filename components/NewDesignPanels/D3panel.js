@@ -16,7 +16,7 @@ const D3panel = ({ model, zoom }) => {
     <Controls.Provider>
       <CanvasWithControls
         gl={{ preserveDrawingBuffer: true }}
-        camera={{ position: [0, 0, 1] }}
+        camera={{ position: [0, 0, 50] }}
       >
         <OrbitControls enableDamping ref={controls} />
         <Suspense

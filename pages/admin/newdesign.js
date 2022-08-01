@@ -37,9 +37,8 @@ import {
   stlExporter,
   objExporter,
   gltfExporter,
-  savePng,
-  getCanvasImgData,
 } from "../../components/NewDesignPanels/utils/threeUtils";
+import { savePng, getCanvasImgData } from "../../lib/utils";
 const options = ["STL", "OBJ", "GLTF", "PNG"];
 
 function newDesign() {
@@ -396,7 +395,6 @@ function newDesign() {
     dispatch(designProps({ ...currDesign, models }));
   };
 
-  
   return (
     <>
       <Head>
