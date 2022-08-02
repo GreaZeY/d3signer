@@ -29,6 +29,7 @@ import {
   lengthBounds,
   thicknessBounds,
   letterSpacingBounds,
+  stoneSizeBounds
 } from "../../lib/constants/pendantDimensionConstants";
 const shapeDir = "/assets/crimps/stoneShapes"
 // importing shape components
@@ -266,9 +267,9 @@ const LeftPanel = ({ props }) => {
                       aria-label="Sizes"
                       style={{ marginRight: "1rem" }}
                       color="primary"
-                      step={0.1}
-                      min={0.4}
-                      max={2}
+                      step={.1}
+                      min={stoneSizeBounds.min}
+                      max={stoneSizeBounds.max}
                       value={symbolSize}
                       onChange={(e, val) =>
                         dispatch(
@@ -285,8 +286,8 @@ const LeftPanel = ({ props }) => {
                       }}
                       type="number"
                       step={0.1}
-                      min={0.4}
-                      max={2}
+                      min={stoneSizeBounds.min}
+                      max={stoneSizeBounds.max}
                       value={symbolSize}
                       onChange={(e) =>
                         dispatch(
@@ -350,11 +351,6 @@ const LeftPanel = ({ props }) => {
                   ))}
                 </div>
               </div>
-              {/* {
-                stoneImages.map(img=>(
-                  <img src={img.src} style={{border:currStone===img.src&&'2px solid #8e24aa'}} className={classes.base} alt={img.src} />
-                ))
-              } */}
               {currStoneShape && (
                 <div style={{ marginTop: ".5rem" }}>
                   <InputLabel className="settings-head">Color</InputLabel>
@@ -367,35 +363,6 @@ const LeftPanel = ({ props }) => {
                       color={currStoneColor}
                       model={currStoneShape}
                     />
-                    {
-                      //   stoneColor.map(color => (
-                      //     // <div style={{ border: currStoneColor === color && '2px solid #8e24aa', background: color }} className={classes.stoneShape + ' ' + classes.flexRow}>
-                      //     //   {/* <img className={classes.img} src={`${imgDir}/${color}.png`} alt={color} /> */}
-                      //     // </div>
-                      // ))
-                      // currStoneShape === 'brilliant' ?
-                      //   stoneColor.map(color => (
-                      //     <Brilliant width='1rem' color={color} />
-                      //   ))
-                      //   :
-                      //   currStoneShape === 'trilliant' ?
-                      //     stoneColor.map(color => (
-                      //       <Trilliant width='1rem' color={color} />
-                      //     ))
-                      //     :
-                      //     currStoneShape === 'eight' ?
-                      //       stoneColor.map(color => (
-                      //         <Eight width='1rem' color={color} />
-                      //       ))
-                      //       :
-                      //       currStoneShape === 'pear' ?
-                      //         stoneColor.map(color => (
-                      //           <Pear width='1rem' color={color} />
-                      //         ))
-                      //         : stoneColor.map(color => (
-                      //           <StepCut width='1rem' color={color} />
-                      //         ))
-                    }
                   </div>
                 </div>
               )}

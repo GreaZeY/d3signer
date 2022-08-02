@@ -28,7 +28,8 @@ export const loadStone = (shape, color) => {
     roughness: 0.05,
   });
   dia.geometry.center();
-  return dia;
+  let mesh = dia.clone() 
+  return mesh;
 };
 
 // return subtracted minuend from subtrahend mesh

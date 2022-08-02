@@ -15,8 +15,8 @@ import Bails from "./Bails/Bails";
 import { useControl } from "react-three-gui";
 import { ChangeMode } from "../ThreeGUIControls/guiContolsComponents";
 import Symbols from "./Symbols/Symbols.js";
-import { THREE_UNIT_TO_MM } from "../../lib/constants/designPropsConstants";
 import LoadModels from "./LoadModels/LoadModels";
+import {initialBoundingBox} from '../../lib/constants/pendantDimensionConstants'
 // import JoinLetters from "./JoinLetters";
 // import { designProps } from "../../lib/actions/designAction";
 // import { MODEL_GENERATED, GENERATING_MODEL } from '../../lib/constants/designPropsConstants';
@@ -49,10 +49,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     letterSpacings,
   } = currDesign;
 
-  const [boundingBoxPoints, setBoundingBoxPoints] = useState({
-    max: { x: 0, y: 0, z: 0 },
-    min: { x: 0, y: 0, z: 0 },
-  });
+  const [boundingBoxPoints, setBoundingBoxPoints] = useState(initialBoundingBox);
 
   const txtSurface = useRef();
   const pendant = useRef();
@@ -72,7 +69,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
   useEffect(() => {
     textGeometry = new TextGeometry(text, {
       font,
-      size: { size: length / THREE_UNIT_TO_MM, letterSpacings },
+      size: { size: 1, letterSpacings },
       ...bevelProps,
     });
     geometryWithoutHoles = textGeometry;
@@ -92,7 +89,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     if (!currStoneColor && !currStoneShape) return;
     const { x, y } = e.point;
     const z = boundingBoxPoints.max.z;
-    const diff = stone.current.geometry.boundingBox.max.z * 0.25; //75% of diamond will be inside pendant
+    const diff = stone.current.geometry.boundingBox.max.z*.15 ; //75% of diamond will be inside pendant
     stone.current.position.set(x, y, z - diff);
   };
 
@@ -235,13 +232,25 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
   });
 
   const onUpdateTxtMesh = (mesh) => {
+    if (!text) return setBoundingBoxPoints(initialBoundingBox);
     let geometry = mesh.geometry;
     geometry.center();
     const { x, y, z } = geometry.boundingBox.max;
-    geometry.scale(length / x, (length / y) * 0.5, thickness / z);
+    let len = length/2
+    geometry.scale(len / x, (len / y) * 0.5, thickness*.5 / z);
     setBoundingBoxPoints(geometry.boundingBox);
-    // console.log(geometry.boundingBox.max);
+    console.log(geometry.boundingBox.max);
     // console.log(geometry.boundingBox.min);
+  };
+
+  const onUpdateStone = (mesh) => {
+    let geometry = mesh.geometry;
+    if (!geometry) return
+    const { x, y, z } = geometry.boundingBox.max;
+    let scaleX = (stoneSize * 0.5) / x;
+    let scaleY = (stoneSize * 0.5) / y;
+    mesh.scale.set(scaleX, scaleY, scaleX);
+    console.log(geometry.boundingBox.max);
   };
 
   const attachTransformControl = (e) => {
@@ -249,9 +258,13 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     guiControls.current.style.display = "block";
   };
 
+
+  const getObjectDetails =(obj)=> {
+console.log(obj)
+  }
   return (
     <>
-      <object3D ref={model} color={base}>
+      <object3D ref={model} onUpdate={getObjectDetails}>
         <group name="pendant" ref={pendant}>
           <mesh
             geometry={textGeometry}
@@ -273,11 +286,11 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
         </group>
         <group name="stoneGroup" ref={stoneGroup}>
           <primitive
-            scale={stoneSize / 10}
             ref={stone}
             object={diamond}
             color={currStoneColor}
             visible={false}
+            onUpdate={onUpdateStone}
           />
         </group>
         <group
