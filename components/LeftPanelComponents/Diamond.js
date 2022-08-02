@@ -17,15 +17,15 @@ const Diamond = ({ model }) => {
                 stoneColor.map((color, i) => 
                     <mesh 
                     position-x={x[i]} 
-                    geometry={diamond.geometry} 
+                    geometry={diamond.geometry.clone()} 
                     scale={3} 
                     rotation={[Math.PI / 2, Math.PI, 0]}
                     onClick={() => dispatch(designProps({ ...currDesign, currStoneColor: color }))}
                     >
                      <meshStandardMaterial
                         color={color}
-                        metalness={.9}
-                        roughness={.1}
+                        metalness={1}
+                        roughness={.15}
                     />
                     </mesh>
                 )

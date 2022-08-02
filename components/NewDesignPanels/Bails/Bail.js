@@ -1,45 +1,52 @@
-import { useMemo } from 'react'
-import { useLoader } from '@react-three/fiber'
-import { STLLoader } from 'three/examples/jsm/loaders/STLLoader'
-import { TorusGeometry } from 'three'
+import { useMemo } from "react";
+import { loadBail } from "../utils/threeUtils";
 
 const Bail = (props) => {
+  const { base, args, currBailType } = props;
+  let { radius, position, tube, boundingBoxPoints } = args;
+  const { max, min } = boundingBoxPoints;
 
-    const { base, args, currBailType } = props
-    let { radius, position } = args
+  const onUpdateBail = (mesh) => {
+    let geometry = mesh.geometry;
+    const { x, y, z } = geometry.boundingBox.max;
+    let scaleX = 1,
+      scaleY = 1,
+      scaleZ = 1;
 
-    const loadBail = bail => {
-        if (bail === 'bail0') {
-            const geometry = new TorusGeometry(radius, args.tube, 100, 100);
-            return geometry
-        }
-        return useLoader(STLLoader, `/assets/bails/stl/${bail}.stl`)
+    if (currBailType === "bail0") {
+      scaleX = (radius * 2) / x;
+      scaleY = (radius * 2) / y;
+      scaleZ = tube / z;
     }
+    geometry.scale(scaleX, scaleY, scaleZ);
+    mesh.position.z = (max.z + min.z) / 2;
+    console.log(geometry.boundingBox.max);
+    console.log(geometry.boundingBox.min);
+  };
 
-    const bailGeometry = useMemo(() => loadBail(currBailType), [currBailType, args]);
+  const bailGeometry = useMemo(
+    () => loadBail(currBailType, radius, tube / 5),
+    [currBailType, args]
+  );
+  return (
+    <>
+      <mesh
+        name="bail"
+        position={position}
+        scale={currBailType === "bail0" ? 1 : radius}
+        geometry={bailGeometry}
+        rotation-y={currBailType === "bail0" ? 0 : Math.PI / 2}
+        onUpdate={onUpdateBail}
+      >
+        <meshStandardMaterial
+          attach="material"
+          color={base}
+          metalness={1}
+          roughness={0.2}
+        />
+      </mesh>
+    </>
+  );
+};
 
-    return (
-        <>
-            <mesh
-                name='bail'
-                // scale-z={args.tube}
-                // scale-x={args.thickness}
-                position={position}
-                geometry={bailGeometry}
-                scale={currBailType !== 'bail0' ? .01 : .1}
-                rotation-y={currBailType === 'bail0' ? 0 : Math.PI/2}
-                onUpdate={mesh => mesh.geometry.center()}
-                >
-                <meshStandardMaterial
-                    attach="material"
-                    color={base}
-                    metalness={1}
-                    roughness={.2} />
-            </mesh>
-
-        </>
-    )
-}
-
-export default Bail
-
+export default Bail;
