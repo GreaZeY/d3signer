@@ -236,7 +236,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     geometry.center();
     const { x, y, z } = geometry.boundingBox.max;
     let len = length/2
-    geometry.scale(len / x, (len / y) * 0.5, thickness*.5 / z);
+    geometry.scale(len / x, len / x, (thickness * 0.5) / z);
     setBoundingBoxPoints(geometry.boundingBox);
     console.log(geometry.boundingBox.max);
     // console.log(geometry.boundingBox.min);
