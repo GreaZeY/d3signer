@@ -51,9 +51,15 @@ class Font {
 
   generateShapes(text, shapeProps) {
     const shapes = [];
-    let { size, letterSpacings } = shapeProps;
+    let { size, letterSpacings, lineHeights } = shapeProps;
     if (!size) size = 100;
-    const paths = createPaths(text, size, this.data, letterSpacings);
+    const paths = createPaths(
+      text,
+      size,
+      this.data,
+      letterSpacings,
+      lineHeights
+    );
     for (let p = 0, pl = paths.length; p < pl; p++) {
       Array.prototype.push.apply(shapes, paths[p].toShapes());
     }
@@ -62,7 +68,7 @@ class Font {
   }
 }
 
-function createPaths(text, size, data, letterSpacings) {
+function createPaths(text, size, data, letterSpacings, lineHeights) {
   const chars = Array.from(text);
   const scale = size / data.resolution;
   const line_height =
@@ -80,9 +86,9 @@ function createPaths(text, size, data, letterSpacings) {
       offsetX = 0;
       offsetY -= line_height;
     } else {
-      // offsetY = offsetY + (i === 1 && 14);
+      offsetY = offsetY - (lineHeights ? lineHeights[i===0?i:i-1] || 0 : 0);
       const ret = createPath(char, scale, offsetX, offsetY, data);
-      offsetX += ret.offsetX - (letterSpacings? (letterSpacings[i]||0):0)
+      offsetX += ret.offsetX - (letterSpacings ? letterSpacings[i] || 0 : 0);
       paths.push(ret.path);
     }
   }
