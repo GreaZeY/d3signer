@@ -29,9 +29,11 @@ import {
   lengthBounds,
   thicknessBounds,
   letterSpacingBounds,
-  stoneSizeBounds
+  stoneSizeBounds,
+  lineHeightsBounds,
 } from "../../lib/constants/pendantDimensionConstants";
-const shapeDir = "/assets/crimps/stoneShapes"
+import { fillArray } from "../../lib/utils";
+const shapeDir = "/assets/crimps/stoneShapes";
 // importing shape components
 // import Brilliant from "./StoneComponents/Brilliant";
 // import Trilliant from "./StoneComponents/Trilliant";
@@ -70,6 +72,7 @@ const LeftPanel = ({ props }) => {
     currStoneColor,
     stoneSize,
     letterSpacings,
+    lineHeights,
     symbols,
     symbolSize,
   } = currDesign;
@@ -128,6 +131,12 @@ const LeftPanel = ({ props }) => {
     let spaces = [...letterSpacings];
     spaces[currItem] = val;
     dispatch(designProps({ ...currDesign, letterSpacings: spaces }));
+  };
+
+  const setLineHeights = (val, currItem) => {
+    let spaces = [...lineHeights];
+    spaces[currItem] = val;
+    dispatch(designProps({ ...currDesign, lineHeights: spaces }));
   };
 
   const setStoneShape = (e) => {
@@ -211,8 +220,17 @@ const LeftPanel = ({ props }) => {
               onChange={setSpacings}
               classes={classes}
               label="Letter Spacings"
-              mins={[letterSpacingBounds.min]}
-              maxs={[letterSpacingBounds.max]}
+              mins={fillArray(text.length, letterSpacingBounds.min)}
+              maxs={fillArray(text.length, letterSpacingBounds.max)}
+            />
+            <DropdownSliders
+              items={[...text]}
+              values={lineHeights}
+              onChange={setLineHeights}
+              classes={classes}
+              label="Line Heights"
+              mins={fillArray(text.length, lineHeightsBounds.min)}
+              maxs={fillArray(text.length, lineHeightsBounds.max)}
             />
             <div style={{ marginTop: "1rem" }}>
               <InputLabel className="settings-head">Base Material</InputLabel>
@@ -267,7 +285,7 @@ const LeftPanel = ({ props }) => {
                       aria-label="Sizes"
                       style={{ marginRight: "1rem" }}
                       color="primary"
-                      step={.1}
+                      step={0.1}
                       min={stoneSizeBounds.min}
                       max={stoneSizeBounds.max}
                       value={symbolSize}
@@ -418,15 +436,8 @@ const LeftPanel = ({ props }) => {
                 </Button>
               </div>
               <section {...getCollapseProps()}>
-                <InputLabel
-                  className="settings-head"
-                >
-                  Bails
-                </InputLabel>
-                <div
-                  className={classes.flexRow}
-                  style={{ flexWrap: "wrap"}}
-                >
+                <InputLabel className="settings-head">Bails</InputLabel>
+                <div className={classes.flexRow} style={{ flexWrap: "wrap" }}>
                   {bailType.map((bail, i) => (
                     <div
                       onClick={(e) => setCurrBailType(e.target.alt)}

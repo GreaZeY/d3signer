@@ -47,6 +47,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     currStoneShape,
     stoneSize,
     letterSpacings,
+    lineHeights,
   } = currDesign;
 
   const [boundingBoxPoints, setBoundingBoxPoints] = useState(initialBoundingBox);
@@ -69,15 +70,15 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
   useEffect(() => {
     textGeometry = new TextGeometry(text, {
       font,
-      size: { size: 1, letterSpacings },
+      size: { size: 1, letterSpacings, lineHeights },
       ...bevelProps,
     });
     geometryWithoutHoles = textGeometry;
-  }, [text, length, font, thickness, base, letterSpacings]);
+  }, [text, length, font, thickness, base, letterSpacings, lineHeights]);
 
   useEffect(() => {
     if (stoneGroup.current) stoneGroup.current.children = [];
-  }, [length, font, thickness, letterSpacings]);
+  }, [length, font, thickness, letterSpacings, lineHeights]);
 
   const {
     camera,
@@ -133,9 +134,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
         transform.current.detach();
         obj.parent.remove(obj);
         guiControls.current.style.display = "none";
-        // console.log(currDesign)
         // let syms = symbols.filter((s,i)=>i!==obj.userData.index)
-
         // dispatch(designProps({ ...currDesign, symbols:syms  }))
       }
     }
