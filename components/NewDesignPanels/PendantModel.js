@@ -234,9 +234,9 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     if (!text) return setBoundingBoxPoints(initialBoundingBox);
     let geometry = mesh.geometry;
     geometry.center();
-    const { x, y, z } = geometry.boundingBox.max;
-    let len = length/2
-    geometry.scale(len / x, (len / y) * 0.5, thickness*.5 / z);
+    const { x, z } = geometry.boundingBox.max;
+    let sx = (length/2)/x
+    geometry.scale(sx, sx, (thickness * 0.5) / z);
     setBoundingBoxPoints(geometry.boundingBox);
     console.log(geometry.boundingBox.max);
     // console.log(geometry.boundingBox.min);
@@ -245,10 +245,10 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
   const onUpdateStone = (mesh) => {
     let geometry = mesh.geometry;
     if (!geometry) return
-    const { x, y, z } = geometry.boundingBox.max;
-    let scaleX = (stoneSize * 0.5) / x;
-    let scaleY = (stoneSize * 0.5) / y;
-    mesh.scale.set(scaleX, scaleY, scaleX);
+    const { x, y } = geometry.boundingBox.max;
+    let sx = (stoneSize * 0.5) / x;
+    let sy = (stoneSize * 0.5) / y;
+    mesh.scale.set(sx, sy, sx);
     console.log(geometry.boundingBox.max);
   };
 
