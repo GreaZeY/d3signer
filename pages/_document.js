@@ -44,8 +44,6 @@ class MyDocument extends Document {
           <Main />
           <NextScript />
         </body>
-        
-<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v14.0" nonce="GyAseVoE"></script>
       </Html>
     );
   }

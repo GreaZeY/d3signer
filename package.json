@@ -9,7 +9,7 @@
     "export": " next export",
     "start": "next start",
     "deploy": "npm run build && firebase deploy",
-    "clean":"sudo npm install node-gyp -g && npm cache clean -f && rm -rf node_modules && pnpm install",
+    "clean": "sudo npm install node-gyp -g && npm cache clean -f && rm -rf node_modules && pnpm install",
     "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && rm -rf .next/ && npm install && npm run dev"
   },
   "dependencies": {
@@ -26,7 +26,6 @@
     "list-react-files": "^0.2.0",
     "mongo": "^0.1.0",
     "mongodb": "^4.8.1",
-    "mongodb-client-encryption": "^2.1.0",
     "next": "^12.1.5",
     "next-absolute-url": "^1.2.2",
     "next-compose-plugins": "2.2.1",
@@ -49,7 +48,6 @@
     "react-useanimations": "^2.0.8",
     "redux-devtools-extension": "^2.13.9",
     "redux-thunk": "^2.4.1",
-    "snappy": "^7.1.1",
     "three": "^0.135.0",
     "webfontloader": "^1.6.28"
   },
