@@ -28,12 +28,13 @@ const Bail = (props) => {
 
   useEffect(() => {
     let currBail = [...bails];
-    currBail[index].position = currBailPosition;
+    currBail[index].position = [0,0,0];
     if (!currBail[index].type) currBail[index].type = currBailType;
     if (!currBail[index].dimensionType)
       currBail[index].dimensionType =
         currBailType === "bail0" ? "Diameter" : "Size";
     currBail[index].sizes = bailSizes;
+    console.log(currBail);
     setBailsData(currBail);
   }, [bailSizes, currBailPosition]);
 

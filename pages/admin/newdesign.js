@@ -124,8 +124,9 @@ function newDesign() {
     },
     symbol: {
       border: "1px solid #ECEBEB",
-      width: "1rem",
-      height: "1rem",
+      boxSizing:'border-box',
+      width: "1.2rem",
+      height: "1.2rem",
       display: "flex",
       alignItems: "center",
       cursor: "pointer",
@@ -152,7 +153,7 @@ function newDesign() {
       zIndex: 100,
     },
     delete: {
-      marginTop: ".7rem",
+      marginTop: "2.8rem",
       cursor: "pointer",
       transition: ".3s",
       "&:hover": {

@@ -32,9 +32,9 @@ const Symbols = ({ props }) => {
       <mesh
         name={symbol}
         position={max}
-        position-y={max.y/2}
+        position-y={max.y / 2}
         rotation-x={Math.PI}
-        userData={{ type: "symbol", index, symbol }}
+        userData={{ type: "symbol", index, symbol, controllable: true }}
         onUpdate={onUpdateSymbol}
       >
         <extrudeGeometry

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import AddIcon from "@material-ui/icons/Add";
-import Bail from "components/LeftPanelComponents/Bail.js";
+import BailMenu from "components/LeftPanelComponents/BailMenu.js";
+// import SymbolMenu from "components/LeftPanelComponents/SymbolMenu.js";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -59,7 +60,7 @@ const LeftPanel = ({ props }) => {
   // bail expand and collapse
   const { getCollapseProps, getToggleProps, isExpanded, setExpanded } =
     useCollapse();
-  const [bails, bailsCount] = useState([]);
+  const [bails, setBails] = useState([]);
   const [currBailType, setCurrBailType] = useState("bail0");
 
   const { designProps: currDesign } = useSelector((state) => state.designProps);
@@ -96,11 +97,7 @@ const LeftPanel = ({ props }) => {
   };
 
   const setBailNumber = () => {
-    let bailArr = [...bails];
-    bailArr.length++;
-    bailArr[bailArr.length - 1] = { position: [0, 0, 0], sizes: {} };
-    bailsCount(bailArr);
-
+    setBails((bails) => [...bails, { position: [0, 0, 0], sizes: {} }]);
     setExpanded(true);
   };
 
@@ -142,7 +139,14 @@ const LeftPanel = ({ props }) => {
   const setStoneShape = (e) => {
     let shape = e.target.getAttribute("shape-data");
     if (!shape) return;
+    if(currStoneShape===shape) shape = null 
     dispatch(designProps({ ...currDesign, currStoneShape: shape }));
+  };
+
+  const setBailType = (e) => {
+    let bt = e.target.getAttribute("alt");
+    if (!bt) return;
+    setCurrBailType(bt)
   };
 
   const dispatchSymbol = (e) => {
@@ -268,6 +272,15 @@ const LeftPanel = ({ props }) => {
                       className={classes.symbol}
                     >
                       {symbol.symbol}
+                    </div>
+                  ))}
+                </div>
+                <div className={classes.flexRow}>
+                  {availableSymbols.map((symbol) => (
+                    <div
+                      className={classes.symbol}
+                    >
+                      {getOccurences(symbols, symbol.title)}
                     </div>
                   ))}
                 </div>
@@ -440,7 +453,7 @@ const LeftPanel = ({ props }) => {
                 <div className={classes.flexRow} style={{ flexWrap: "wrap" }}>
                   {bailType.map((bail, i) => (
                     <div
-                      onClick={(e) => setCurrBailType(e.target.alt)}
+                      onClick={setBailType}
                       key={i}
                       style={{
                         border: currBailType === bail && "3px solid #8e24aa",
@@ -458,12 +471,12 @@ const LeftPanel = ({ props }) => {
                 </div>
 
                 {bails.map((bail, i) => (
-                  <Bail
+                  <BailMenu
                     key={i}
                     index={i}
                     currBailType={currBailType}
                     bails={bails}
-                    setBailsData={bailsCount}
+                    setBailsData={setBails}
                     classes={classes}
                   />
                 ))}
@@ -477,3 +490,16 @@ const LeftPanel = ({ props }) => {
 };
 
 export default LeftPanel;
+
+
+const getOccurences = (array,target) => {
+  let counter = 0;
+  for (let val of array) {
+    debugger
+    if (val == target) {
+      counter++;
+    }
+  }
+
+  return counter
+};

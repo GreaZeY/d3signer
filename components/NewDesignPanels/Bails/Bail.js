@@ -16,12 +16,9 @@ const Bail = (props) => {
     if (currBailType === "bail0") {
       scaleX = (radius * 2) / x;
       scaleY = (radius * 2) / y;
-      scaleZ = tube / z;
     }
-    geometry.scale(scaleX, scaleY, scaleZ);
+    geometry.scale(scaleX, scaleY, scaleX);
     mesh.position.z = (max.z + min.z) / 2;
-    console.log(geometry.boundingBox.max);
-    console.log(geometry.boundingBox.min);
   };
 
   const bailGeometry = useMemo(
