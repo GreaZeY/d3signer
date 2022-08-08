@@ -21,6 +21,7 @@ const Bails = ({ boundingBoxPoints }) => {
               }}
               base={base}
               currBailType={bail.type}
+              index={i}
             />
           ))}
         </>

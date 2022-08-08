@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState, useMemo } from "react";
+import { useRef, useEffect, useState, useMemo, useCallback } from "react";
 import * as THREE from "three";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls.js";
@@ -9,6 +9,7 @@ import {
   union,
   intersect,
   subtractGeometry,
+  getVolume,
 } from "./utils/threeUtils";
 import { useSelector, useDispatch } from "react-redux";
 import Bails from "./Bails/Bails";
@@ -18,7 +19,7 @@ import Symbols from "./Symbols/Symbols.js";
 import LoadModels from "./LoadModels/LoadModels";
 import { initialBoundingBox } from "../../lib/constants/pendantDimensionConstants";
 // import JoinLetters from "./JoinLetters";
-// import { designProps } from "../../lib/actions/designAction";
+import { designProps } from "../../lib/actions/designAction";
 // import { MODEL_GENERATED, GENERATING_MODEL } from '../../lib/constants/designPropsConstants';
 // import { designProps as designPropsFunc } from '../../lib/actions/designAction';
 
@@ -55,6 +56,8 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     stoneSize,
     letterSpacings,
     lineHeights,
+    symbols,
+    bails,
   } = currDesign;
 
   const [boundingBoxPoints, setBoundingBoxPoints] =
@@ -65,8 +68,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
   const stone = useRef();
   const stoneGroup = useRef();
   const transform = useRef();
-  // const dispatch = useDispatch();
-
+  const dispatch = useDispatch();
   const font = useMemo(() => getFont(currFont), [currFont]);
 
   const diamond = useMemo(
@@ -135,23 +137,32 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
   };
 
   // handling keyboard shortcuts
-  const keyPressHandler = (e) => {
-    // todo: delete  from store as well
-    if (e.key === "Delete") {
-      let obj = transform.current?.object;
-      if (obj) {
-        console.log(obj);
-        transform.current.detach();
-        obj.parent.remove(obj);
-        guiControls.current.style.display = "none";
-//         if(obj.userData.type==='symbol'){
-// let syms = symbols.filter((s,i)=>i!==obj.userData.index)
-//         dispatch(designProps({ ...currDesign, symbols:syms  }))
-//         }
-        
+  const keyPressHandler = useCallback(
+    (e) => {
+      // todo: delete  from store as well
+      if (e.key === "Delete") {
+        let obj = transform.current?.object;
+        if (obj) {
+          console.log(obj);
+          transform.current.detach();
+          // obj.parent.remove(obj);
+          guiControls.current.style.display = "none";
+          if (obj.userData.type === "symbol") {
+            let syms = symbols.filter((s, i) => i !== obj.userData.index);
+            dispatch(designProps({ ...currDesign, symbols: syms }));
+          }
+          if (obj.userData.type === "bail") {
+            document
+              .getElementById("deleteBailBtn" + obj.userData.index)
+              .click();
+            // let newBails = bails.filter((s, i) => i !== obj.userData.index);
+            // dispatch(designProps({ ...currDesign, bails: newBails }));
+          }
+        }
       }
-    }
-  };
+    },
+    [symbols]
+  );
 
   useEffect(() => {
     // listeners
@@ -186,7 +197,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
         worker.terminate();
       };
     }
-  }, []);
+  }, [keyPressHandler]);
 
   // gui controls to change transform mode
   const closeControls = () => {
@@ -262,6 +273,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     geometry.scale(sx, sx, (thickness * 0.5) / z);
     setBoundingBoxPoints(geometry.boundingBox);
     console.log(geometry.boundingBox.max);
+    // dispatch(designProps({ ...currDesign, volume: getVolume(geometry) }));
     // console.log(geometry.boundingBox.min);
   };
 

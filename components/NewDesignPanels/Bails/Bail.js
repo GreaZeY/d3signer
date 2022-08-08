@@ -2,16 +2,14 @@ import { useMemo } from "react";
 import { loadBail } from "../utils/threeUtils";
 
 const Bail = (props) => {
-  const { base, args, currBailType } = props;
+  const { base, args, currBailType, index } = props;
   let { radius, position, tube, boundingBoxPoints } = args;
   const { max, min } = boundingBoxPoints;
-
   const onUpdateBail = (mesh) => {
     let geometry = mesh.geometry;
-    const { x, y, z } = geometry.boundingBox.max;
+    const { x, y } = geometry.boundingBox.max;
     let scaleX = 1,
-      scaleY = 1,
-      scaleZ = 1;
+      scaleY = 1
 
     if (currBailType === "bail0") {
       scaleX = (radius * 2) / x;
@@ -29,6 +27,7 @@ const Bail = (props) => {
     <>
       <mesh
         name="bail"
+        userData={{ type: "bail", index, currBailType, controllable: true }}
         position={position}
         scale={currBailType === "bail0" ? 1 : radius}
         geometry={bailGeometry}

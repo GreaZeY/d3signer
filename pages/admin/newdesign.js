@@ -124,7 +124,7 @@ function newDesign() {
     },
     symbol: {
       border: "1px solid #ECEBEB",
-      boxSizing:'border-box',
+      boxSizing: "border-box",
       width: "1.2rem",
       height: "1.2rem",
       display: "flex",
@@ -138,6 +138,10 @@ function newDesign() {
       "&:hover": {
         border: "1px Solid gray",
       },
+    },
+    input: {
+      padding: ".4rem .2rem",
+      fontSize: "12px",
     },
     formMargin0: {
       marginTop: "0rem !important",

@@ -28,13 +28,12 @@ const Bail = (props) => {
 
   useEffect(() => {
     let currBail = [...bails];
-    currBail[index].position = [0,0,0];
+    currBail[index].position = currBailPosition;
     if (!currBail[index].type) currBail[index].type = currBailType;
     if (!currBail[index].dimensionType)
       currBail[index].dimensionType =
         currBailType === "bail0" ? "Diameter" : "Size";
     currBail[index].sizes = bailSizes;
-    console.log(currBail);
     setBailsData(currBail);
   }, [bailSizes, currBailPosition]);
 
@@ -53,7 +52,7 @@ const Bail = (props) => {
   const debounce = delay((val, currItem) => setSizes(val, currItem));
 
   return (
-    <div style={{ display: "flex",alignItems:'center' }}>
+    <div style={{ display: "flex", alignItems: "center" }}>
       <DropdownSliders
         items={[designProps?.bails[index]?.dimensionType, "Thickness"]}
         values={[bailSizes.diameter, bailSizes.thickness]}
@@ -64,6 +63,7 @@ const Bail = (props) => {
         label="Sizes"
       />
       <DeleteForeverIcon className={classes.delete} onClick={deleteBail} />
+      <button style={{display:'none'}} id={'deleteBailBtn'+index} onClick={deleteBail}></button>
     </div>
   );
 };

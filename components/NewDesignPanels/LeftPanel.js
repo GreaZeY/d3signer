@@ -60,7 +60,7 @@ const LeftPanel = ({ props }) => {
   // bail expand and collapse
   const { getCollapseProps, getToggleProps, isExpanded, setExpanded } =
     useCollapse();
-  const [bails, setBails] = useState([]);
+ 
   const [currBailType, setCurrBailType] = useState("bail0");
 
   const { designProps: currDesign } = useSelector((state) => state.designProps);
@@ -76,8 +76,9 @@ const LeftPanel = ({ props }) => {
     lineHeights,
     symbols,
     symbolSize,
+    bails:rBails
   } = currDesign;
-
+ const [bails, setBails] = useState([]);
   const dispatch = useDispatch();
 
   const setSizes = (val, currItem) => {

@@ -1,3 +1,5 @@
+import { bailDiameterBounds, bailThicknessBounds } from "../../lib/constants/pendantDimensionConstants";
+
 export const availableSymbols = [
   { title: "Heart", symbol: "♡" },
   { title: "Octothorp", symbol: "#" },
@@ -53,3 +55,8 @@ export const bailType = [
     'bail2',
     'bail3',
 ] 
+
+export const  bailSizes = {
+  diameter: bailDiameterBounds.min,
+  thickness: bailThicknessBounds.min,
+};
