@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import AddIcon from "@material-ui/icons/Add";
 import BailMenu from "components/LeftPanelComponents/BailMenu.js";
-// import SymbolMenu from "components/LeftPanelComponents/SymbolMenu.js";
+import SymbolMenu from "components/LeftPanelComponents/SymbolMenu.js";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -33,7 +33,7 @@ import {
   stoneSizeBounds,
   lineHeightsBounds,
 } from "../../lib/constants/pendantDimensionConstants";
-import { fillArray } from "../../lib/utils";
+import { fillArray, getOccurences } from "../../lib/utils";
 const shapeDir = "/assets/crimps/stoneShapes";
 // importing shape components
 // import Brilliant from "./StoneComponents/Brilliant";
@@ -163,6 +163,10 @@ const LeftPanel = ({ props }) => {
     dispatch(designProps({ ...currDesign, stoneSize: val }));
   };
 
+  // const addSymbol=(newSymbol)=>{
+  // return dispatch(designProps({ ...currDesign, symbols: [...symbols, newSymbol] }));
+  // }
+
   const [showTip, setShowTip] = useState(false);
 
   return (
@@ -262,8 +266,9 @@ const LeftPanel = ({ props }) => {
             <div style={{ marginTop: "1rem" }}>
               <div>
                 <InputLabel className="settings-head">Add Symbols</InputLabel>
-                <div onClick={dispatchSymbol} className={classes.flexRow}>
+                <div onClick={dispatchSymbol} className={classes.flexRow} style={{flexWrap:'wrap'}} >
                   {availableSymbols.map((symbol) => (
+                    <div className={classes.flexRow} style={{flexDirection:'column'}}  >
                     <div
                       title={symbol.title}
                       style={{
@@ -272,19 +277,22 @@ const LeftPanel = ({ props }) => {
                       }}
                       className={classes.symbol}
                     >
-                      {symbol.symbol}
+                      {/* {symbol.symbol} */}
+                      <img title={symbol.title} width={12} src={`/assets/symbols/${symbol.title}.svg`} alt={symbol.title} />
+                    </div>
+                    <div className={classes.count}>
+                      {getOccurences(symbols, symbol.title)}
+                    </div>
                     </div>
                   ))}
                 </div>
-                <div className={classes.flexRow}>
+                {/* <div className={classes.flexRow} style={{flexWrap:'wrap'}} >
                   {availableSymbols.map((symbol) => (
-                    <div
-                      className={classes.symbol}
-                    >
+                    <div className={classes.symbol}>
                       {getOccurences(symbols, symbol.title)}
                     </div>
                   ))}
-                </div>
+                </div> */}
               </div>
               {symbols.length > 0 && (
                 <>
@@ -333,6 +341,7 @@ const LeftPanel = ({ props }) => {
                   </div>
                 </>
               )}
+              {/* <SymbolMenu props={{classes, symbols, addSymbol}} /> */}
             </div>
             <fieldset
               style={{
@@ -492,15 +501,3 @@ const LeftPanel = ({ props }) => {
 
 export default LeftPanel;
 
-
-const getOccurences = (array,target) => {
-  let counter = 0;
-  for (let val of array) {
-    debugger
-    if (val == target) {
-      counter++;
-    }
-  }
-
-  return counter
-};

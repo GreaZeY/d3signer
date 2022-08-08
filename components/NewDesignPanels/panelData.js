@@ -6,11 +6,20 @@ export const availableSymbols = [
   { title: "Star", symbol: "☆" },
   { title: "Infinity", symbol: "∞" },
   { title: "Ampersand", symbol: "&" },
+  { title: "Crown", symbol: "" },
   { title: "Dollar", symbol: "$" },
   { title: "Crucifix", symbol: "†" },
   { title: "Ankh", symbol: "☥" },
-  // { title: "Eye of Horus", symbol: "☥" },
+  { title: "Eye of Horus", symbol: "" },
   { title: "Anchor", symbol: "⚓" },
+
+  { title: "Butterfly", symbol: "" },
+  { title: "Bear", symbol: "" },
+  { title: "Musical Note", symbol: "" },
+  { title: "Club", symbol: "" },
+  { title: "Spades", symbol: "" },
+  { title: "Clover", symbol: "" },
+  { title: "Skull", symbol: "" },
 ];
 
 export const stoneShapes = [

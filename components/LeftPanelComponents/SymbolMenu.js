@@ -4,11 +4,11 @@ import InputLabel from "@material-ui/core/InputLabel";
 import { availableSymbols } from "../NewDesignPanels/panelData";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
-import Symbols from './Symbols.js'
+import Symbols from "./Symbols.js";
 import Button from "@material-ui/core/Button";
 import useCollapse from "react-collapsed";
 
-const SymbolMenu = (props) => {
+const SymbolMenu = ({ props }) => {
   const { classes, symbols, addSymbol } = props;
   const { getCollapseProps, getToggleProps, isExpanded, setExpanded } =
     useCollapse();
@@ -22,7 +22,12 @@ const SymbolMenu = (props) => {
   };
 
   const onAddSymbol = () => {
-    addSymbol(currSymbol);
+    let sym = {
+      position:[0,0,0],
+      shape: currSymbol,
+      size: 10,
+    };
+    addSymbol(sym);
     setExpanded(true);
   };
 

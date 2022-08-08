@@ -4,8 +4,6 @@ import Select from "@material-ui/core/Select";
 import InputLabel from "@material-ui/core/InputLabel";
 import Slider from "@material-ui/core/Slider";
 import MenuItem from "@material-ui/core/MenuItem";
-import TextField from "@material-ui/core/TextField";
-
 const DropdownSliders = ({
   classes,
   items,
@@ -66,18 +64,28 @@ const DropdownSliders = ({
             value={values ? values[currItem] || 0 : 0}
             color="primary"
           />
-          <TextField
+          <input
+            className={classes.input}
+            style={{ padding: ".2rem", cursor: "text", width: "2rem" }}
+            onChange={(e) => onChange(parseFloat(e.target.value), currItem)}
+            type="number"
+            min={mins[currItem]}
+            max={maxs[currItem]}
+            step={0.1}
+            value={values ? values[currItem] || 0 : 0}
+          />
+          {/* <TextField
             inputProps={{
               type: "number",
               min: mins[currItem],
               max: maxs[currItem],
-              step: .1,
+              step: steps[currItem],
               className: classes.input,
             }}
             onChange={(e) => onChange(parseFloat(e.target.value), currItem)}
             variant="outlined"
             value={values ? values[currItem] || 0 : 0}
-          />
+          /> */}
         </div>
       </div>
     </div>
