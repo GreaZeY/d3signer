@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import AddIcon from "@material-ui/icons/Add";
 import BailMenu from "components/LeftPanelComponents/BailMenu.js";
-import SymbolMenu from "components/LeftPanelComponents/SymbolMenu.js";
+// import SymbolMenu from "components/LeftPanelComponents/SymbolMenu.js";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -35,12 +35,6 @@ import {
 } from "../../lib/constants/pendantDimensionConstants";
 import { fillArray, getOccurences } from "../../lib/utils";
 const shapeDir = "/assets/crimps/stoneShapes";
-// importing shape components
-// import Brilliant from "./StoneComponents/Brilliant";
-// import Trilliant from "./StoneComponents/Trilliant";
-// import Eight from "./StoneComponents/Eight"
-// import Pear from "./StoneComponents/Pear";
-// import StepCut from "./StoneComponents/StepCut"
 
 const muiTheme = createMuiTheme({
   overrides: {
@@ -156,7 +150,7 @@ const LeftPanel = ({ props }) => {
     //   let tmpSyms = symbols.filter(tmpSym => sym !== tmpSym)
     //   return dispatch(designProps({ ...currDesign, symbols: tmpSyms }))
     // }
-    return dispatch(designProps({ ...currDesign, symbols: [...symbols, sym] }));
+    return dispatch(designProps({ ...currDesign, symbols: [...symbols, {type:sym,transform:{}}] }));
   };
 
   const setStoneSize = (e, val) => {
@@ -273,15 +267,14 @@ const LeftPanel = ({ props }) => {
                       title={symbol.title}
                       style={{
                         border:
-                          symbols.includes(symbol.title) && "2px solid #8e24aa",
+                          symbols.filter(sym=>sym.type===symbol.title).length && "2px solid #8e24aa",
                       }}
                       className={classes.symbol}
                     >
-                      {/* {symbol.symbol} */}
-                      <img title={symbol.title} width={12} src={`/assets/symbols/${symbol.title}.svg`} alt={symbol.title} />
+                      <img title={symbol.title} width={12} src={symbol.src} alt={symbol.title} />
                     </div>
                     <div className={classes.count}>
-                      {getOccurences(symbols, symbol.title)}
+                      {getOccurences(symbols, symbol.type)}
                     </div>
                     </div>
                   ))}

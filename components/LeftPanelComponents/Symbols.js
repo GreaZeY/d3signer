@@ -7,24 +7,21 @@ import { delay } from "../NewDesignPanels/utils/utils";
 
 const Symbol = (props) => {
   const { classes, symbols, index, currSymbolShape } = props;
-  const { designProps:currDesign } = useSelector((state) => state.designProps);
- const dispatch = useDispatch();
+  const { designProps: currDesign } = useSelector((state) => state.designProps);
+  const dispatch = useDispatch();
 
   const setSizes = (val) => {
-    let prevSym = [ ...currDesign.symbols]
-prevSym[index].size = val; 
-dispatch(
-  designProps(dispatch(designProps({ ...currDesign, symbols: prevSym })))
-);
-debugger
-
-
+    let prevSym = [...currDesign.symbols];
+    prevSym[index].size = val;
+    dispatch(
+      designProps(dispatch(designProps({ ...currDesign, symbols: prevSym })))
+    );
   };
 
   const debounce = delay((val, currItem) => setSizes(val, currItem));
 
   return (
-    <div style={{ display: "flex",alignItems:'center' }}>
+    <div style={{ display: "flex", alignItems: "center" }}>
       <DropdownSliders
         items={["Size"]}
         values={[symbols[index].size]}

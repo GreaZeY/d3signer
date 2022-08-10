@@ -19,10 +19,12 @@ import Symbols from "./Symbols/Symbols.js";
 import LoadModels from "./LoadModels/LoadModels";
 import { initialBoundingBox } from "../../lib/constants/pendantDimensionConstants";
 // import JoinLetters from "./JoinLetters";
-import { designProps } from "../../lib/actions/designAction";
+import { designProps, updateDesignProps } from "../../lib/actions/designAction";
 // import { MODEL_GENERATED, GENERATING_MODEL } from '../../lib/constants/designPropsConstants';
 // import { designProps as designPropsFunc } from '../../lib/actions/designAction';
 
+
+let textGeometry = new TextGeometry();
 let targetStone = null,
   clickAway = false,
   geometryWithoutHoles;
@@ -34,12 +36,7 @@ const bevelProps = {
   // curveSegments: 50,
 };
 extend({ TextGeometry, TransformControls });
-let textGeometry = new TextGeometry();
 
-// import WorkerBuilder from "../../lib/worker-builder";
-// import Worker from "../../lib/worker";
-
-//  const instance = new WorkerBuilder(Worker);
 
 let worker;
 
@@ -77,6 +74,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
   );
 
   useEffect(() => {
+    if(!font) return
     textGeometry = new TextGeometry(text, {
       font,
       size: { size: 1, letterSpacings, lineHeights },
@@ -136,67 +134,89 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     }
   };
 
+
+
+  // delete object from state
+  const deleteObject = (obj) => {
+    if (obj) {
+      transform.current.detach();
+      guiControls.current.style.display = "none";
+
+      //deleteting object by types
+
+      // let propType = obj.userData.group;
+      //  let propVal = currDesign[propType].filter((s, i) => i !== obj.userData.index);
+      //  let newState = {}
+      //  newState[propType] = propVal
+      //  dispatch(designProps({ ...currDesign, ...newState }));
+
+      if (obj.userData.group === "symbols") {
+        let syms = symbols.filter((s, i) => i !== obj.userData.index);
+        dispatch(designProps({ ...currDesign, symbols: syms }));
+      }
+      if (obj.userData.group === "bails") {
+        document.getElementById("deleteBailBtn" + obj.userData.index).click();
+      }
+    }
+  };
+
   // handling keyboard shortcuts
   const keyPressHandler = useCallback(
     (e) => {
-      // todo: delete  from store as well
       if (e.key === "Delete") {
         let obj = transform.current?.object;
-        if (obj) {
-          console.log(obj);
-          transform.current.detach();
-          // obj.parent.remove(obj);
-          guiControls.current.style.display = "none";
-          if (obj.userData.type === "symbol") {
-            let syms = symbols.filter((s, i) => i !== obj.userData.index);
-            dispatch(designProps({ ...currDesign, symbols: syms }));
-          }
-          if (obj.userData.type === "bail") {
-            document
-              .getElementById("deleteBailBtn" + obj.userData.index)
-              .click();
-            // let newBails = bails.filter((s, i) => i !== obj.userData.index);
-            // dispatch(designProps({ ...currDesign, bails: newBails }));
-          }
-        }
+        deleteObject(obj);
       }
     },
-    [symbols]
+    [symbols, bails]
   );
 
+  const updateAttachedObj = (e) => {
+    // disabling Orbit Controls when transform controls are enabled
+    controls.current.enabled = !e.value;
+    //updating object transform
+    if (e.value === false) {
+      dispatch(updateDesignProps(e.target.object));
+      // updateObject(e.target.object);
+    }
+  };
   useEffect(() => {
     // listeners
+    // remove stone listener
+    window.addEventListener("pointerdown", (e) => removeStone(e, stoneGroup));
+    domElement.addEventListener("click", canvasClickListener);
+
+    worker = new Worker("/worker.js", { type: "module" });
+
+    worker.onmessage = (e) => {
+      if (e) {
+        console.log("Message from worker", e);
+      }
+    };
+    worker.postMessage(5);
+
+    // cleanup for listeners
+    return () => {
+      domElement.removeEventListener("click", canvasClickListener);
+      window.removeEventListener("pointerdown", (e) =>
+        removeStone(e, stoneGroup)
+      );
+      worker.terminate();
+    };
+  }, []);
+
+  useEffect(() => {
     if (transform.current) {
-      // disabling Orbit Controls when transform controls are enabled
       const tControls = transform.current;
-      const disableOrbitControls = (event) =>
-        (controls.current.enabled = !event.value);
-      tControls.addEventListener("dragging-changed", disableOrbitControls);
-      // remove stone listener
-      window.addEventListener("pointerdown", (e) => removeStone(e, stoneGroup));
-      domElement.addEventListener("click", canvasClickListener);
-      document.addEventListener("keydown", keyPressHandler);
-
-      worker = new Worker("/worker.js", { type: "module" });
-
-      worker.onmessage = (e) => {
-        if (e) {
-          console.log("Message from worker", e);
-        }
-      };
-      worker.postMessage(5);
-
-      // cleanup for listeners
-      return () => {
-        tControls.removeEventListener("dragging-changed", disableOrbitControls);
-        domElement.removeEventListener("click", canvasClickListener);
-        document.removeEventListener("keydown", keyPressHandler);
-        window.removeEventListener("pointerdown", (e) =>
-          removeStone(e, stoneGroup)
-        );
-        worker.terminate();
-      };
+      tControls.detach();
+      tControls.addEventListener("dragging-changed", updateAttachedObj);
     }
+    document.addEventListener("keydown", keyPressHandler);
+
+    return () => {
+      document.removeEventListener("keydown", keyPressHandler);
+      tControls.removeEventListener("dragging-changed", updateAttachedObj);
+    };
   }, [keyPressHandler]);
 
   // gui controls to change transform mode
@@ -215,7 +235,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
 
   useControl("Delete", {
     type: "button",
-    onClick: () => keyPressHandler({ key: "Delete" }),
+    onClick: () => deleteObject(transform.current?.object),
   });
 
   // click away listener for transform controls
@@ -255,8 +275,9 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     if (intersects.length === 0) targetStone = null;
 
     // click away listener for transform controls
-    let children = [pendant.current.parent];
+    let children = [pendant.current.parent, transform.current.children[0]];
     let intersectsTrans = state.raycaster.intersectObjects(children);
+    // console.log(intersectsTrans);
     if (intersectsTrans.length > 0) {
       clickAway = false;
     } else {
@@ -288,6 +309,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
   };
 
   const attachTransformControl = (e) => {
+    if(currStoneShape) return
     const obj = e.object;
     if (!(obj.parent.userData.controllable || obj.userData.controllable))
       return;
@@ -296,8 +318,15 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
   };
 
   const getObjectDetails = (obj) => {
-    console.log(obj);
+    // // if (!text) return setBoundingBoxPoints(initialBoundingBox);
+    // let objBBox = new THREE.Box3().setFromObject(obj);
+    // console.log('obj',obj);
+   
+    // if(objBBox!==boundingBoxPoints) return
+    // setBoundingBoxPoints(objBBox);
+     
   };
+
   return (
     <>
       <object3D
@@ -343,13 +372,12 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
           {/* <JoinLetters controls={controls} /> */}
         </group>
       </object3D>
-      <group>
-        <transformControls
-          ref={transform}
-          args={[camera, domElement]}
-          mode={mode}
-        />
-      </group>
+      <transformControls
+        ref={transform}
+        args={[camera, domElement]}
+        mode={mode}
+        showZ={false}
+      />
     </>
   );
 };

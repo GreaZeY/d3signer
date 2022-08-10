@@ -5,10 +5,10 @@ const Symbols = ({ boundingBoxPoints }) => {
   const { symbols } = designProps;
 
   return symbols.length > 0 ? (
-    symbols.map((symbol, index) => (
+    symbols.map(({ type, transform }, index) => (
       <Symbol
-        key={symbol + index}
-        props={{ symbol, boundingBoxPoints, index }}
+        key={type + index}
+        props={{ symbol: type, transform, boundingBoxPoints, index }}
       />
     ))
   ) : (

@@ -1,43 +1,35 @@
-import { bailDiameterBounds, bailThicknessBounds } from "../../lib/constants/pendantDimensionConstants";
+import {
+  bailDiameterBounds,
+  bailThicknessBounds,
+} from "../../lib/constants/pendantDimensionConstants";
+import { importAll } from "../../lib/utils";
 
-export const availableSymbols = [
-  { title: "Heart", symbol: "♡" },
-  { title: "Octothorp", symbol: "#" },
-  { title: "Star", symbol: "☆" },
-  { title: "Infinity", symbol: "∞" },
-  { title: "Ampersand", symbol: "&" },
-  { title: "Crown", symbol: "" },
-  { title: "Dollar", symbol: "$" },
-  { title: "Crucifix", symbol: "†" },
-  { title: "Ankh", symbol: "☥" },
-  { title: "Eye of Horus", symbol: "" },
-  { title: "Anchor", symbol: "⚓" },
+export const availableSymbols = importAll(
+  require.context("../../public/assets/symbols", false, /.svg$/)
+).map((symbol) => {
+  return {
+    title: symbol.default.src.slice(20).split(".")[0],
+    src: symbol.default.src,
+  };
+});
 
-  { title: "Butterfly", symbol: "" },
-  { title: "Bear", symbol: "" },
-  { title: "Musical Note", symbol: "" },
-  { title: "Club", symbol: "" },
-  { title: "Spades", symbol: "" },
-  { title: "Clover", symbol: "" },
-  { title: "Skull", symbol: "" },
-];
 
 export const stoneShapes = [
-    'brilliant',
-    'eight',
-    'pear',
-    'stepCut',
-    'trilliant',
-]
+  "brilliant",
+  "eight",
+  "pear",
+  "stepCut",
+  "trilliant",
+];
 
 export const stoneColor = [
-    'darkred',
-    'darkgreen',
-    'yellow',
-    'pink',
-    'purple',
-    'white'
-]
+  "darkred",
+  "darkgreen",
+  "yellow",
+  "pink",
+  "purple",
+  "white",
+];
 
 export const colors = [
   {
@@ -58,14 +50,9 @@ export const colors = [
   },
 ];
 
-export const bailType = [
-    'bail0',
-    'bail1',
-    'bail2',
-    'bail3',
-] 
+export const bailType = ["bail0", "bail1", "bail2", "bail3"];
 
-export const  bailSizes = {
+export const bailSizes = {
   diameter: bailDiameterBounds.min,
   thickness: bailThicknessBounds.min,
 };

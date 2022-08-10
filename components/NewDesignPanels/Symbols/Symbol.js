@@ -1,5 +1,6 @@
 import { useMemo } from "react";
-import { useSelector } from "react-redux";
+import { useSelector,useDispatch } from "react-redux";
+import { updateDesignProps } from "../../../lib/actions/designAction";
 import { createShape } from "../utils/threeUtils";
 const extrudeSettings = {
   bevelEnabled: false,
@@ -10,11 +11,15 @@ const extrudeSettings = {
 };
 
 const Symbols = ({ props }) => {
-  const { symbol, boundingBoxPoints, index } = props;
+    const dispatch = useDispatch();
+  const { symbol, boundingBoxPoints, index, transform } = props;
   const { max, min } = boundingBoxPoints;
   const { designProps } = useSelector((state) => state.designProps);
   const { base, symbolSize } = designProps;
+  const { rotation, scale, position } = transform;
+  console.log('key',transform);
   const shape = useMemo(() => createShape(symbol), [symbol]);
+
 
   const onUpdateSymbol = (mesh) => {
     let geometry = mesh.geometry;
@@ -24,6 +29,8 @@ const Symbols = ({ props }) => {
     mesh.position.z = (max.z + min.z) / 2;
     mesh.scale.x = symbolSize;
     mesh.scale.y = symbolSize;
+
+    dispatch(updateDesignProps(mesh));
   };
 
   if (!symbol) return <></>;
@@ -31,10 +38,10 @@ const Symbols = ({ props }) => {
     <>
       <mesh
         name={symbol}
-        position={max}
+        position={position?position:max}
         position-y={max.y / 2}
         rotation-x={Math.PI}
-        userData={{ type: "symbol", index, symbol, controllable: true }}
+        userData={{ group: "symbols", index, symbol, controllable: true }}
         onUpdate={onUpdateSymbol}
       >
         <extrudeGeometry

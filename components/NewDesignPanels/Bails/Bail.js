@@ -27,7 +27,7 @@ const Bail = (props) => {
     <>
       <mesh
         name="bail"
-        userData={{ type: "bail", index, currBailType, controllable: true }}
+        userData={{ group: "bails", index, currBailType, controllable: true }}
         position={position}
         scale={currBailType === "bail0" ? 1 : radius}
         geometry={bailGeometry}

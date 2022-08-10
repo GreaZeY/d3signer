@@ -1,5 +1,5 @@
 import React from 'react'
-import Admin from "layouts/Admin.js";
+// import Admin from "layouts/Admin.js";
 import NewDesign from 'components/NewDesignComponent/NewDesign'
 
 const newdesign = () => {
@@ -8,5 +8,5 @@ const newdesign = () => {
   )
 }
 
-newdesign.layout = Admin;
+// newdesign.layout = Admin;
 export default newdesign

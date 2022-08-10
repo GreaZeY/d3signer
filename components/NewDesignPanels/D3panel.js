@@ -21,7 +21,7 @@ const D3panel = ({ model, zoom }) => {
         <OrbitControls enableDamping ref={controls} />
         <Suspense
           fallback={
-            <Html position={[-0.5, 0.8, 0]}>
+            <Html >
               <SilverMetalLoading />
             </Html>
           }
