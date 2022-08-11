@@ -87,15 +87,10 @@ const SymbolMenu = ({ props }) => {
             </div>
           ))}
         </div>
-        {symbols.map((symbol, i) => (
           <Symbols
-            key={i}
-            index={i}
-            symbol={symbol}
             symbols={symbols}
             classes={classes}
           />
-        ))}
       </section>
     </div>
   );
