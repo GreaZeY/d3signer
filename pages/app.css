@@ -1,3 +1,6 @@
+:root{
+  --active-border-color:#FDB931;
+}
 * {
   scroll-behavior: smooth;
 }
@@ -175,7 +178,7 @@ input[type=number] {
 
 /* spinner loader  */
 #loading {
-  border: 5px solid #8e24aa;
+  border: 5px solid var(--active-border-color);
   border-radius: 50%;
   border-top-color: #fff;
   animation: spin 1s ease-in-out infinite;

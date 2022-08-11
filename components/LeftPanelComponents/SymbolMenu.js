@@ -13,7 +13,7 @@ const SymbolMenu = ({ props }) => {
   const { getCollapseProps, getToggleProps, isExpanded, setExpanded } =
     useCollapse();
 
-  const [currSymbol, setCurrSymbol] = useState(availableSymbols[0]);
+  const [currSymbol, setCurrSymbol] = useState(availableSymbols[0].title);
 
   const setCurrentSymbol = (e) => {
     let sym = e.target.title;
@@ -23,12 +23,12 @@ const SymbolMenu = ({ props }) => {
 
   const onAddSymbol = () => {
     let sym = {
-      position:[0,0,0],
-      shape: currSymbol,
-      size: 10,
+      type: currSymbol,
+      size: 0.5,
+      transform: {},
     };
     addSymbol(sym);
-    setExpanded(true);
+    setExpanded(false);
   };
 
   return (
@@ -39,9 +39,15 @@ const SymbolMenu = ({ props }) => {
           marginTop: "1rem",
           justifyContent: "space-between",
         }}
-        className={classes.flexRow}
+        className={classes.flexRow + " " + classes.collapse}
+        {...getToggleProps()}
       >
-        <Button {...getToggleProps()} size="small">
+        <div
+          className={classes.flexRow}
+          style={{
+            fontWeight: 500,
+          }}
+        >
           {isExpanded ? (
             <>
               <KeyboardArrowUpIcon />
@@ -51,12 +57,9 @@ const SymbolMenu = ({ props }) => {
               <KeyboardArrowDownIcon />
             </>
           )}{" "}
-          symbols {`(${symbols.length})`}
-        </Button>
-        <Button size="small" onClick={onAddSymbol}>
-          {" "}
-          <AddIcon />
-        </Button>
+          Symbols {`(${symbols.length})`}
+        </div>
+        <AddIcon onClick={onAddSymbol} className={classes.cursorPointer} />
       </div>
       <section {...getCollapseProps()}>
         <InputLabel className="settings-head">Symbols</InputLabel>
@@ -69,11 +72,18 @@ const SymbolMenu = ({ props }) => {
             <div
               title={symbol.title}
               style={{
-                border: currSymbol === symbol.title && "2px solid #8e24aa",
+                border:
+                  currSymbol === symbol.title &&
+                  "2px solid var(--active-border-color)",
               }}
               className={classes.symbol}
             >
-              {symbol.symbol}
+              <img
+                title={symbol.title}
+                width={12}
+                src={symbol.src}
+                alt={symbol.title}
+              />
             </div>
           ))}
         </div>
@@ -81,7 +91,7 @@ const SymbolMenu = ({ props }) => {
           <Symbols
             key={i}
             index={i}
-            currSymbolShape={currSymbol}
+            symbol={symbol}
             symbols={symbols}
             classes={classes}
           />

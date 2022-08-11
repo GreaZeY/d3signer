@@ -141,8 +141,8 @@ function NewDesign() {
       padding: ".4rem .2rem",
       fontSize: "12px",
       transition: ".3s",
-      outline:'none',
-      border:'1px solid #e1e1e1',
+      outline: "none",
+      border: "1px solid #e1e1e1",
       "&:hover": {
         borderColor: "black",
       },
@@ -243,23 +243,21 @@ function NewDesign() {
         height: "40vh",
       },
     },
-    count:{
-      display: "flex",
-      alignItems: "center",
+    cursorPointer: {
       cursor: "pointer",
-      transition: ".3s",
-      justifyContent: "center",
-      marginRight: ".2rem",
-      marginBottom: ".2rem",
-      color: "gray",
-      fontSize: "10px",
-      border: "1px solid #ECEBEB",
-       width: "1.2rem",
-      height: "1.2rem",
-      boxSizing:'border-box',
-      padding:0
-
-    }
+      transition: ".2s",
+      "&:hover": {
+        color: "var(--active-border-color)",
+      },
+    },
+    collapse: {
+      cursor: "pointer",
+      borderRadius: "4px",
+      transition: ".2s",
+      "&:hover": {
+        background: "#acacac21",
+      },
+    },
   });
 
   const classes = useStyles();

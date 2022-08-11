@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import AddIcon from "@material-ui/icons/Add";
 import BailMenu from "components/LeftPanelComponents/BailMenu.js";
-// import SymbolMenu from "components/LeftPanelComponents/SymbolMenu.js";
+import SymbolMenu from "components/LeftPanelComponents/SymbolMenu.js";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -54,7 +54,7 @@ const LeftPanel = ({ props }) => {
   // bail expand and collapse
   const { getCollapseProps, getToggleProps, isExpanded, setExpanded } =
     useCollapse();
- 
+
   const [currBailType, setCurrBailType] = useState("bail0");
 
   const { designProps: currDesign } = useSelector((state) => state.designProps);
@@ -69,10 +69,9 @@ const LeftPanel = ({ props }) => {
     letterSpacings,
     lineHeights,
     symbols,
-    symbolSize,
-    bails:rBails
+    bails: rBails,
   } = currDesign;
- const [bails, setBails] = useState([]);
+  const [bails, setBails] = useState([]);
   const dispatch = useDispatch();
 
   const setSizes = (val, currItem) => {
@@ -93,7 +92,7 @@ const LeftPanel = ({ props }) => {
 
   const setBailNumber = () => {
     setBails((bails) => [...bails, { position: [0, 0, 0], sizes: {} }]);
-    setExpanded(true);
+    setExpanded(false);
   };
 
   const getText = (e) => {
@@ -113,12 +112,6 @@ const LeftPanel = ({ props }) => {
     );
   }, [bails]);
 
-  // const setStoneColor = e => {
-  //   if (e.target.tagName !== 'svg' || e.target.tagName !== 'path')
-  //     dispatch(designProps({ ...currDesign, currStoneColor: e.target.getAttribute('fill') }))
-
-  // }
-
   const setSpacings = (val, currItem) => {
     let spaces = [...letterSpacings];
     spaces[currItem] = val;
@@ -134,32 +127,25 @@ const LeftPanel = ({ props }) => {
   const setStoneShape = (e) => {
     let shape = e.target.getAttribute("shape-data");
     if (!shape) return;
-    if(currStoneShape===shape) shape = null 
+    if (currStoneShape === shape) shape = null;
     dispatch(designProps({ ...currDesign, currStoneShape: shape }));
   };
 
   const setBailType = (e) => {
     let bt = e.target.getAttribute("alt");
     if (!bt) return;
-    setCurrBailType(bt)
-  };
-
-  const dispatchSymbol = (e) => {
-    let sym = e.target.title;
-    // if (symbols.includes(sym)) {
-    //   let tmpSyms = symbols.filter(tmpSym => sym !== tmpSym)
-    //   return dispatch(designProps({ ...currDesign, symbols: tmpSyms }))
-    // }
-    return dispatch(designProps({ ...currDesign, symbols: [...symbols, {type:sym,transform:{}}] }));
+    setCurrBailType(bt);
   };
 
   const setStoneSize = (e, val) => {
     dispatch(designProps({ ...currDesign, stoneSize: val }));
   };
 
-  // const addSymbol=(newSymbol)=>{
-  // return dispatch(designProps({ ...currDesign, symbols: [...symbols, newSymbol] }));
-  // }
+  const addSymbol = (newSymbol) => {
+    return dispatch(
+      designProps({ ...currDesign, symbols: [...symbols, newSymbol] })
+    );
+  };
 
   const [showTip, setShowTip] = useState(false);
 
@@ -257,85 +243,6 @@ const LeftPanel = ({ props }) => {
                 ))}
               </div>
             </div>
-            <div style={{ marginTop: "1rem" }}>
-              <div>
-                <InputLabel className="settings-head">Add Symbols</InputLabel>
-                <div onClick={dispatchSymbol} className={classes.flexRow} style={{flexWrap:'wrap'}} >
-                  {availableSymbols.map((symbol) => (
-                    <div className={classes.flexRow} style={{flexDirection:'column'}}  >
-                    <div
-                      title={symbol.title}
-                      style={{
-                        border:
-                          symbols.filter(sym=>sym.type===symbol.title).length && "2px solid #8e24aa",
-                      }}
-                      className={classes.symbol}
-                    >
-                      <img title={symbol.title} width={12} src={symbol.src} alt={symbol.title} />
-                    </div>
-                    <div className={classes.count}>
-                      {getOccurences(symbols, symbol.type)}
-                    </div>
-                    </div>
-                  ))}
-                </div>
-                {/* <div className={classes.flexRow} style={{flexWrap:'wrap'}} >
-                  {availableSymbols.map((symbol) => (
-                    <div className={classes.symbol}>
-                      {getOccurences(symbols, symbol.title)}
-                    </div>
-                  ))}
-                </div> */}
-              </div>
-              {symbols.length > 0 && (
-                <>
-                  <InputLabel
-                    style={{ marginTop: "1rem", width: "100%" }}
-                    className="settings-head"
-                  >
-                    Size
-                  </InputLabel>
-                  <div style={{ width: "100%" }} className={classes.flexRow}>
-                    <Slider
-                      aria-label="Sizes"
-                      style={{ marginRight: "1rem" }}
-                      color="primary"
-                      step={0.1}
-                      min={stoneSizeBounds.min}
-                      max={stoneSizeBounds.max}
-                      value={symbolSize}
-                      onChange={(e, val) =>
-                        dispatch(
-                          designProps({ ...currDesign, symbolSize: val })
-                        )
-                      }
-                    />
-                    <input
-                      className={classes.symbol}
-                      style={{
-                        padding: ".2rem",
-                        cursor: "text",
-                        width: "2rem",
-                      }}
-                      type="number"
-                      step={0.1}
-                      min={stoneSizeBounds.min}
-                      max={stoneSizeBounds.max}
-                      value={symbolSize}
-                      onChange={(e) =>
-                        dispatch(
-                          designProps({
-                            ...currDesign,
-                            symbolSize: e.target.value,
-                          })
-                        )
-                      }
-                    />
-                  </div>
-                </>
-              )}
-              {/* <SymbolMenu props={{classes, symbols, addSymbol}} /> */}
-            </div>
             <fieldset
               style={{
                 position: "relative",
@@ -425,6 +332,7 @@ const LeftPanel = ({ props }) => {
                 </div>
               </div>
             </fieldset>
+            <SymbolMenu props={{ classes, symbols, addSymbol }} />
             <div style={{ marginTop: "1rem" }}>
               <div
                 style={{
@@ -432,9 +340,15 @@ const LeftPanel = ({ props }) => {
                   marginTop: "1rem",
                   justifyContent: "space-between",
                 }}
-                className={classes.flexRow}
+                className={classes.flexRow+ " " + classes.collapse}
+                {...getToggleProps()}
               >
-                <Button {...getToggleProps()} size="small">
+                <div
+                  className={classes.flexRow}
+                  style={{
+                    fontWeight: 500,
+                  }}
+                >
                   {isExpanded ? (
                     <>
                       <KeyboardArrowUpIcon />
@@ -445,11 +359,11 @@ const LeftPanel = ({ props }) => {
                     </>
                   )}{" "}
                   Bails {`(${bails.length})`}
-                </Button>
-                <Button size="small" onClick={setBailNumber}>
-                  {" "}
-                  <AddIcon />
-                </Button>
+                </div>
+                <AddIcon
+                  onClick={setBailNumber}
+                  className={classes.cursorPointer}
+                />
               </div>
               <section {...getCollapseProps()}>
                 <InputLabel className="settings-head">Bails</InputLabel>
@@ -493,4 +407,3 @@ const LeftPanel = ({ props }) => {
 };
 
 export default LeftPanel;
-

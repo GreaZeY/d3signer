@@ -18,13 +18,13 @@ import CardFooter from "components/Card/CardFooter.js";
 
 import styles from "assets/jss/nextjs-material-dashboard/views/dashboardStyle.js";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteDesigns, designProps, getAllDesigns } from "../../lib/actions/designAction";
+import { deleteDesigns, pendant, getAllDesigns } from "../../lib/actions/designAction";
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
 import { useAlert } from 'react-alert';
 import { Typography } from "@material-ui/core";
-import { designProps as initialDesign } from "../../lib/reducers/designPropsReducer";
+import { pendant as initialDesign } from "../../lib/reducers/pendantReducer";
 import { Button } from "@material-ui/core";
 import Router from "next/router";
 import Spinner from "../../components/loaders/spinner";
@@ -36,7 +36,7 @@ function Dashboard() {
   const classes = useStyles();
 
 
-  const { designs, loading } = useSelector(state => state.designProps);
+  const { designs, loading } = useSelector(state => state.pendant);
 
   const dispatch = useDispatch();
 
@@ -46,7 +46,7 @@ function Dashboard() {
   }, [])
 
   const handleEdit = (design) => {
-    dispatch(designProps({ ...initialDesign, ...design }));
+    dispatch(pendant({ ...initialDesign, ...design }));
     Router.push("/admin/newdesign");
   }
 
