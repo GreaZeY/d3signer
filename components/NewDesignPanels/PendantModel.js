@@ -206,8 +206,8 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
   }, []);
 
   useEffect(() => {
-    if (transform.current) {
-      const tControls = transform.current;
+    const tControls = transform.current;
+    if (tControls) {
       tControls.detach();
       tControls.addEventListener("dragging-changed", updateAttachedObj);
     }
