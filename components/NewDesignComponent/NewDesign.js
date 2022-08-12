@@ -161,7 +161,7 @@ function NewDesign() {
       zIndex: 100,
     },
     delete: {
-      marginTop: "2.8rem",
+      // marginTop: "2.8rem",
       cursor: "pointer",
       transition: ".3s",
       "&:hover": {

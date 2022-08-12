@@ -4,6 +4,7 @@ import Select from "@material-ui/core/Select";
 import InputLabel from "@material-ui/core/InputLabel";
 import Slider from "@material-ui/core/Slider";
 import MenuItem from "@material-ui/core/MenuItem";
+import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 const DropdownSliders = ({
   classes,
   items,
@@ -12,8 +13,10 @@ const DropdownSliders = ({
   onChange,
   mins,
   maxs,
+  onDelete,
 }) => {
   const [currItem, setCurrItem] = useState(0);
+  if (!items?.length) return <></>;
   return (
     <div style={{ width: "100%" }}>
       <InputLabel
@@ -55,7 +58,7 @@ const DropdownSliders = ({
           className={classes.flexRow}
         >
           <Slider
-            aria-label="Sizes"
+            aria-label={label}
             onChange={(e, val) => onChange(val, currItem)}
             step={0.1}
             style={{ marginRight: "1rem" }}
@@ -86,6 +89,12 @@ const DropdownSliders = ({
             variant="outlined"
             value={values ? values[currItem] || 0 : 0}
           /> */}
+          {onDelete && (
+            <DeleteForeverIcon
+              className={classes.delete}
+              onClick={() => onDelete(currItem)}
+            />
+          )}
         </div>
       </div>
     </div>

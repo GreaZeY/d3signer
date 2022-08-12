@@ -1,6 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
+import { useState } from "react";
+import AddIcon from "@material-ui/icons/Add";
+import InputLabel from "@material-ui/core/InputLabel";
+import { bailType } from "../NewDesignPanels/panelData";
+import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
+import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
+import Bail from './Bail'
+import useCollapse from "react-collapsed";
 import {
   bailThicknessBounds,
   bailDiameterBounds,
@@ -9,63 +14,91 @@ const sizes = {
   diameter: bailDiameterBounds.min,
   thickness: bailThicknessBounds.min,
 };
-import DropdownSliders from "components/CustomDropdownSliders/DropdownSliders.js";
-import { delay } from "../NewDesignPanels/utils/utils";
 
-const Bail = (props) => {
-  const { classes, bails, setBailsData, index, currBailType } = props;
-  const { designProps } = useSelector((state) => state.designProps);
+const BailsMenu = ({ props }) => {
+  const { classes, bails, addBail, setBailSizes } = props;
+  const { getCollapseProps, getToggleProps, isExpanded, setExpanded } =
+    useCollapse();
 
-  const [bailSizes, setBailSizes] = useState(sizes);
-  const [currBailPosition, setCurrBailPosition] = useState([]);
+  const [currBail, setCurrBail] = useState(bailType[0]);
 
-  useEffect(() => {
-    if (designProps.bails[index]) {
-      setCurrBailPosition(designProps.bails[index].position);
-      setBailSizes(designProps.bails[index].sizes);
-    }
-  }, [designProps]);
-
-  useEffect(() => {
-    let currBail = [...bails];
-    currBail[index].position = currBailPosition;
-    if (!currBail[index].type) currBail[index].type = currBailType;
-    if (!currBail[index].dimensionType)
-      currBail[index].dimensionType =
-        currBailType === "bail0" ? "Diameter" : "Size";
-    currBail[index].sizes = bailSizes;
-    setBailsData(currBail);
-  }, [bailSizes, currBailPosition]);
-
-  const deleteBail = () => {
-    let currBail = [...bails];
-    currBail = bails.filter((bail, i) => i !== index);
-    setBailsData(currBail);
+  const setCurrentBail = (e) => {
+    let bl = e.target.getAttribute("bail-type");
+    if (!bl) return;
+    setCurrBail(bl);
   };
 
-  const setSizes = (val, currItem) => {
-    currItem === 0
-      ? setBailSizes({ ...bailSizes, diameter: val })
-      : setBailSizes({ ...bailSizes, thickness: val });
+  const onAddBail = () => {
+    let bail = {
+      transform: {},
+      sizes,
+      type: currBail,
+    };
+    addBail(bail);
+    setExpanded(false);
   };
-
-  const debounce = delay((val, currItem) => setSizes(val, currItem));
 
   return (
-    <div style={{ display: "flex", alignItems: "center" }}>
-      <DropdownSliders
-        items={[designProps?.bails[index]?.dimensionType, "Thickness"]}
-        values={[bailSizes.diameter, bailSizes.thickness]}
-        onChange={debounce}
-        classes={classes}
-        mins={[bailDiameterBounds.min, bailThicknessBounds.min]}
-        maxs={[bailDiameterBounds.max, bailThicknessBounds.max]}
-        label="Sizes"
-      />
-      <DeleteForeverIcon className={classes.delete} onClick={deleteBail} />
-      <button style={{display:'none'}} id={'deleteBailBtn'+index} onClick={deleteBail}></button>
+    <div style={{ marginTop: "1rem" }}>
+      <div
+        style={{
+          width: "100%",
+          marginTop: "1rem",
+          justifyContent: "space-between",
+        }}
+        className={classes.flexRow + " " + classes.collapse}
+        {...getToggleProps()}
+      >
+        <div
+          className={classes.flexRow}
+          style={{
+            fontWeight: 500,
+          }}
+        >
+          {isExpanded ? (
+            <>
+              <KeyboardArrowUpIcon />
+            </>
+          ) : (
+            <>
+              <KeyboardArrowDownIcon />
+            </>
+          )}{" "}
+          Bails {`(${bails.length})`}
+        </div>
+        <AddIcon onClick={onAddBail} className={classes.cursorPointer} />
+      </div>
+      <section {...getCollapseProps()}>
+        <InputLabel className="settings-head">Bails</InputLabel>
+        <div
+          onClick={setCurrentBail}
+          className={classes.flexRow}
+          style={{ flexWrap: "wrap" }}
+        >
+          {bailType.map((bail, i) => (
+            <div
+              bail-type={bail}
+              key={i}
+              style={{
+                border:
+                  currBail === bail && "3px solid var(--active-border-color)",
+              }}
+              className={classes.bailType + " " + classes.flexRow}
+            >
+              <img
+                bail-type={bail}
+                width={25}
+                height={25}
+                src={`/assets/bails/img/${bail}.png`}
+                alt={bail}
+              />
+            </div>
+          ))}
+        </div>
+        <Bail bails={bails} classes={classes} setSizes={setBailSizes} />
+      </section>
     </div>
   );
 };
 
-export default Bail;
+export default BailsMenu;

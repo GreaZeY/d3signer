@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import AddIcon from "@material-ui/icons/Add";
+import { useState } from "react";
 import BailMenu from "components/LeftPanelComponents/BailMenu.js";
 import SymbolMenu from "components/LeftPanelComponents/SymbolMenu.js";
 import FormControl from "@material-ui/core/FormControl";
@@ -7,8 +6,6 @@ import Select from "@material-ui/core/Select";
 import InputLabel from "@material-ui/core/InputLabel";
 import Slider from "@material-ui/core/Slider";
 import CustomInput from "components/CustomInput/CustomInput.js";
-import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
-import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import { useDispatch, useSelector } from "react-redux";
 import { designProps } from "../../lib/actions/designAction";
 import { fonts } from "./assets/allFonts";
@@ -17,12 +14,10 @@ import Card from "components/Card/Card.js";
 import CardBody from "components/Card/CardBody.js";
 import { Typography } from "@material-ui/core";
 import MenuItem from "@material-ui/core/MenuItem";
-import Button from "@material-ui/core/Button";
-import useCollapse from "react-collapsed";
 import { createMuiTheme } from "@material-ui/core/styles";
 import { ThemeProvider } from "@material-ui/styles";
 import DropdownSliders from "components/CustomDropdownSliders/DropdownSliders.js";
-import { stoneShapes, colors, bailType, availableSymbols } from "./panelData";
+import { stoneShapes, colors } from "./panelData";
 import { compareVal } from "./utils/utils";
 import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
 import DiamondMenu from "../LeftPanelComponents/DiamondMenu";
@@ -30,10 +25,9 @@ import {
   lengthBounds,
   thicknessBounds,
   letterSpacingBounds,
-  stoneSizeBounds,
   lineHeightsBounds,
 } from "../../lib/constants/pendantDimensionConstants";
-import { fillArray, getOccurences } from "../../lib/utils";
+import { fillArray } from "../../lib/utils";
 const shapeDir = "/assets/crimps/stoneShapes";
 
 const muiTheme = createMuiTheme({
@@ -51,11 +45,6 @@ const muiTheme = createMuiTheme({
 
 const LeftPanel = ({ props }) => {
   const { classes } = props;
-  // bail expand and collapse
-  const { getCollapseProps, getToggleProps, isExpanded, setExpanded } =
-    useCollapse();
-
-  const [currBailType, setCurrBailType] = useState("bail0");
 
   const { designProps: currDesign } = useSelector((state) => state.designProps);
   const {
@@ -69,9 +58,9 @@ const LeftPanel = ({ props }) => {
     letterSpacings,
     lineHeights,
     symbols,
-    bails: rBails,
+    bails,
   } = currDesign;
-  const [bails, setBails] = useState([]);
+
   const dispatch = useDispatch();
 
   const setSizes = (val, currItem) => {
@@ -90,27 +79,11 @@ const LeftPanel = ({ props }) => {
         );
   };
 
-  const setBailNumber = () => {
-    setBails((bails) => [...bails, { position: [0, 0, 0], sizes: {} }]);
-    setExpanded(false);
-  };
-
   const getText = (e) => {
     let txt = e.target.value;
     txt = txt.replace(" ", "");
     dispatch(designProps({ ...currDesign, text: txt }));
-    // letterSpacings: [...txt];
   };
-
-  // dispatching design's properties
-  useEffect(() => {
-    dispatch(
-      designProps({
-        ...currDesign,
-        bails,
-      })
-    );
-  }, [bails]);
 
   const setSpacings = (val, currItem) => {
     let spaces = [...letterSpacings];
@@ -131,12 +104,6 @@ const LeftPanel = ({ props }) => {
     dispatch(designProps({ ...currDesign, currStoneShape: shape }));
   };
 
-  const setBailType = (e) => {
-    let bt = e.target.getAttribute("alt");
-    if (!bt) return;
-    setCurrBailType(bt);
-  };
-
   const setStoneSize = (e, val) => {
     dispatch(designProps({ ...currDesign, stoneSize: val }));
   };
@@ -146,6 +113,28 @@ const LeftPanel = ({ props }) => {
       designProps({ ...currDesign, symbols: [...symbols, newSymbol] })
     );
   };
+
+  const addBail = (newBail) => {
+    return dispatch(designProps({ ...currDesign, bails: [...bails, newBail] }));
+  };
+
+    const setBailSizes = (val, currProp, index) => {
+      let prevBails = [...bails];
+      let targetBail = [...bails][index];
+
+      if (currProp === 0) {
+        targetBail.sizes["diameter"] = val;
+      } else {
+        targetBail[index].sizes["thickness"] = val;
+      }
+
+      prevBails[index] = targetBail;
+      console.log("chagne", currProp, index, prevBails, bails);
+
+      let newDesign = { ...currDesign, bails: prevBails };
+      dispatch(designProps(newDesign));
+    };
+
 
   const [showTip, setShowTip] = useState(false);
 
@@ -297,7 +286,6 @@ const LeftPanel = ({ props }) => {
                   <InputLabel className="settings-head">Color</InputLabel>
                   <div
                     className={classes.flexRow}
-                    // onClick={setStoneColor}
                     style={{ flexWrap: "wrap", height: "2rem", width: "100%" }}
                   >
                     <DiamondMenu
@@ -333,72 +321,7 @@ const LeftPanel = ({ props }) => {
               </div>
             </fieldset>
             <SymbolMenu props={{ classes, symbols, addSymbol }} />
-            <div style={{ marginTop: "1rem" }}>
-              <div
-                style={{
-                  width: "100%",
-                  marginTop: "1rem",
-                  justifyContent: "space-between",
-                }}
-                className={classes.flexRow+ " " + classes.collapse}
-                {...getToggleProps()}
-              >
-                <div
-                  className={classes.flexRow}
-                  style={{
-                    fontWeight: 500,
-                  }}
-                >
-                  {isExpanded ? (
-                    <>
-                      <KeyboardArrowUpIcon />
-                    </>
-                  ) : (
-                    <>
-                      <KeyboardArrowDownIcon />
-                    </>
-                  )}{" "}
-                  Bails {`(${bails.length})`}
-                </div>
-                <AddIcon
-                  onClick={setBailNumber}
-                  className={classes.cursorPointer}
-                />
-              </div>
-              <section {...getCollapseProps()}>
-                <InputLabel className="settings-head">Bails</InputLabel>
-                <div className={classes.flexRow} style={{ flexWrap: "wrap" }}>
-                  {bailType.map((bail, i) => (
-                    <div
-                      onClick={setBailType}
-                      key={i}
-                      style={{
-                        border: currBailType === bail && "3px solid #8e24aa",
-                      }}
-                      className={classes.bailType + " " + classes.flexRow}
-                    >
-                      <img
-                        width={25}
-                        height={25}
-                        src={`/assets/bails/img/${bail}.png`}
-                        alt={bail}
-                      />
-                    </div>
-                  ))}
-                </div>
-
-                {bails.map((bail, i) => (
-                  <BailMenu
-                    key={i}
-                    index={i}
-                    currBailType={currBailType}
-                    bails={bails}
-                    setBailsData={setBails}
-                    classes={classes}
-                  />
-                ))}
-              </section>
-            </div>
+            <BailMenu props={{ classes, bails, addBail, setBailSizes }} />
           </ThemeProvider>
         </CardBody>
       </Card>

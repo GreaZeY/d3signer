@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import AddIcon from "@material-ui/icons/Add";
 import InputLabel from "@material-ui/core/InputLabel";
 import { availableSymbols } from "../NewDesignPanels/panelData";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import Symbols from "./Symbols.js";
-import Button from "@material-ui/core/Button";
 import useCollapse from "react-collapsed";
 
 const SymbolMenu = ({ props }) => {
@@ -87,10 +86,7 @@ const SymbolMenu = ({ props }) => {
             </div>
           ))}
         </div>
-          <Symbols
-            symbols={symbols}
-            classes={classes}
-          />
+        <Symbols symbols={symbols} classes={classes} />
       </section>
     </div>
   );
