@@ -376,7 +376,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
         ref={transform}
         args={[camera, domElement]}
         mode={mode}
-        showZ={false}
+        showZ={mode==='translate'?false:true}
       />
     </>
   );
