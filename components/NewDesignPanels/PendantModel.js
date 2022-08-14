@@ -23,7 +23,6 @@ import { designProps, updateDesignProps } from "../../lib/actions/designAction";
 // import { MODEL_GENERATED, GENERATING_MODEL } from '../../lib/constants/designPropsConstants';
 // import { designProps as designPropsFunc } from '../../lib/actions/designAction';
 
-
 let textGeometry = new TextGeometry();
 let targetStone = null,
   clickAway = false,
@@ -36,7 +35,6 @@ const bevelProps = {
   // curveSegments: 50,
 };
 extend({ TextGeometry, TransformControls });
-
 
 let worker;
 
@@ -74,7 +72,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
   );
 
   useEffect(() => {
-    if(!font) return
+    if (!font) return;
     textGeometry = new TextGeometry(text, {
       font,
       size: { size: 1, letterSpacings, lineHeights },
@@ -133,8 +131,6 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
       }
     }
   };
-
-
 
   // delete object from state
   const deleteObject = (obj) => {
@@ -246,7 +242,6 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
       clickAway = !clickAway;
     }
   };
-
   // three render loop
   useFrame((state) => {
     const { z } = state.camera.position;
@@ -275,9 +270,12 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     if (intersects.length === 0) targetStone = null;
 
     // click away listener for transform controls
-    let children = [pendant.current.parent, transform.current.children[0]];
+    let children = [pendant.current.parent];
+    transform.current?.children[0].traverse((kid) => {
+      if (kid.type === "Mesh") children.push(kid);
+    });
+
     let intersectsTrans = state.raycaster.intersectObjects(children);
-    // console.log(intersectsTrans);
     if (intersectsTrans.length > 0) {
       clickAway = false;
     } else {
@@ -309,7 +307,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
   };
 
   const attachTransformControl = (e) => {
-    if(currStoneShape) return
+    if (currStoneShape) return;
     const obj = e.object;
     if (!(obj.parent.userData.controllable || obj.userData.controllable))
       return;
@@ -321,10 +319,8 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     // // if (!text) return setBoundingBoxPoints(initialBoundingBox);
     // let objBBox = new THREE.Box3().setFromObject(obj);
     // console.log('obj',obj);
-   
     // if(objBBox!==boundingBoxPoints) return
     // setBoundingBoxPoints(objBBox);
-     
   };
 
   return (
@@ -376,7 +372,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
         ref={transform}
         args={[camera, domElement]}
         mode={mode}
-        showZ={mode==='translate'?false:true}
+        showZ={mode === "translate" ? false : true}
       />
     </>
   );
