@@ -317,19 +317,19 @@ function NewDesign() {
           (kid) => kid.type === "Group" && kid.name === "stoneGroup"
         );
         modelClone.remove(stoneGroup[0]);
-
+let filename = currDesign.text?currDesign.text:'export'
         if (index === 0) {
-          await stlExporter(modelClone, currDesign.text);
+          await stlExporter(modelClone, filename);
           setExportLoading(false);
           return;
         }
         if (index === 1) {
-          await objExporter(modelClone, currDesign.text);
+          await objExporter(modelClone, filename);
           setExportLoading(false);
           return;
         }
         if (index === 2) {
-          await gltfExporter(modelClone, currDesign.text);
+          await gltfExporter(modelClone, filename);
           setExportLoading(false);
           return;
         }
