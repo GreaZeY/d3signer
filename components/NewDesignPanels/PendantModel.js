@@ -23,7 +23,6 @@ import { designProps, updateDesignProps } from "../../lib/actions/designAction";
 // import { MODEL_GENERATED, GENERATING_MODEL } from '../../lib/constants/designPropsConstants';
 // import { designProps as designPropsFunc } from '../../lib/actions/designAction';
 
-
 let textGeometry = new TextGeometry();
 let targetStone = null,
   clickAway = false,
@@ -36,7 +35,6 @@ const bevelProps = {
   // curveSegments: 50,
 };
 extend({ TextGeometry, TransformControls });
-
 
 let worker;
 
@@ -74,7 +72,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
   );
 
   useEffect(() => {
-    if(!font) return
+    if (!font) return;
     textGeometry = new TextGeometry(text, {
       font,
       size: { size: 1, letterSpacings, lineHeights },
@@ -134,29 +132,19 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     }
   };
 
-
-
   // delete object from state
   const deleteObject = (obj) => {
     if (obj) {
       transform.current.detach();
       guiControls.current.style.display = "none";
-
-      //deleteting object by types
-
-      // let propType = obj.userData.group;
-      //  let propVal = currDesign[propType].filter((s, i) => i !== obj.userData.index);
-      //  let newState = {}
-      //  newState[propType] = propVal
-      //  dispatch(designProps({ ...currDesign, ...newState }));
-
-      if (obj.userData.group === "symbols") {
-        let syms = symbols.filter((s, i) => i !== obj.userData.index);
-        dispatch(designProps({ ...currDesign, symbols: syms }));
-      }
-      if (obj.userData.group === "bails") {
-        document.getElementById("deleteBailBtn" + obj.userData.index).click();
-      }
+      // deleteting object by types
+      let propType = obj.userData.group;
+      let propVal = currDesign[propType].filter(
+        (s, i) => i !== obj.userData.index
+      );
+      let newState = {};
+      newState[propType] = propVal;
+      dispatch(designProps({ ...currDesign, ...newState }));
     }
   };
 
@@ -186,6 +174,8 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     window.addEventListener("pointerdown", (e) => removeStone(e, stoneGroup));
     domElement.addEventListener("click", canvasClickListener);
 
+
+    // todo: move all heavy operations to worker
     worker = new Worker("/worker.js", { type: "module" });
 
     worker.onmessage = (e) => {
@@ -232,11 +222,6 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
   });
 
   useControl("Close", { type: "button", onClick: closeControls });
-
-  useControl("Delete", {
-    type: "button",
-    onClick: () => deleteObject(transform.current?.object),
-  });
 
   // click away listener for transform controls
   const canvasClickListener = () => {
@@ -295,9 +280,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     setBoundingBoxPoints(geometry.boundingBox);
     console.log(geometry.boundingBox.max);
     // dispatch(designProps({ ...currDesign, volume: getVolume(geometry) }));
-    // console.log(geometry.boundingBox.min);
   };
-
   const onUpdateStone = (mesh) => {
     let geometry = mesh.geometry;
     if (!geometry) return;
@@ -309,7 +292,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
   };
 
   const attachTransformControl = (e) => {
-    if(currStoneShape) return
+    if (currStoneShape) return;
     const obj = e.object;
     if (!(obj.parent.userData.controllable || obj.userData.controllable))
       return;
@@ -321,10 +304,8 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     // // if (!text) return setBoundingBoxPoints(initialBoundingBox);
     // let objBBox = new THREE.Box3().setFromObject(obj);
     // console.log('obj',obj);
-   
     // if(objBBox!==boundingBoxPoints) return
     // setBoundingBoxPoints(objBBox);
-     
   };
 
   return (
@@ -376,7 +357,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
         ref={transform}
         args={[camera, domElement]}
         mode={mode}
-        showZ={false}
+        showZ={mode==='translate'?false:true}
       />
     </>
   );

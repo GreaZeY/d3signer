@@ -118,23 +118,17 @@ const LeftPanel = ({ props }) => {
     return dispatch(designProps({ ...currDesign, bails: [...bails, newBail] }));
   };
 
-    const setBailSizes = (val, currProp, index) => {
-      let prevBails = [...bails];
-      let targetBail = [...bails][index];
-
-      if (currProp === 0) {
-        targetBail.sizes["diameter"] = val;
-      } else {
-        targetBail[index].sizes["thickness"] = val;
-      }
-
-      prevBails[index] = targetBail;
-      console.log("chagne", currProp, index, prevBails, bails);
-
-      let newDesign = { ...currDesign, bails: prevBails };
-      dispatch(designProps(newDesign));
-    };
-
+  const setBailSizes = (val, currProp, index) => {
+    let prevBails = JSON.parse(JSON.stringify(bails));
+    // let prevBails = [...bails];
+    if (currProp === 0) {
+      prevBails[index].sizes["diameter"] = val;
+    } else {
+      prevBails[index].sizes["thickness"] = val;
+    }
+    let newDesign = { ...currDesign, bails: prevBails };
+    dispatch(designProps(newDesign));
+  };
 
   const [showTip, setShowTip] = useState(false);
 

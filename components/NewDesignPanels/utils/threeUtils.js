@@ -28,7 +28,7 @@ export const loadStone = (shape, color) => {
     roughness: 0.05,
   });
   dia.geometry.center();
-  let mesh = dia.clone() 
+  let mesh = dia.clone();
   return mesh;
 };
 
@@ -114,7 +114,7 @@ export const stlExporter = (model, filename) => {
   import("three/examples/jsm/exporters/STLExporter").then((module) => {
     const exporter = new module.STLExporter();
     let str = exporter.parse(model, { binary: true }); // Export the scene
-    let blob = new Blob([str], { type: "text/plain" }); // Generate Blob from the string
+    let blob = new Blob([str], { type: "application/vnd.ms-pki.stl" }); // Generate Blob from the string
     saveAs(blob, filename + ".stl");
   });
 };
@@ -147,29 +147,27 @@ export const gltfExporter = (model, filename) => {
   });
 };
 
-
-export const getVolume=(geometry)=> {
-  try{
-
+export const getVolume = (geometry) => {
+  try {
     if (!geometry.isBufferGeometry) {
       console.log(
         "'geometry' must be an indexed or non-indexed buffer geometry"
-        );
-     return 0;
-   }
-   var isIndexed = geometry.index !== null;
-   let position = geometry.attributes.position;
-   let sum = 0;
-   let p1 = new THREE.Vector3(),
-     p2 = new THREE.Vector3(),
-     p3 = new THREE.Vector3();
-   if (!isIndexed) {
-     let faces = position.count / 3;
-     for (let i = 0; i < faces; i++) {
-       p1.fromBufferAttribute(position, i * 3 + 0);
-       p2.fromBufferAttribute(position, i * 3 + 1);
-       p3.fromBufferAttribute(position, i * 3 + 2);
-       sum += signedVolumeOfTriangle(p1, p2, p3);
+      );
+      return 0;
+    }
+    var isIndexed = geometry.index !== null;
+    let position = geometry.attributes.position;
+    let sum = 0;
+    let p1 = new THREE.Vector3(),
+      p2 = new THREE.Vector3(),
+      p3 = new THREE.Vector3();
+    if (!isIndexed) {
+      let faces = position.count / 3;
+      for (let i = 0; i < faces; i++) {
+        p1.fromBufferAttribute(position, i * 3 + 0);
+        p2.fromBufferAttribute(position, i * 3 + 1);
+        p3.fromBufferAttribute(position, i * 3 + 2);
+        sum += signedVolumeOfTriangle(p1, p2, p3);
       }
     } else {
       let index = geometry.index;
@@ -182,12 +180,12 @@ export const getVolume=(geometry)=> {
       }
     }
     return sum;
-  }catch(e){
-    console.log(e)
-    return 0
+  } catch (e) {
+    console.log(e);
+    return 0;
   }
-}
+};
 
- function signedVolumeOfTriangle(p1, p2, p3) {
-   return p1.dot(p2.cross(p3)) / 6.0;
- }
+function signedVolumeOfTriangle(p1, p2, p3) {
+  return p1.dot(p2.cross(p3)) / 6.0;
+}

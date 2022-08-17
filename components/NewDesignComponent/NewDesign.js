@@ -161,14 +161,20 @@ function NewDesign() {
       zIndex: 100,
     },
     delete: {
-      // marginTop: "2.8rem",
       cursor: "pointer",
       transition: ".3s",
       "&:hover": {
         color: "red",
       },
     },
-
+    copy: {
+      cursor: "pointer",
+      fontSize: "1.2rem",
+      transition: ".3s",
+      "&:hover": {
+        color: "#008ff4",
+      },
+    },
     modalStyle: {
       position: "fixed",
       height: "100vh",
@@ -318,18 +324,19 @@ function NewDesign() {
         );
         modelClone.remove(stoneGroup[0]);
 
+        let filename = currDesign.text?currDesign.text:'export'
         if (index === 0) {
-          await stlExporter(modelClone, currDesign.text);
+          await stlExporter(modelClone, filename);
           setExportLoading(false);
           return;
         }
         if (index === 1) {
-          await objExporter(modelClone, currDesign.text);
+          await objExporter(modelClone, filename);
           setExportLoading(false);
           return;
         }
         if (index === 2) {
-          await gltfExporter(modelClone, currDesign.text);
+          await gltfExporter(modelClone, filename);
           setExportLoading(false);
           return;
         }

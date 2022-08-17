@@ -10,18 +10,19 @@ const Bails = ({ boundingBoxPoints }) => {
     <>
       {bails.length > 0 && (
         <>
-          {bails.map((bail, i) => (
+          {bails.map(({ sizes, type, transform }, i) => (
             <Bail
-              key={bail.type + i}
+              key={type + i}
               args={{
-                radius: bail.sizes.diameter / 2,
-                tube: bail.sizes.thickness,
-                position: [max.x, max.y, max.z],
-                boundingBoxPoints
+                radius: sizes.diameter / 2,
+                tube: sizes.thickness,
+                pos: [max.x, max.y, (max.z + min.z) / 2],
+                boundingBoxPoints,
               }}
               base={base}
-              currBailType={bail.type}
+              currBailType={type}
               index={i}
+              transform={transform}
             />
           ))}
         </>
