@@ -10,9 +10,8 @@ const Diamond = ({ model }) => {
     const dispatch = useDispatch()
     const { designProps: currDesign } = useSelector(state => state.designProps)
     const diamond = useMemo(() => loadStone(model, 'red'), [model]);
-
     return (
-        <group >
+        <group>
             {
                 stoneColor.map((color, i) => 
                     <mesh 

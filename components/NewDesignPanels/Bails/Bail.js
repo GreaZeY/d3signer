@@ -7,27 +7,21 @@ const Bail = (props) => {
   const dispatch = useDispatch();
   const { base, args, currBailType, index, transform } = props;
   const { rotation, scale, position } = transform;
-  let { radius, pos, tube, boundingBoxPoints } = args;
-  const { max, min } = boundingBoxPoints;
+  let { diameter, pos, tube } = args;
 
   const onUpdateBail = (mesh) => {
     let geometry = mesh.geometry;
-    const { x, y, z } = geometry.boundingBox.max;
-    let scaleX = 1,
-      scaleY = 1,
-      scaleZ = 1;
-    if (currBailType === "bail0") {
-      scaleX = (radius * 2) / x;
-      scaleY = (radius * 2) / y;
+    const { x, z } = geometry.boundingBox.max;
+    let scaleX = diameter / x,
+      scaleY = scaleX,
       scaleZ = scaleX;
-    }else{
-       scaleX = (radius * 4) / x;
-       scaleY = (radius * 8) / y;
-       scaleZ = (radius * 12) / z;
+    if (currBailType !== "bail0") {
+      scaleX = diameter / z;
+      scaleY = scaleX;
+      scaleZ = scaleX;
     }
 
-    geometry.scale(scaleX, scaleY, scaleZ);
-debugger
+    mesh.scale.set(scaleX, scaleY, scaleZ);
     dispatch(updateDesignProps(mesh));
   };
 
@@ -47,26 +41,8 @@ debugger
     return [rx, ry, rz];
   };
 
-  const getScale = () => {
-    let sx = 1,
-      sy = 1,
-      sz = 1;
-    if (scale) {
-      sx = scale.x;
-      sy = scale.y;
-      sz = scale.z;
-    } else {
-      if (currBailType !== "bail0") {
-        sx = radius;
-        sy = radius;
-        sz = radius;
-      }
-    }
-    return [sx, sy, sz];
-  };
-
   const bailGeometry = useMemo(
-    () => loadBail(currBailType, radius, tube / 5),
+    () => loadBail(currBailType, diameter, tube / 5),
     [currBailType, args]
   );
   return (
@@ -75,7 +51,7 @@ debugger
         name="bail"
         userData={{ group: "bails", index, currBailType, controllable: true }}
         position={position ? [position.x, position.y, position.z] : pos}
-        scale={getScale()}
+        scale={scale && [scale.x, scale.y, scale.z]}
         geometry={bailGeometry}
         rotation={getRotation()}
         onUpdate={onUpdateBail}

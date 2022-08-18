@@ -23,8 +23,6 @@ const Symbols = ({ props }) => {
     geometry.center();
     const { x, z } = geometry.boundingBox.max;
     geometry.scale((max.x / x / 3) * size, (max.x / x / 3) * size, max.z / z);
-    mesh.position.z = (max.z + min.z) / 2;
-
     dispatch(updateDesignProps(mesh));
   };
 
@@ -36,10 +34,9 @@ const Symbols = ({ props }) => {
         position={
           position
             ? [position.x, position.y, position.z]
-            : [max.x, max.y, max.z]
+            : [max.x, max.y / 2, (max.z + min.z) / 2]
         }
-        position-y={max.y / 2}
-        rotation-x={Math.PI}
+        rotation={rotation ? [rotation.x, rotation.y, rotation.z] : [Math.PI, 0, 0]}
         scale={scale && [scale.x, scale.y, scale.z]}
         userData={{ group: "symbols", index, symbol, controllable: true }}
         onUpdate={onUpdateSymbol}

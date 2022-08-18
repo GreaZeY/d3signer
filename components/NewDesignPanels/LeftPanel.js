@@ -120,7 +120,7 @@ const LeftPanel = ({ props }) => {
 
   const setBailSizes = (val, currProp, index) => {
     let prevBails = JSON.parse(JSON.stringify(bails));
-    // let prevBails = [...bails];
+
     if (currProp === 0) {
       prevBails[index].sizes["diameter"] = val;
     } else {
@@ -277,7 +277,7 @@ const LeftPanel = ({ props }) => {
               </div>
               {currStoneShape && (
                 <div style={{ marginTop: ".5rem" }}>
-                  <InputLabel className="settings-head">Color</InputLabel>
+                  <InputLabel style={{ marginBottom: 0 }} className="settings-head">Color</InputLabel>
                   <div
                     className={classes.flexRow}
                     style={{ flexWrap: "wrap", height: "2rem", width: "100%" }}

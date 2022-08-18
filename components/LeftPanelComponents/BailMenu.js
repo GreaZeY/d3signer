@@ -38,6 +38,11 @@ const BailsMenu = ({ props }) => {
     setExpanded(false);
   };
 
+    const copyBail = (index) => {
+      let cloneBail = {...bails[index]};
+     addBail(cloneBail);
+    };
+
   return (
     <div style={{ marginTop: "1rem" }}>
       <div
@@ -95,7 +100,12 @@ const BailsMenu = ({ props }) => {
             </div>
           ))}
         </div>
-        <Bail bails={bails} classes={classes} setSizes={setBailSizes} />
+        <Bail
+          bails={bails}
+          classes={classes}
+          setSizes={setBailSizes}
+          onCopy={copyBail}
+        />
       </section>
     </div>
   );

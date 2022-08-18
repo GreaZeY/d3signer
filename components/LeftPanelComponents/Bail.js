@@ -7,7 +7,7 @@ import {
 } from "../../lib/constants/pendantDimensionConstants";
 
 const Bails = (props) => {
-  const { classes, bails, setSizes } = props;
+  const { classes, bails, setSizes, onCopy } = props;
   const { designProps: currDesign } = useSelector((state) => state.designProps);
   const dispatch = useDispatch();
 
@@ -15,17 +15,8 @@ const Bails = (props) => {
     let prevBails = [...bails];
     prevBails = prevBails.filter((s, i) => i !== index);
     let newDesign = { ...currDesign, bails: prevBails };
-    console.log("chagne", prevBails, currDesign.bails);
     dispatch(designProps(newDesign));
   };
-
-  const copyBail = (index) => {
-      let prevBails = [...bails];
-      let cloneBail = prevBails[index];
-      prevBails.push(cloneBail);
-      let newDesign = { ...currDesign, bails: prevBails };
-      dispatch(designProps(newDesign));
-    };
 
   return (
     <>
@@ -42,8 +33,10 @@ const Bails = (props) => {
             mins={[bailDiameterBounds.min, bailThicknessBounds.min]}
             maxs={[bailDiameterBounds.max, bailThicknessBounds.max]}
             onDelete={deleteBail}
-            // onCopy={copyBail}
+            onCopy={onCopy}
             label="Size(s)"
+            passIndex={true}
+            index={index}
           />
           <button
             style={{ display: "none" }}
