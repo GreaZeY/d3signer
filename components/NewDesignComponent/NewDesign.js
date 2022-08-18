@@ -323,7 +323,6 @@ function NewDesign() {
           (kid) => kid.type === "Group" && kid.name === "stoneGroup"
         );
         modelClone.remove(stoneGroup[0]);
-
         let filename = currDesign.text?currDesign.text:'export'
         if (index === 0) {
           await stlExporter(modelClone, filename);
@@ -388,7 +387,6 @@ function NewDesign() {
     alert.success("Url is copied to clipboard.");
     // setShowTick(true);
   };
-
 
   const dispatchFiles = (e) => {
     let files = Array.prototype.map.call(e.target.files, (blob) =>
@@ -743,7 +741,5 @@ function NewDesign() {
     </>
   );
 }
-
-
 
 export default NewDesign;

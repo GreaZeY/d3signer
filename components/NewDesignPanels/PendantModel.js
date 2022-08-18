@@ -228,7 +228,6 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
       clickAway = !clickAway;
     }
   };
-
   // three render loop
   useFrame((state) => {
     const { z } = state.camera.position;
@@ -257,9 +256,12 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     if (intersects.length === 0) targetStone = null;
 
     // click away listener for transform controls
-    let children = [pendant.current.parent, transform.current.children[0]];
+    let children = [pendant.current.parent];
+    transform.current?.children[0].traverse((kid) => {
+      if (kid.type === "Mesh") children.push(kid);
+    });
+
     let intersectsTrans = state.raycaster.intersectObjects(children);
-    // console.log(intersectsTrans);
     if (intersectsTrans.length > 0) {
       clickAway = false;
     } else {
