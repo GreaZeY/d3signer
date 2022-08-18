@@ -3,7 +3,6 @@
 
 
 ### Run in development mode
-* Fork the repository
 * Clone the repository
 * Node version `14.x.x` and npm version `8.x.x`
 * Install pnpm if you havn't already by running `npm i pnpm -g`
