@@ -1,5 +1,4 @@
 import { useSelector, useDispatch } from "react-redux";
-import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import { designProps } from "../../lib/actions/designAction";
 import DropdownSliders from "components/CustomDropdownSliders/DropdownSliders.js";
 
@@ -9,18 +8,18 @@ const Symbol = (props) => {
   const dispatch = useDispatch();
 
   const setSizes = (val, index) => {
-    let prevSyms = [...currDesign.symbols];
+    let prevSyms = [...symbols];
     prevSyms[index].size = val;
     let newDesign = { ...currDesign, symbols: prevSyms };
     dispatch(designProps(newDesign));
   };
 
-  // const deleteSymbol = () => {
-  //   let prevSyms = [...currDesign.symbols];
-  //   prevSyms = prevSyms.filter((s, i) => i !== index);
-  //   let newDesign = { ...currDesign, symbols: prevSyms };
-  //   dispatch(designProps(newDesign));
-  // };
+  const deleteSymbol = (index) => {
+    let prevSyms = [...symbols];
+    prevSyms = prevSyms.filter((s, i) => i !== index);
+    let newDesign = { ...currDesign, symbols: prevSyms };
+    dispatch(designProps(newDesign));
+  };
 
   return (
     <div style={{ display: "flex", alignItems: "center" }}>
@@ -36,11 +35,11 @@ const Symbol = (props) => {
         values={symbols.map((sym) => sym.size)}
         onChange={setSizes}
         classes={classes}
-        mins={symbols.map((s) => 0.1)}
-        maxs={symbols.map((s) => 1)}
-        label="Sizes"
+        mins={symbols.map(() => 0.1)}
+        maxs={symbols.map(() => 1)}
+        label="Size(s)"
+        onDelete={deleteSymbol}
       />
-      {/* <DeleteForeverIcon className={classes.delete} onClick={deleteSymbol} /> */}
     </div>
   );
 };

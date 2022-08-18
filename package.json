@@ -10,7 +10,7 @@
     "start": "next start",
     "deploy": "npm run build && firebase deploy",
     "clean": "sudo npm install node-gyp -g && npm cache clean -f && rm -rf node_modules && pnpm install",
-    "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && rm -rf .next/ && npm install && npm run dev"
+    "cleancache": "npm install node-gyp -g && npm cache clean -f && pnpm install"
   },
   "dependencies": {
     "@material-ui/core": "4.11.3",

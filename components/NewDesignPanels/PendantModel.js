@@ -71,6 +71,12 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     [currStoneShape, currStoneColor]
   );
 
+  // hide transform and gui controls
+  const closeControls = () => {
+    transform.current?.detach();
+    guiControls.current.style.display = "none";
+  };
+
   useEffect(() => {
     if (!font) return;
     textGeometry = new TextGeometry(text, {
@@ -135,24 +141,15 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
   // delete object from state
   const deleteObject = (obj) => {
     if (obj) {
-      transform.current.detach();
-      guiControls.current.style.display = "none";
-
-      //deleteting object by types
-
-      // let propType = obj.userData.group;
-      //  let propVal = currDesign[propType].filter((s, i) => i !== obj.userData.index);
-      //  let newState = {}
-      //  newState[propType] = propVal
-      //  dispatch(designProps({ ...currDesign, ...newState }));
-
-      if (obj.userData.group === "symbols") {
-        let syms = symbols.filter((s, i) => i !== obj.userData.index);
-        dispatch(designProps({ ...currDesign, symbols: syms }));
-      }
-      if (obj.userData.group === "bails") {
-        document.getElementById("deleteBailBtn" + obj.userData.index).click();
-      }
+      closeControls();
+      // deleteting object by types
+      let propType = obj.userData.group;
+      let propVal = currDesign[propType].filter(
+        (s, i) => i !== obj.userData.index
+      );
+      let newState = {};
+      newState[propType] = propVal;
+      dispatch(designProps({ ...currDesign, ...newState }));
     }
   };
 
@@ -182,6 +179,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     window.addEventListener("pointerdown", (e) => removeStone(e, stoneGroup));
     domElement.addEventListener("click", canvasClickListener);
 
+    // todo: move all heavy operations to worker
     worker = new Worker("/worker.js", { type: "module" });
 
     worker.onmessage = (e) => {
@@ -204,7 +202,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
   useEffect(() => {
     const tControls = transform.current;
     if (tControls) {
-      tControls.detach();
+      closeControls();
       tControls.addEventListener("dragging-changed", updateAttachedObj);
     }
     document.addEventListener("keydown", keyPressHandler);
@@ -215,12 +213,6 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     };
   }, [keyPressHandler]);
 
-  // gui controls to change transform mode
-  const closeControls = () => {
-    transform.current?.detach();
-    guiControls.current.style.display = "none";
-  };
-
   let mode = useControl("Mode", {
     type: "custom",
     value: "translate",
@@ -229,16 +221,10 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
 
   useControl("Close", { type: "button", onClick: closeControls });
 
-  useControl("Delete", {
-    type: "button",
-    onClick: () => deleteObject(transform.current?.object),
-  });
-
   // click away listener for transform controls
   const canvasClickListener = () => {
     if (clickAway) {
-      transform.current?.detach();
-      guiControls.current.style.display = "none";
+      closeControls();
       clickAway = !clickAway;
     }
   };
@@ -293,9 +279,7 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     setBoundingBoxPoints(geometry.boundingBox);
     console.log(geometry.boundingBox.max);
     // dispatch(designProps({ ...currDesign, volume: getVolume(geometry) }));
-    // console.log(geometry.boundingBox.min);
   };
-
   const onUpdateStone = (mesh) => {
     let geometry = mesh.geometry;
     if (!geometry) return;

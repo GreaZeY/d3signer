@@ -6,6 +6,9 @@ import { store } from "../../lib/store";
 import { Provider } from "react-redux";
 import { Controls, withControls } from "react-three-gui";
 import SilverMetalLoading from "../loaders/silverMetalLoading";
+import * as THREE from "three";
+
+
 const CanvasWithControls = withControls(Canvas);
 
 const D3panel = ({ model, zoom }) => {
@@ -21,7 +24,7 @@ const D3panel = ({ model, zoom }) => {
         <OrbitControls enableDamping ref={controls} />
         <Suspense
           fallback={
-            <Html >
+            <Html position={[-8, 8, 0]}>
               <SilverMetalLoading />
             </Html>
           }

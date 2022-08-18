@@ -4,6 +4,9 @@ import Select from "@material-ui/core/Select";
 import InputLabel from "@material-ui/core/InputLabel";
 import Slider from "@material-ui/core/Slider";
 import MenuItem from "@material-ui/core/MenuItem";
+import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
+import FileCopyIcon from "@material-ui/icons/FileCopy";
+
 const DropdownSliders = ({
   classes,
   items,
@@ -12,8 +15,18 @@ const DropdownSliders = ({
   onChange,
   mins,
   maxs,
+  onDelete,
+  onCopy,
+  passIndex,
+  index,
 }) => {
   const [currItem, setCurrItem] = useState(0);
+  if (!items?.length) return <></>;
+
+  const deleteItem = () => {
+    onDelete(passIndex ? index : currItem);
+    setCurrItem(0);
+  };
   return (
     <div style={{ width: "100%" }}>
       <InputLabel
@@ -55,7 +68,7 @@ const DropdownSliders = ({
           className={classes.flexRow}
         >
           <Slider
-            aria-label="Sizes"
+            aria-label={label}
             onChange={(e, val) => onChange(val, currItem)}
             step={0.1}
             style={{ marginRight: "1rem" }}
@@ -86,6 +99,22 @@ const DropdownSliders = ({
             variant="outlined"
             value={values ? values[currItem] || 0 : 0}
           /> */}
+          <div className={classes.flexRow} style={{ marginLeft: ".2rem" }}>
+            {onCopy && (
+              <FileCopyIcon
+                title="Copy"
+                className={classes.copy}
+                onClick={() => onCopy(passIndex ? index : currItem)}
+              />
+            )}
+            {onDelete && (
+              <DeleteForeverIcon
+                title="Delete"
+                className={classes.delete}
+                onClick={deleteItem}
+              />
+            )}
+          </div>
         </div>
       </div>
     </div>
