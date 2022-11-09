@@ -3,7 +3,7 @@ import { designProps } from "../../lib/actions/designAction";
 import DropdownSliders from "components/CustomDropdownSliders/DropdownSliders.js";
 
 const Symbol = (props) => {
-  const { classes, symbols } = props;
+  const { classes, symbols, onCopy } = props;
   const { designProps: currDesign } = useSelector((state) => state.designProps);
   const dispatch = useDispatch();
 
@@ -39,6 +39,7 @@ const Symbol = (props) => {
         maxs={symbols.map(() => 1)}
         label="Size(s)"
         onDelete={deleteSymbol}
+        onCopy={onCopy}
       />
     </div>
   );

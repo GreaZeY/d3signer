@@ -30,6 +30,11 @@ const SymbolMenu = ({ props }) => {
     setExpanded(false);
   };
 
+   const copySymbol = (index) => {
+     let cloneSymbol = { ...symbols[index] };
+     addSymbol(cloneSymbol);
+   };
+
   return (
     <div style={{ marginTop: "1rem" }}>
       <div
@@ -86,7 +91,7 @@ const SymbolMenu = ({ props }) => {
             </div>
           ))}
         </div>
-        <Symbols symbols={symbols} classes={classes} />
+        <Symbols symbols={symbols} classes={classes} onCopy={copySymbol} />
       </section>
     </div>
   );
