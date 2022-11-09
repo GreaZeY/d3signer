@@ -39,7 +39,6 @@
     "redux-devtools-extension": "^2.13.9",
     "redux-thunk": "^2.4.1",
     "three": "^0.135.0",
-    "three-bvh-csg": "^0.0.2",
     "webfontloader": "^1.6.28"
   },
   "eslintConfig": {

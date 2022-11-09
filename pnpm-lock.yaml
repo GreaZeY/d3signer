@@ -29,6 +29,7 @@ specifiers:
   redux-devtools-extension: ^2.13.9
   redux-thunk: ^2.4.1
   three: ^0.135.0
+  three-bvh-csg: ^0.0.2
   typescript: 4.1.3
   webfontloader: ^1.6.28
 
@@ -59,6 +60,7 @@ dependencies:
   redux-devtools-extension: 2.13.9
   redux-thunk: 2.4.1
   three: 0.135.0
+  three-bvh-csg: 0.0.2_three@0.135.0
   webfontloader: 1.6.28
 
 optionalDependencies:
@@ -3568,6 +3570,15 @@ packages:
   /text-table/0.2.0:
     resolution: {integrity: sha512-N+8UisAXDGk8PFXP4HAzVR9nbfmVJ3zYLAWiTIoqC5v5isinhr+r5uaO8+7r3BMfuNIufIsA7RdpVgacC2cSpw==}
     dev: true
+
+  /three-bvh-csg/0.0.2_three@0.135.0:
+    resolution: {integrity: sha512-5T1BP1iRjvrG0YIt6G5GwQNgTGHKHrDfRajG10qIVrfjk2QXcwu6rfmSOm+TW7IZQbTcpiBp1/wePyiaYmdlIw==}
+    peerDependencies:
+      three: ^0.141.0
+      three-mesh-bvh: ^0.5.13
+    dependencies:
+      three: 0.135.0
+    dev: false
 
   /three-mesh-bvh/0.5.15_three@0.135.0:
     resolution: {integrity: sha512-jxE5iGjcoEMiyxUs7hMeZL6jBXBz9973ilqhXPhKlA1f7eitjIxRTtu7UWVQy+PhxXTsknmPzWmN5c+uAa/anA==}

@@ -9,7 +9,6 @@ import {
   union,
   intersect,
   subtractGeometry,
-  getVolume,
 } from "./utils/threeUtils";
 import { useSelector, useDispatch } from "react-redux";
 import Bails from "./Bails/Bails";
@@ -23,7 +22,7 @@ import { designProps, updateDesignProps } from "../../lib/actions/designAction";
 // import { MODEL_GENERATED, GENERATING_MODEL } from '../../lib/constants/designPropsConstants';
 // import { designProps as designPropsFunc } from '../../lib/actions/designAction';
 
-let textGeometry = new TextGeometry();
+let textGeometry = new THREE.BufferGeometry();
 let targetStone = null,
   clickAway = false,
   geometryWithoutHoles;
@@ -299,19 +298,10 @@ const pendantModel = ({ controls, guiControls, zoom, model }) => {
     guiControls.current.style.display = "block";
   };
 
-  const getObjectDetails = (obj) => {
-    // // if (!text) return setBoundingBoxPoints(initialBoundingBox);
-    // let objBBox = new THREE.Box3().setFromObject(obj);
-    // console.log('obj',obj);
-    // if(objBBox!==boundingBoxPoints) return
-    // setBoundingBoxPoints(objBBox);
-  };
-
   return (
     <>
       <object3D
         ref={model}
-        onUpdate={getObjectDetails}
         onClick={attachTransformControl}
       >
         <group
