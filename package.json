@@ -23,6 +23,7 @@
     "mongo": "^0.1.0",
     "mongodb": "^4.8.1",
     "next": "^12.1.5",
+    "next-compose-plugins": "^2.2.1",
     "next-redux-wrapper": "^7.0.5",
     "path": "0.12.7",
     "prop-types": "15.7.2",
@@ -38,6 +39,7 @@
     "redux-devtools-extension": "^2.13.9",
     "redux-thunk": "^2.4.1",
     "three": "^0.135.0",
+    "three-bvh-csg": "^0.0.2",
     "webfontloader": "^1.6.28"
   },
   "eslintConfig": {

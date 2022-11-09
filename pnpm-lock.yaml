@@ -12,6 +12,7 @@ specifiers:
   mongo: ^0.1.0
   mongodb: ^4.8.1
   next: ^12.1.5
+  next-compose-plugins: ^2.2.1
   next-redux-wrapper: ^7.0.5
   node-sass: ^7.0.1
   path: 0.12.7
@@ -42,6 +43,7 @@ dependencies:
   mongo: 0.1.0
   mongodb: 4.8.1
   next: 12.2.4_f931c52951b6f90044df384b940ab5b4
+  next-compose-plugins: 2.2.1
   next-redux-wrapper: 7.0.5_5b1b737b61c623ffce49d18a75c55428
   path: 0.12.7
   prop-types: 15.7.2
@@ -2477,6 +2479,10 @@ packages:
     engines: {node: '>= 0.6'}
     dev: false
     optional: true
+
+  /next-compose-plugins/2.2.1:
+    resolution: {integrity: sha512-OjJ+fV15FXO2uQXQagLD4C0abYErBjyjE0I0FHpOEIB8upw0hg1ldFP6cqHTJBH1cZqy96OeR3u1dJ+Ez2D4Bg==}
+    dev: false
 
   /next-redux-wrapper/7.0.5_5b1b737b61c623ffce49d18a75c55428:
     resolution: {integrity: sha512-UFXdAWG5i+GFT8+Hoqpx3GArkPh34fVWF9YoA2VSHlBzsrPtnRd7NWM6FNSYUennpommTpWJ09mu+r/1UxyIkg==}
